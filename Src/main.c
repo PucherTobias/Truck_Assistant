@@ -126,14 +126,18 @@ int main(void)
 	
 		sensork=2*(2076.0/(adcvaluek-11));
 
-		if(sensork <= 8) {
+		if((sensork > 0.1)&&(sensork <= 8)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-			setval = 1;
+			
+			if(HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin))
+				setval = 1;
 		}
 
 		
-		if(setval) {
+		if(sensork > 8) {
+			if(setval) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 5);
+			}
 			setval = 0;
 		}
 				
