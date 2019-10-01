@@ -128,15 +128,15 @@ int main(void)
 
 		if((sensork > 0.1)&&(sensork <= 8)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-			
-			if(HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin))
-				setval = 1;
+				setval = 0;
 		}
 
+		if(HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin))
+				setval = 1;
 		
 		if(sensork > 8) {
 			if(setval) {
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 5);
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 40);
 			}
 			setval = 0;
 		}
