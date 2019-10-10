@@ -126,7 +126,7 @@ int main(void)
 	
 		sensork=2*(2076.0/(adcvaluek-11));
 
-		if((sensork > 0.1)&&(sensork <= 8)) {
+		if((sensork > 0.1)&&(sensork <= 6)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 				setval = 0;
 		}
@@ -134,13 +134,18 @@ int main(void)
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
 				setval = 1;
 		
-		if(sensork > 8) {
+		if(sensork > 6) {
 			if(setval) {
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 40);
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 10);
 			}
 			setval = 0;
 		}
-				
+		
+		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
+			__HAL_TIM_DISABLE(&htim3);
+			while(1){}
+		}
 		
   }
   /* USER CODE END 3 */
