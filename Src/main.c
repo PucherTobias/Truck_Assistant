@@ -56,6 +56,7 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
+int count=0 ;
 
 /* USER CODE END PV */
 
@@ -83,6 +84,14 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
+	static int32_t uwtick_Hold10ms;
+  static int32_t uwtick_Hold100ms;
+  static int32_t uwtick_Hold1s;
+	
+	uwtick_Hold10ms=0;
+  uwtick_Hold100ms=0;
+  uwtick_Hold1s=0;
+  
   /* USER CODE END 1 */
   
 
@@ -120,6 +129,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		if( uwTick - uwtick_Hold10ms >= 10 ) {
+			uwtick_Hold10ms += 10;
+			count++;
+			// add tasks here
+			
+		}
+		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
@@ -412,6 +428,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(Zyklustest_GPIO_Port, Zyklustest_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -428,6 +447,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Zyklustest_Pin */
+  GPIO_InitStruct.Pin = Zyklustest_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Zyklustest_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
