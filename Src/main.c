@@ -48,6 +48,7 @@ ADC_HandleTypeDef hadc1;
 ETH_HandleTypeDef heth;
 
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart3;
 
@@ -66,6 +67,7 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -109,8 +111,10 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   MX_USB_DEVICE_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
+	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,6 +129,7 @@ int main(void)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 	
 		sensork=2*(2076.0/(adcvaluek-11));
+		
 
 		if((sensork > 0.1)&&(sensork <= 6)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
@@ -137,7 +142,7 @@ int main(void)
 		if(sensork > 6) {
 			if(setval) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 10);
-			}
+				}
 			setval = 0;
 		}
 		
@@ -146,6 +151,18 @@ int main(void)
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
+		
+		//Servo
+		htim4.Instance->CCR1 = 10;
+		HAL_Delay(1000);
+		htim4.Instance->CCR1 = 20;
+		HAL_Delay(1000);
+		htim4.Instance->CCR1 = 50;
+		HAL_Delay(1000);
+		htim4.Instance->CCR1 = 70;
+		HAL_Delay(1000);
+		htim4.Instance->CCR1 = 90;
+		HAL_Delay(1000);
 		
   }
   /* USER CODE END 3 */
@@ -355,6 +372,65 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 3200;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 100;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+  HAL_TIM_MspPostInit(&htim4);
 
 }
 
