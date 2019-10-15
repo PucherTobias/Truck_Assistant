@@ -56,7 +56,9 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-int count=0 ;
+int count_10ms=0 ;
+int count_100ms=0 ;
+int count_1s=0 ;
 
 /* USER CODE END PV */
 
@@ -106,6 +108,7 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+	HAL_IncTick() ;
 
   /* USER CODE BEGIN SysInit */
 
@@ -129,12 +132,26 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		// add tasks here
+		
+		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {
-			uwtick_Hold10ms += 10;
-			count++;
-			// add tasks here
+			uwtick_Hold100ms += 10;
+			count_10ms++;																																// 10ms Zykluszeit		
+		}
+		
+		if( (2874*uwTick) - uwtick_Hold100ms >= 100 ) {
+			uwtick_Hold100ms += 100;
+			count_100ms++;																															// 100ms Zykluszeit
+			HAL_GPIO_TogglePin(Zyklustest_GPIO_Port,Zyklustest_Pin) ;												
+		}
+		
+		if( uwTick - uwtick_Hold1s >= 1000 ) {
+			uwtick_Hold1s += 1000;
+			count_1s++;																																	// 1s Zykluszeit
 			
 		}
+		
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
@@ -466,7 +483,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USB_OverCurrent_Pin */
