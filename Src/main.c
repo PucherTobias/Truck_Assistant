@@ -90,9 +90,12 @@ int main(void)
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
 	
+	
+	
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
+	int diff ;
   
   /* USER CODE END 1 */
   
@@ -108,7 +111,7 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-	HAL_IncTick() ;
+//	HAL_IncTick() ;
 
   /* USER CODE BEGIN SysInit */
 
@@ -130,28 +133,28 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+		
     /* USER CODE BEGIN 3 */
 		// add tasks here
-		
-		
-		if( uwTick - uwtick_Hold10ms >= 10 ) {
-			uwtick_Hold100ms += 10;
-			count_10ms++;																																// 10ms Zykluszeit		
-		}
-		
-		if( (2874*uwTick) - uwtick_Hold100ms >= 100 ) {
-			uwtick_Hold100ms += 100;
-			count_100ms++;																															// 100ms Zykluszeit
-			HAL_GPIO_TogglePin(Zyklustest_GPIO_Port,Zyklustest_Pin) ;												
-		}
-		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {
-			uwtick_Hold1s += 1000;
-			count_1s++;																																	// 1s Zykluszeit
 			
+		
+		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit
+			uwtick_Hold10ms += 10;
+			count_10ms++;	
+			HAL_GPIO_TogglePin(Zyklustest_GPIO_Port,Zyklustest_Pin) ;	
 		}
 		
+		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+			uwtick_Hold100ms += 100;
+			count_100ms++;												
+		}
+		
+		if( uwTick - uwtick_Hold1s >= 1000 ) {																			// 1s Zykluszeit
+			uwtick_Hold1s += 1000;
+			count_1s++;												
+		}
+		
+		diff=uwTick - uwtick_Hold100ms ;
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
