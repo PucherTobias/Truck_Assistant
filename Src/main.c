@@ -56,6 +56,9 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
+int velocity[7200]= {0} ;
+int	servovalue[7200]= {0};
+int i=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
@@ -89,13 +92,14 @@ int main(void)
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
-	
+	unsigned int testv=0 ;
+	unsigned int tests=0 ;
 	
 	
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
-	int diff ;
+	
   
   /* USER CODE END 1 */
   
@@ -140,21 +144,25 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit
 			uwtick_Hold10ms += 10;
-			count_10ms++;	
-			HAL_GPIO_TogglePin(Zyklustest_GPIO_Port,Zyklustest_Pin) ;	
+			count_10ms++;		
 		}
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
-			count_100ms++;												
+			count_100ms++;
+				if(i<=7199)	{
+				velocity[i] = count_100ms ;
+				servovalue[i]=count_100ms ;
+				testv=servovalue[3] ;
+				i++ ;
+				}	
 		}
 		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {																			// 1s Zykluszeit
+		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;												
 		}
 		
-		diff=uwTick - uwtick_Hold100ms ;
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
