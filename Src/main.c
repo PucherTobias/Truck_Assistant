@@ -22,6 +22,7 @@
 #include "main.h"
 #include "usb_device.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
@@ -56,9 +57,9 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-int velocity[7200]= {0} ;
-int	servovalue[7200]= {0};
+int velocity[100] = {0} ;
 int i=0 ;
+int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
@@ -92,13 +93,14 @@ int main(void)
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
-	unsigned int testv=0 ;
-	unsigned int tests=0 ;
 	
 	
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
+	
+
+	int value;
 	
   
   /* USER CODE END 1 */
@@ -140,7 +142,8 @@ int main(void)
 		
     /* USER CODE BEGIN 3 */
 		// add tasks here
-			
+		
+		
 		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit
 			uwtick_Hold10ms += 10;
@@ -150,12 +153,11 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
-				if(i<=7199)	{
-				velocity[i] = count_100ms ;
-				servovalue[i]=count_100ms ;
-				testv=servovalue[3] ;
-				i++ ;
-				}	
+			if(i<100){
+			velocity[i]=count_100ms ;
+			value=*(velocity+i) ;
+			i++ ;
+			}
 		}
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
