@@ -44,6 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+ADC_HandleTypeDef hadc2;
 
 ETH_HandleTypeDef heth;
 
@@ -55,6 +56,8 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 uint32_t adcvaluek;
 uint32_t adcvaluew;
+uint32_t testadc;
+
 float sensork;
 float sensorw;
 
@@ -67,6 +70,7 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_ADC2_Init(void);
 static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
@@ -88,6 +92,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
+
   /* USER CODE END 1 */
   
 
@@ -114,6 +119,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   MX_USB_DEVICE_Init();
+  MX_ADC2_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
@@ -133,6 +139,7 @@ int main(void)
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
+		
 		
 		sensork=2*(2076.0/(adcvaluek-11));
 		
@@ -158,6 +165,12 @@ int main(void)
 			while(1){}
 		}
 		
+		HAL_ADC_Start(&hadc2);
+		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
+			testadc = HAL_ADC_GetValue(&hadc2);
+		}
+		
+		HAL_Delay(50);
 		//Servo
 		
 		// Clock ... 32MHz
@@ -283,6 +296,56 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 2 */
 
   /* USER CODE END ADC1_Init 2 */
+
+}
+
+/**
+  * @brief ADC2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC2_Init(void)
+{
+
+  /* USER CODE BEGIN ADC2_Init 0 */
+
+  /* USER CODE END ADC2_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC2_Init 1 */
+
+  /* USER CODE END ADC2_Init 1 */
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
+  */
+  hadc2.Instance = ADC2;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc2.Init.Resolution = ADC_RESOLUTION_10B;
+  hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc2.Init.ContinuousConvMode = DISABLE;
+  hadc2.Init.DiscontinuousConvMode = DISABLE;
+  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc2.Init.NbrOfConversion = 1;
+  hadc2.Init.DMAContinuousRequests = DISABLE;
+  hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. 
+  */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC2_Init 2 */
+
+  /* USER CODE END ADC2_Init 2 */
 
 }
 
