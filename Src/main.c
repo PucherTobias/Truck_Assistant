@@ -57,7 +57,8 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-int velocity[100] = {0} ;
+float velocity[100] = {0} ;
+float velocityadc[100] = {0} ;
 int i=0 ;
 int iw=0 ;
 int count_10ms=0 ;
@@ -154,9 +155,14 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
+			
 			if(i<100){
-			velocity[i]=count_100ms ;
-			value=*(velocity+i) ;
+			HAL_ADC_Start(&hadc2);		
+			if(HAL_ADC_PollForConversion(&hadc2,5) == HAL_OK)	{
+				velocityadc[i] = HAL_ADC_GetValue(&hadc2);
+			}
+			
+			velocity[i] = (3.3*velocityadc[i])/1024 ;
 			i++ ;
 			}
 		}
