@@ -24,6 +24,8 @@ projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma_e
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_adc.h
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_adc_ex.h
+projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac.h
+projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dac_ex.h
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h
 projectcube\usbd_conf.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h

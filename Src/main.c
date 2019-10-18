@@ -46,6 +46,8 @@
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
+DAC_HandleTypeDef hdac;
+
 ETH_HandleTypeDef heth;
 
 TIM_HandleTypeDef htim3;
@@ -57,8 +59,8 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-float velocity[100] = {0} ;
-float velocityadc[100] = {0} ;
+float velocity[150] = {0} ;
+float velocityadc[150] = {0} ;
 int i=0 ;
 int iw=0 ;
 int count_10ms=0 ;
@@ -75,6 +77,7 @@ static void MX_USART3_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_ADC2_Init(void);
+static void MX_DAC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -101,8 +104,6 @@ int main(void)
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
 	
-
-	int value;
 	
   
   /* USER CODE END 1 */
@@ -114,6 +115,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+	
+	
 
   /* USER CODE END Init */
 
@@ -132,6 +135,7 @@ int main(void)
   MX_TIM3_Init();
   MX_USB_DEVICE_Init();
   MX_ADC2_Init();
+  MX_DAC_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   /* USER CODE END 2 */
@@ -156,14 +160,17 @@ int main(void)
 			uwtick_Hold100ms += 100;
 			count_100ms++;
 			
-			if(i<100){
+			if(i<150){
 			HAL_ADC_Start(&hadc2);		
 			if(HAL_ADC_PollForConversion(&hadc2,5) == HAL_OK)	{
 				velocityadc[i] = HAL_ADC_GetValue(&hadc2);
 			}
 			
 			velocity[i] = (3.3*velocityadc[i])/1024 ;
+			HAL_DAC_Start(&hdac, DAC_CHANNEL_2) ;
+			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,velocityadc[i]) ;
 			i++ ;
+			
 			}
 		}
 		
@@ -358,6 +365,44 @@ static void MX_ADC2_Init(void)
 }
 
 /**
+  * @brief DAC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DAC_Init(void)
+{
+
+  /* USER CODE BEGIN DAC_Init 0 */
+
+  /* USER CODE END DAC_Init 0 */
+
+  DAC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN DAC_Init 1 */
+
+  /* USER CODE END DAC_Init 1 */
+  /** DAC Initialization 
+  */
+  hdac.Instance = DAC;
+  if (HAL_DAC_Init(&hdac) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** DAC channel OUT2 config 
+  */
+  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DAC_Init 2 */
+
+  /* USER CODE END DAC_Init 2 */
+
+}
+
+/**
   * @brief ETH Initialization Function
   * @param None
   * @retval None
@@ -515,9 +560,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Zyklustest_GPIO_Port, Zyklustest_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -534,13 +576,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Zyklustest_Pin */
-  GPIO_InitStruct.Pin = Zyklustest_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Zyklustest_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;

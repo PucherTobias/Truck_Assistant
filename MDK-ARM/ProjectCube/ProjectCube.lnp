@@ -13,6 +13,8 @@
 "projectcube\stm32f7xx_hal_adc.o"
 "projectcube\stm32f7xx_hal_adc_ex.o"
 "projectcube\stm32f7xx_hal_cortex.o"
+"projectcube\stm32f7xx_hal_dac.o"
+"projectcube\stm32f7xx_hal_dac_ex.o"
 "projectcube\stm32f7xx_hal_eth.o"
 "projectcube\stm32f7xx_hal_tim.o"
 "projectcube\stm32f7xx_hal_tim_ex.o"
