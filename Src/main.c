@@ -61,6 +61,7 @@ float sensork;
 float sensorw;
 float velocity[150] = {0} ;
 float velocityadc[150] = {0} ;
+float velocity_l=0;
 int i=0 ;
 int iw=0 ;
 int count_10ms=0 ;
@@ -165,10 +166,15 @@ int main(void)
 			if(HAL_ADC_PollForConversion(&hadc2,5) == HAL_OK)	{
 				velocityadc[i] = HAL_ADC_GetValue(&hadc2);
 			}
+			velocity[i] = (3*velocityadc[i])/4096 ;
+			velocity_l=velocityadc[i];
 			
-			velocity[i] = (3.3*velocityadc[i])/1024 ;
+			if(i>=150){
+				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,-2) ;
+			}
+			
 			HAL_DAC_Start(&hdac, DAC_CHANNEL_2) ;
-			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,velocityadc[i]) ;
+			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,velocity_l) ;
 			i++ ;
 			
 			}
@@ -335,7 +341,7 @@ static void MX_ADC2_Init(void)
   */
   hadc2.Instance = ADC2;
   hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc2.Init.Resolution = ADC_RESOLUTION_10B;
+  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
   hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc2.Init.ContinuousConvMode = DISABLE;
   hadc2.Init.DiscontinuousConvMode = DISABLE;

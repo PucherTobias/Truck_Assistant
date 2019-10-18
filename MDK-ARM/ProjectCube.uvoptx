@@ -170,6 +170,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>velocityadc[79]</ItemText>
         </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>velocityadc_DACvalue[79]</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
