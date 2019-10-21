@@ -54,12 +54,13 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-uint32_t adcvaluek;
-uint32_t adcvaluew;
-uint32_t testadc;
 
+//SENSOR
 float sensork;
 float sensorw;
+uint32_t adcvaluek;
+uint32_t adcvaluew;
+
 
 /* USER CODE END PV */
 
@@ -81,6 +82,13 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+// JOYSTICKS
+uint32_t adc2valueX=0; // ADC2 CH0
+uint32_t adc2valueY=0; // ADC2 CH3
+uint32_t steeringinput=90;
+
+ADC_ChannelConfTypeDef sConfig = {0};
 
 /* USER CODE END 0 */
 
@@ -165,10 +173,25 @@ int main(void)
 			while(1){}
 		}
 		
+		
+		//Channel 3 einstellen & ADC configurieren
+		sConfig.Channel = ADC_CHANNEL_3;
+		HAL_ADC_ConfigChannel(&hadc2, &sConfig);
+		
 		HAL_ADC_Start(&hadc2);
 		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
-			testadc = HAL_ADC_GetValue(&hadc2);
+			adc2valueY = HAL_ADC_GetValue(&hadc2);
 		}
+		
+		//Channel 1 einstellen & ADC configurieren	
+		sConfig.Channel = ADC_CHANNEL_0;
+		HAL_ADC_ConfigChannel(&hadc2, &sConfig);
+		
+		HAL_ADC_Start(&hadc2);
+		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
+			adc2valueX = HAL_ADC_GetValue(&hadc2);
+		}
+		
 		
 		HAL_Delay(50);
 		//Servo
