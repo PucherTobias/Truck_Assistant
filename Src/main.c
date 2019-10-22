@@ -59,6 +59,9 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 uint32_t testadc2;
 uint32_t testadc3;
+uint32_t lenken = 0;
+uint32_t gas = 0;
+int i = 0;
 
 float sensork;
 float sensorw;
@@ -105,7 +108,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	int i = 1000;
+	
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -196,10 +199,14 @@ int main(void)
 //		i++;
 //		if (i > 2000)
 //			i = 1000;
+		lenken = map(testadc2, 0, 1023, 0, 180);
 		
-		i = map(90, 0, 180, 1000, 2000);
+		i = map(lenken, 0, 180, 500, 2500);
 		
 		htim4.Instance->CCR1 = i;
+		
+		
+		gas = map(testadc3, 269, 754, 0, 90);
 		
   }
   /* USER CODE END 3 */
@@ -532,7 +539,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 32;
+  htim4.Init.Prescaler = 64;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 10000;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
