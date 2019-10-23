@@ -59,14 +59,16 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-float velocity[150] = {0} ;
-float velocityadc[150] = {0} ;
+float velocity[1000] = {0} ;
+float velocityadc[1000] = {0} ;
 float velocity_l=0;
 int i=0 ;
 int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
+int setvalmemory = 0 ;
+int setval = 0;
 
 /* USER CODE END PV */
 
@@ -95,7 +97,6 @@ static void MX_DAC_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	int setval = 0;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
@@ -154,30 +155,30 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit
 			uwtick_Hold10ms += 10;
-			count_10ms++;		
-		}
-		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
-			uwtick_Hold100ms += 100;
-			count_100ms++;
+			count_10ms++;
 			
-			if(i<150){
+			if(setvalmemory == 1){
 			HAL_ADC_Start(&hadc2);		
 			if(HAL_ADC_PollForConversion(&hadc2,5) == HAL_OK)	{
 				velocityadc[i] = HAL_ADC_GetValue(&hadc2);
 			}
-			velocity[i] = (3*velocityadc[i])/4096 ;
-			velocity_l=velocityadc[i];
 			
-			if(i>=150){
-				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,-2) ;
-			}
+			velocity[i] = (3.3*velocityadc[i])/4096 ;
+			velocity_l=velocityadc[i];
 			
 			HAL_DAC_Start(&hdac, DAC_CHANNEL_2) ;
 			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,velocity_l) ;
 			i++ ;
-			
 			}
+			
+			if(setvalmemory == 0){
+				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,0) ;
+			}	
+		}
+		
+		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+			uwtick_Hold100ms += 100;
+			count_100ms++;	
 		}
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
@@ -197,8 +198,13 @@ int main(void)
 				setval = 0;
 		}
 
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
+		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{
 				setval = 1;
+				setvalmemory = 1 ;
+		}
+		
+		if(i>=1000)
+			setvalmemory = 0 ;
 		
 		if(sensork > 6) {
 			if(setval) {

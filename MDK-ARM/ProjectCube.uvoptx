@@ -163,7 +163,7 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>velocity[79],0x0A</ItemText>
+          <ItemText>velocity[81]</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -173,7 +173,12 @@
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>velocityadc_DACvalue[79]</ItemText>
+          <ItemText>setvalmemory,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>setval,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
