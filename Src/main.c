@@ -206,7 +206,6 @@ int main(void)
 		}
 
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{
-				setval = 1;
 				setvalmemory = 1 ;
 		}
 		
