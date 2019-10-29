@@ -151,26 +151,28 @@ int main(void)
 		sensork=2*(2076.0/(adcvaluek-11));
 		
 		
-		if((sensork > 0.1)&&(sensork <= 6)) {
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-				setval = 0;
-		}
-		
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-				setval = 1;
-		
-		if(sensork > 6) {
-			if(setval) {
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 10);
-				}
-			setval = 0;
-		}
+////		if((sensork > 0.1)&&(sensork <= 6)) {
+////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
+////				setval = 0;
+////		}
+////		
+////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
+////				setval = 1;
+////		
+////		if(sensork > 6) {
+////			if(setval) {
+////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+////			}
+////			setval = 0;
+////		}
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
+		
+
 		
 		HAL_ADC_Start(&hadc2);
 		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
@@ -181,8 +183,7 @@ int main(void)
 		if(HAL_ADC_PollForConversion(&hadc3, 5) == HAL_OK) {
 			testadc3 = HAL_ADC_GetValue(&hadc3);
 		}
-		
-		HAL_Delay(50);
+
 		//Servo
 		
 		// Clock ... 32MHz
@@ -199,15 +200,24 @@ int main(void)
 //		i++;
 //		if (i > 2000)
 //			i = 1000;
-		lenken = map(testadc2, 0, 1023, 0, 180);
 		
-		i = map(lenken, 0, 180, 500, 2500);
+		lenken = map(testadc2, 0, 1023, 50, 135);
+		
+		i = map(lenken, 0, 180, 250, 1250);
 		
 		htim4.Instance->CCR1 = i;
 		
+		if(testadc3 <= 512)
+			testadc3 = 512;
+		if(testadc3 >= 754)
+			testadc3 = 754;
 		
-		gas = map(testadc3, 269, 754, 0, 90);
+		gas = map(testadc3, 512, 754, 0, 30);  //269 - 754
+		if(gas < 7)
+			gas = 0;
 		
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);	
+
   }
   /* USER CODE END 3 */
 }
@@ -222,7 +232,7 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-  /** Configure LSE Drive Capability 
+  /** Configure LSE Drive Capability
   */
   HAL_PWR_EnableBkUpAccess();
   /** Configure the main internal regulator output voltage 
