@@ -166,6 +166,7 @@ int main(void)
 			}
 			steeringadc[i]=velocityadc[i] ;
 			velocity[i] = (3.3*velocityadc[i])/4096 ;
+			steering[i] =	(3.3*steeringadc[i])/4096 ;
 			velocity_l=velocityadc[i];
 			
 			HAL_DAC_Start(&hdac, DAC_CHANNEL_2) ;
@@ -173,9 +174,13 @@ int main(void)
 			i++ ;
 			}
 			
-			if(setvalmemory == 0){
+			if(setvalmemory == 2){
 				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,0) ;
-			}	
+				velocity[i]=0;
+				steering[i]=0;
+				
+			}
+						
 		}
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
@@ -205,8 +210,8 @@ int main(void)
 				setvalmemory = 1 ;
 		}
 		
-		if(i>=10000  )
-			setvalmemory = 0 ;
+		if((i>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )
+			setvalmemory = 2 ;
 		
 		if(sensork > 6) {
 			if(setval) {
@@ -584,6 +589,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Memorystop_Pin */
+  GPIO_InitStruct.Pin = Memorystop_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Memorystop_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USER_Btn_Pin */
   GPIO_InitStruct.Pin = USER_Btn_Pin;
