@@ -59,8 +59,10 @@ uint32_t adcvaluek;
 uint32_t adcvaluew;
 float sensork;
 float sensorw;
-float velocity[1000] = {0} ;
-float velocityadc[1000] = {0} ;
+float velocity[10000] = {0} ;
+float velocityadc[10000] = {0} ;
+float steering[10000] = {0} ;
+float steeringadc[10000] = {0} ;
 float velocity_l=0;
 int i=0 ;
 int iw=0 ;
@@ -162,7 +164,7 @@ int main(void)
 			if(HAL_ADC_PollForConversion(&hadc2,5) == HAL_OK)	{
 				velocityadc[i] = HAL_ADC_GetValue(&hadc2);
 			}
-			
+			steeringadc[i]=velocityadc[i] ;
 			velocity[i] = (3.3*velocityadc[i])/4096 ;
 			velocity_l=velocityadc[i];
 			
@@ -203,7 +205,7 @@ int main(void)
 				setvalmemory = 1 ;
 		}
 		
-		if(i>=1000)
+		if(i>=10000  )
 			setvalmemory = 0 ;
 		
 		if(sensork > 6) {

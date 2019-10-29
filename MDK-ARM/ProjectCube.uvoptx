@@ -180,6 +180,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>setval,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>steering[81]</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
