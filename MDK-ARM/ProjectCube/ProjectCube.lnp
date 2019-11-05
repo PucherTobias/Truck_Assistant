@@ -1,6 +1,8 @@
 --cpu Cortex-M7.fp.dp
 "projectcube\startup_stm32f767xx.o"
 "projectcube\main.o"
+"projectcube\user_diskio.o"
+"projectcube\fatfs.o"
 "projectcube\usb_device.o"
 "projectcube\usbd_conf.o"
 "projectcube\usbd_desc.o"
@@ -16,6 +18,8 @@
 "projectcube\stm32f7xx_hal_dac.o"
 "projectcube\stm32f7xx_hal_dac_ex.o"
 "projectcube\stm32f7xx_hal_eth.o"
+"projectcube\stm32f7xx_hal_spi.o"
+"projectcube\stm32f7xx_hal_spi_ex.o"
 "projectcube\stm32f7xx_hal_tim.o"
 "projectcube\stm32f7xx_hal_tim_ex.o"
 "projectcube\stm32f7xx_hal_uart.o"
@@ -38,6 +42,11 @@
 "projectcube\usbd_ctlreq.o"
 "projectcube\usbd_ioreq.o"
 "projectcube\usbd_cdc.o"
+"projectcube\diskio.o"
+"projectcube\ff.o"
+"projectcube\ff_gen_drv.o"
+"projectcube\syscall.o"
+"projectcube\ccsbcs.o"
 --library_type=microlib --strict --scatter "ProjectCube\ProjectCube.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
