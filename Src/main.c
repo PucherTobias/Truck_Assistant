@@ -79,6 +79,41 @@ int count_1s=0 ;
 int setvalmemory = 0 ;
 int setval = 0;
 
+FATFS fs ; // file system
+FIL file ; //file
+FRESULT fresult ; // to store the result
+char buffer[1000] ; //store data
+
+UINT br,bw ; // file read/write count
+
+/* capacity related variables */
+FATFS *pfs ;
+DWORD fre_clust ;
+uint32_t total, free_space ;
+
+/* to send data to the uart */
+void send_uart(char *string) {
+	
+	uint8_t len = strlen (string);
+	HAL_UART_Transmit(&huart1, (uint8_t *) string, len, 2000) ; // transmit in block mode
+}
+
+int bufsize(char *buf)	{
+	int u=0 ;
+	
+	/*to find the size of data in the buffer*/
+	while(*buf++ != '\0')	{
+	i++;
+	return i ;		
+	}
+}
+	
+void bufclear(void)	{ //clear
+	for( int z=0; z<1024; z++)	{
+		buffer[i] = '\0' ;
+	}
+}
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,6 +128,9 @@ static void MX_DAC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
+
+
+	
 
 /* USER CODE END PFP */
 
@@ -154,6 +192,18 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	
+	/*Mount SD-Card*/
+	fresult = f_mount(&fs,"",0) ;
+	if(fresult != FR_OK)
+		send_uart("error in mounting SD card\n");
+	else
+		send_uart("SD-card mounted succesfully\n") ;
+	
+	/********* Card capacity Details**************/
+	
+	/*Check free space*/
+	f_getfree("",&fre_clust,&pfs) ;
   /* USER CODE END 2 */
 
   /* Infinite loop */
