@@ -66,6 +66,17 @@ int i = 0;
 float sensork;
 float sensorw;
 
+float velocity[10000] = {0} ;
+float velocityadc[10000] = {0} ;
+float steering[10000] = {0} ;
+float steeringadc[10000] = {0} ;
+float velocity_l=0;
+int iw=0 ;
+int count_10ms=0 ;
+int count_100ms=0 ;
+int count_1s=0 ;
+int setvalmemory = 0 ;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,6 +109,14 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
+	static int32_t uwtick_Hold10ms;
+  static int32_t uwtick_Hold100ms;
+  static int32_t uwtick_Hold1s;
+	
+	
+	uwtick_Hold10ms=0;
+  uwtick_Hold100ms=0;
+  uwtick_Hold1s=0;
 
   /* USER CODE END 1 */
   
@@ -143,6 +162,34 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
+			uwtick_Hold10ms += 10;
+			count_10ms++;
+			
+			if(setvalmemory == 1){
+			velocity[iw] =	gas	;
+			steering[iw] =	lenken ;
+			iw++ ;
+			}
+			
+			if(setvalmemory == 2){
+				velocity[iw]=0;
+				steering[iw]=0;
+				iw++ ;// not tested yet
+			}
+						
+		}
+		
+		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+			uwtick_Hold100ms += 100;
+			count_100ms++;	
+		}
+		
+		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
+			uwtick_Hold1s += 1000;
+			count_1s++;												
+		}																																							// Code Georg
+		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
@@ -165,6 +212,13 @@ int main(void)
 ////			}
 ////			setval = 0;
 ////		}
+		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Code Georg
+				setvalmemory = 1 ;
+		}
+		
+		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )
+			setvalmemory = 2 ;																																					// Code Georg
+		
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
@@ -232,7 +286,7 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-  /** Configure LSE Drive Capability
+  /** Configure LSE Drive Capability 
   */
   HAL_PWR_EnableBkUpAccess();
   /** Configure the main internal regulator output voltage 
@@ -653,6 +707,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Memorystop_Pin */
+  GPIO_InitStruct.Pin = Memorystop_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Memorystop_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USER_Btn_Pin */
   GPIO_InitStruct.Pin = USER_Btn_Pin;
