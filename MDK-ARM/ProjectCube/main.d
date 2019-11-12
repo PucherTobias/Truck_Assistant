@@ -62,3 +62,4 @@ projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ior
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+projectcube\main.o: ../Inc/sd.h

@@ -440,7 +440,7 @@
             <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\sd.c</FilePath>
+              <FilePath>..\Src\sd.c</FilePath>
             </File>
           </Files>
         </Group>
