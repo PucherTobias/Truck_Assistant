@@ -66,6 +66,7 @@ int i = 0;
 float sensork;
 float sensorw;
 
+// Georg
 float velocity[10000] = {0} ;
 float velocityadc[10000] = {0} ;
 float steering[10000] = {0} ;
