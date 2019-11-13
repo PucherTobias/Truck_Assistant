@@ -69,11 +69,8 @@ float sensork;
 float sensorw;
 
 // Georg
-float velocity[10000] = {0} ;
-float velocityadc[10000] = {0} ;
-float steering[10000] = {0} ;
-float steeringadc[10000] = {0} ;
-float velocity_l=0;
+uint8_t velocity[10000] = {0} ;
+uint8_t steering[10000] = {0} ;
 int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
@@ -103,7 +100,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+	uint8_t data[] = "Hello World\r\n" ;
 /* USER CODE END 0 */
 
 /**
@@ -114,6 +111,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
+	int memorytrans	=	0 ;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
@@ -194,9 +192,14 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;												
-		}																																							// Code Georg
+			count_1s++;												 
+		}		// Code Georg
 		
+	//if(Memorytrans==1){
+		for(memorytrans=0;memorytrans<10000;memorytrans++)	{
+		HAL_UART_Transmit(&huart2,velocity,10000, 100) ;
+		}
+	//}
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
