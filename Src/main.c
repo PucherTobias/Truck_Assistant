@@ -166,11 +166,15 @@ int main(void)
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
-			
+		}
+		
+		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+			uwtick_Hold100ms += 100;
+			count_100ms++;
 			if(setvalmemory == 1){
-			velocity[iw] =	gas	;
-			steering[iw] =	lenken ;
-			iw++ ;
+				velocity[iw] =	gas	;
+				steering[iw] =	lenken ;
+				iw++ ;
 			}
 			
 			if(setvalmemory == 2){
@@ -178,12 +182,6 @@ int main(void)
 				steering[iw]=0;
 				iw++ ;// not tested yet
 			}
-						
-		}
-		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
-			uwtick_Hold100ms += 100;
-			count_100ms++;	
 		}
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
