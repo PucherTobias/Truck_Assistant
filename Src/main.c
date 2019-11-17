@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "rangierFuzzy_F4.h" 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,6 +79,13 @@ int count_100ms=0 ;
 int count_1s=0 ;
 int setvalmemory = 0 ;
 
+float velocitydata[48] = {0,11,20,20,20,20,22,22,21,21,22,22,21,21,21,21,21,22,22,22,22,22,0,16,26,26,22,22,22,18,16,29,20,18,18,18,24,24,24,24,24,25,25,17,0,18,18,0}; 
+float steeringdata[48] = {58,50,50,50,60,93,93,122,125,125,125,125,124,107,113,113,113,93,93,93,93,92,77,50,50,50,50,93,93,73,93,93,93,93,135,134,67,68,93,93,93,84,74,93,93,93,0,0}; 
+int inf=0;
+int count1=0;
+int autobetrieb=0;
+int handbetrieb=0;
+NumTypeF4_t e1, e2, a1, a2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -163,6 +171,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){
+				autobetrieb= 1;
+				handbetrieb= 0;
+		}
+		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+				autobetrieb= 0;
+				handbetrieb= 1;
+		}			
+		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
@@ -181,6 +198,17 @@ int main(void)
 				velocity[iw]=0;
 				steering[iw]=0;
 				iw++ ;// not tested yet
+			}
+			if(autobetrieb == 1){
+			
+			velocitydata[count1] =	gas	;
+			steeringdata[count1] =	lenken ;
+			
+			inf++;				
+			if(inf==4){
+				count1++;
+				inf=0;
+			}
 			}
 		}
 		
@@ -211,6 +239,21 @@ int main(void)
 ////			}
 ////			setval = 0;
 ////		}
+		if(autobetrieb==1){
+		e1 = gas;
+		e2 = lenken;
+		rangierFuzzy_F4_SetNumType();
+		rangierFuzzy_F4_init();
+		rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
+		rangierFuzzy_F4_free();
+
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, a1);
+		
+		i = map(a2, 0, 180, 250, 1250);
+		
+		htim4.Instance->CCR1 = i;
+		}
+		
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Code Georg
 				setvalmemory = 1 ;
 		}
@@ -224,8 +267,6 @@ int main(void)
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
-		
-
 		
 		HAL_ADC_Start(&hadc2);
 		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
@@ -253,6 +294,8 @@ int main(void)
 //		i++;
 //		if (i > 2000)
 //			i = 1000;
+		if(handbetrieb == 1){
+			
 		
 		lenken = map(testadc2, 0, 1023, 50, 135);
 		
@@ -271,6 +314,8 @@ int main(void)
 		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);	
 
+					
+		}
   }
   /* USER CODE END 3 */
 }
@@ -718,6 +763,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Auto_Hand_Betrieb_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Auto_Hand_Betrieb_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;

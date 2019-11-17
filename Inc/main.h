@@ -68,6 +68,8 @@ void Error_Handler(void);
 #define Memorystop_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
+#define Auto_Hand_Betrieb_Pin GPIO_PIN_3
+#define Auto_Hand_Betrieb_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1

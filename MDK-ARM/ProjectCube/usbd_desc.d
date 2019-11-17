@@ -1,9 +1,9 @@
 projectcube\usbd_desc.o: ../Src/usbd_desc.c
 projectcube\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 projectcube\usbd_desc.o: ../Inc/usbd_conf.h
-projectcube\usbd_desc.o: D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin\..\include\stdio.h
-projectcube\usbd_desc.o: D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin\..\include\stdlib.h
-projectcube\usbd_desc.o: D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin\..\include\string.h
+projectcube\usbd_desc.o: C:\ARM\ARMCC\Bin\..\include\stdio.h
+projectcube\usbd_desc.o: C:\ARM\ARMCC\Bin\..\include\stdlib.h
+projectcube\usbd_desc.o: C:\ARM\ARMCC\Bin\..\include\string.h
 projectcube\usbd_desc.o: ../Inc/main.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h
 projectcube\usbd_desc.o: ../Inc/stm32f7xx_hal_conf.h
@@ -12,7 +12,7 @@ projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Include/core_cm7.h
-projectcube\usbd_desc.o: D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin\..\include\stdint.h
+projectcube\usbd_desc.o: C:\ARM\ARMCC\Bin\..\include\stdint.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_version.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -20,7 +20,7 @@ projectcube\usbd_desc.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 projectcube\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-projectcube\usbd_desc.o: D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin\..\include\stddef.h
+projectcube\usbd_desc.o: C:\ARM\ARMCC\Bin\..\include\stddef.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc_ex.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_exti.h
 projectcube\usbd_desc.o: ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h
