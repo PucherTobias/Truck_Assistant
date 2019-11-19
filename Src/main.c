@@ -54,7 +54,7 @@ TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
-DMA_HandleTypeDef hdma_usart2_tx;
+DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 uint32_t adcvaluek;
@@ -68,6 +68,8 @@ int i = 0;
 float sensork;
 float sensorw;
 
+uint8_t data[] = "Hello World\r\n" ;
+uint8_t datai = 13 ;
 // Georg
 uint8_t velocity[10000] = {0} ;
 uint8_t steering[10000] = {0} ;
@@ -96,11 +98,12 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-	uint8_t data[] = "Hello World\r\n" ;
+	
 /* USER CODE END 0 */
 
 /**
@@ -156,6 +159,8 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	
+
+	
 	// htim4.Instance->CCR1 = 1000; //temp
 	
   /* USER CODE END 2 */
@@ -167,6 +172,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	
+		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
@@ -192,13 +199,14 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;												 
+			count_1s++;	
+			HAL_UART_Transmit(&huart3,data,sizeof(data),1000);
 		}		// Code Georg
 		
 	//if(Memorytrans==1){
-		for(memorytrans=0;memorytrans<10000;memorytrans++)	{
-		HAL_UART_Transmit(&huart2,velocity,10000, 100) ;
-		}
+		//for(memorytrans=0;memorytrans<10000;memorytrans++)	{
+		//HAL_UART_Transmit(&huart2,velocity,10000, 100) ;
+	//	}
 	//}
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
@@ -299,7 +307,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage 
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
   /** Initializes the CPU, AHB and APB busses clocks 
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
@@ -307,10 +315,16 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 96;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV6;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLN = 216;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Activate the Over-Drive mode 
+  */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
@@ -320,10 +334,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
   {
     Error_Handler();
   }
@@ -667,7 +681,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 9600 ;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -731,9 +745,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* DMA1_Stream6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 
 }
 
