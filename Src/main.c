@@ -73,6 +73,7 @@ uint8_t datai = 13 ;
 // Georg
 uint8_t velocity[10000] = {0} ;
 uint8_t steering[10000] = {0} ;
+unsigned char velocityASCII[10000] ;
 int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
@@ -203,11 +204,9 @@ int main(void)
 			HAL_UART_Transmit(&huart3,data,sizeof(data),1000);
 		}		// Code Georg
 		
-	//if(Memorytrans==1){
-		//for(memorytrans=0;memorytrans<10000;memorytrans++)	{
-		//HAL_UART_Transmit(&huart2,velocity,10000, 100) ;
-	//	}
-	//}
+		for(memorytrans=0;memorytrans<10000;memorytrans++){
+		snprintf(velocityASCII,10000,"velocity:%s\n",velocity[memorytrans]) ;
+		}
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
