@@ -73,7 +73,7 @@ float velocityadc[10000] = {0} ;
 float steering[10000] = {0} ;
 float steeringadc[10000] = {0} ;
 float velocity_l=0;
-int iw=0 ;
+int iw=0 ; 
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
@@ -85,7 +85,7 @@ int inf=0;
 int count1=0;
 int autobetrieb=0;
 int handbetrieb=0;
-NumTypeF4_t e1, e2, a1, a2;
+//NumTypeF4_t e1, e2, a1, a2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -188,7 +188,7 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
-			if(setvalmemory == 1){
+/*			if(setvalmemory == 1){
 				velocity[iw] =	gas	;
 				steering[iw] =	lenken ;
 				iw++ ;
@@ -198,17 +198,18 @@ int main(void)
 				velocity[iw]=0;
 				steering[iw]=0;
 				iw++ ;// not tested yet
-			}
-			if(autobetrieb == 1){
+			} 
+	*/
+			if((autobetrieb == 1)&&(handbetrieb==0)){
 			
-			velocitydata[count1] =	gas	;
-			steeringdata[count1] =	lenken ;
+			gas = velocitydata[count1];
+			lenken = steeringdata[count1];
 			
-			inf++;				
-			if(inf==4){
+			if(inf>=4){
 				count1++;
 				inf=0;
 			}
+			inf++;
 			}
 		}
 		
@@ -239,20 +240,7 @@ int main(void)
 ////			}
 ////			setval = 0;
 ////		}
-		if(autobetrieb==1){
-		e1 = gas;
-		e2 = lenken;
-		rangierFuzzy_F4_SetNumType();
-		rangierFuzzy_F4_init();
-		rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
-		rangierFuzzy_F4_free();
 
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, a1);
-		
-		i = map(a2, 0, 180, 250, 1250);
-		
-		htim4.Instance->CCR1 = i;
-		}
 		
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Code Georg
 				setvalmemory = 1 ;
@@ -294,7 +282,26 @@ int main(void)
 //		i++;
 //		if (i > 2000)
 //			i = 1000;
-		if(handbetrieb == 1){
+		if((autobetrieb==1)&&(handbetrieb == 0)){
+	/*	e1 = gas;
+		e2 = lenken;
+		rangierFuzzy_F4_SetNumType();
+		rangierFuzzy_F4_init();
+		rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
+		rangierFuzzy_F4_free();
+*/
+
+			
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+		
+		i = map(lenken, 0, 180, 250, 1250);
+		
+		htim4.Instance->CCR1 = i;
+		
+			
+		}
+		
+		if((handbetrieb == 1)&&(autobetrieb == 0)){
 			
 		
 		lenken = map(testadc2, 0, 1023, 50, 135);

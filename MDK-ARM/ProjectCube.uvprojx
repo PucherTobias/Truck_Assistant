@@ -447,6 +447,16 @@
               <FileType>1</FileType>
               <FilePath>../Src/stm32f7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>fuzzy_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fuzzy_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>rangierFuzzy_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rangierFuzzy_F4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -458,9 +468,6 @@
               <FilePath>../Src/system_stm32f7xx.c</FilePath>
             </File>
           </Files>
-        </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
           <GroupName>Drivers/STM32F7xx_HAL_Driver</GroupName>
@@ -611,6 +618,9 @@
               <FilePath>../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>
