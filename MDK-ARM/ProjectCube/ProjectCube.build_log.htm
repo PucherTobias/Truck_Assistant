@@ -28,15 +28,15 @@ Project File Date:  11/19/2019
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin'
 Build target 'ProjectCube'
 compiling main.c...
-../Src/main.c(208): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(velocityASCII,10000,"velocity:%s\n",velocity[memorytrans]) ;
-../Src/main.c(208): warning:  #181-D: argument is incompatible with corresponding format string conversion
-  		snprintf(velocityASCII,10000,"velocity:%s\n",velocity[memorytrans]) ;
+../Src/main.c(180): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
+../Src/main.c(180): warning:  #181-D: argument is incompatible with corresponding format string conversion
+  		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
 ../Src/main.c(117): warning:  #177-D: variable "setval"  was declared but never referenced
   	int setval = 0;
 ../Src/main.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=22752 RO-data=568 RW-data=488 ZI-data=61648  
+Program Size: Code=22760 RO-data=568 RW-data=472 ZI-data=61648  
 FromELF: creating hex file...
 "ProjectCube\ProjectCube.axf" - 0 Error(s), 3 Warning(s).
 
@@ -61,7 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.3.0
-Build Time Elapsed:  00:00:07
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

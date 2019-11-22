@@ -173,8 +173,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	
 		
+		
+		for(memorytrans=0;memorytrans<10000;memorytrans++){
+		velocity[memorytrans]=velocity[memorytrans-1]+1 ;
+		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
+		}
+	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
@@ -201,12 +206,9 @@ int main(void)
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;	
-			HAL_UART_Transmit(&huart3,data,sizeof(data),1000);
+			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
 		}		// Code Georg
 		
-		for(memorytrans=0;memorytrans<10000;memorytrans++){
-		snprintf(velocityASCII,10000,"velocity:%s\n",velocity[memorytrans]) ;
-		}
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
