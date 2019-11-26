@@ -22,21 +22,21 @@ Dialog DLL:      TCM.DLL V1.36.2.0
  
 <h2>Project:</h2>
 D:\Diplomarbeit\Hauptprogramm\Truck_Assistant\MDK-ARM\ProjectCube.uvprojx
-Project File Date:  11/19/2019
+Project File Date:  11/26/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin'
 Build target 'ProjectCube'
 compiling main.c...
-../Src/main.c(182): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[memorytrans]) ;
-../Src/main.c(183): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[memorytrans]) ;
-../Src/main.c(118): warning:  #177-D: variable "setval"  was declared but never referenced
+../Src/main.c(185): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[im]) ;
+../Src/main.c(186): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+  		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[im]) ;
+../Src/main.c(120): warning:  #177-D: variable "setval"  was declared but never referenced
   	int setval = 0;
 ../Src/main.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=22980 RO-data=568 RW-data=472 ZI-data=71648  
+Program Size: Code=23012 RO-data=568 RW-data=484 ZI-data=71652  
 FromELF: creating hex file...
 "ProjectCube\ProjectCube.axf" - 0 Error(s), 3 Warning(s).
 
@@ -61,7 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.3.0
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

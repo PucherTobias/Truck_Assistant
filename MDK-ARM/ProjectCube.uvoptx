@@ -197,6 +197,21 @@
           <WinNumber>2</WinNumber>
           <ItemText>velocity[10],0x10</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>im</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>setvaltrans,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>itrans</ItemText>
+        </Ww>
       </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>

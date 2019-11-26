@@ -76,11 +76,13 @@ uint8_t steering[10000] = {0} ;
 unsigned char velocityASCII[10000] ;
 unsigned char steeringASCII[10000] ;
 int iw=0 ;
+int im	=	0 ;
+int itrans = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
 int setvalmemory = 0 ;
-
+int setvaltrans = 0 ;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -116,7 +118,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
-	int memorytrans	=	0 ;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
@@ -174,14 +175,26 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		
-		
-		for(memorytrans=0;memorytrans<10000;memorytrans++){
-		velocity[memorytrans]=26 ;
-		steering[memorytrans]=26 ;
-		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[memorytrans]) ;
-		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[memorytrans]) ;
+		if(HAL_GPIO_ReadPin(Memorytrans_GPIO_Port,Memorytrans_Pin))
+		{	setvaltrans = 1 ;
 		}
+		
+		for(im=0;im<10000;im++){
+		velocity[im]=26 ;
+		steering[im]=26 ;
+		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[im]) ;
+		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[im]) ;
+		}
+		
+		if(setvaltrans==1)	{
+			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
+			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
+			itrans++ ;
+			if(itrans>=9999)	{
+			setvaltrans = 0 ;	
+			}
+				
+			}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
@@ -209,8 +222,7 @@ int main(void)
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;	
-			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
-			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
+			
 		}		// Code Georg
 		
 		HAL_ADC_Start(&hadc1);		
@@ -787,11 +799,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Memorystop_Pin */
-  GPIO_InitStruct.Pin = Memorystop_Pin;
+  /*Configure GPIO pins : Memorystop_Pin Memorytrans_Pin */
+  GPIO_InitStruct.Pin = Memorystop_Pin|Memorytrans_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Memorystop_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USER_Btn_Pin */
   GPIO_InitStruct.Pin = USER_Btn_Pin;

@@ -66,6 +66,8 @@ void Error_Handler(void);
 #define RedButton_GPIO_Port GPIOE
 #define Memorystop_Pin GPIO_PIN_4
 #define Memorystop_GPIO_Port GPIOE
+#define Memorytrans_Pin GPIO_PIN_5
+#define Memorytrans_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
 #define MCO_Pin GPIO_PIN_0
