@@ -29,16 +29,14 @@ Project File Date:  11/19/2019
 Build target 'ProjectCube'
 compiling main.c...
 ../Src/main.c(180): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
-../Src/main.c(180): warning:  #181-D: argument is incompatible with corresponding format string conversion
-  		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
+  		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[memorytrans]) ;
 ../Src/main.c(117): warning:  #177-D: variable "setval"  was declared but never referenced
   	int setval = 0;
-../Src/main.c: 3 warnings, 0 errors
+../Src/main.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=22760 RO-data=568 RW-data=472 ZI-data=61648  
+Program Size: Code=22932 RO-data=568 RW-data=472 ZI-data=61648  
 FromELF: creating hex file...
-"ProjectCube\ProjectCube.axf" - 0 Error(s), 3 Warning(s).
+"ProjectCube\ProjectCube.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 

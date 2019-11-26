@@ -176,8 +176,8 @@ int main(void)
 		
 		
 		for(memorytrans=0;memorytrans<10000;memorytrans++){
-		velocity[memorytrans]=velocity[memorytrans-1]+1 ;
-		snprintf(velocityASCII,10000,"velocity:%s",velocity[memorytrans]) ;
+		velocity[memorytrans]=26 ;
+		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[memorytrans]) ;
 		}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
