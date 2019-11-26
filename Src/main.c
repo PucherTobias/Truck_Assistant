@@ -74,6 +74,7 @@ uint8_t datai = 13 ;
 uint8_t velocity[10000] = {0} ;
 uint8_t steering[10000] = {0} ;
 unsigned char velocityASCII[10000] ;
+unsigned char steeringASCII[10000] ;
 int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
@@ -177,7 +178,9 @@ int main(void)
 		
 		for(memorytrans=0;memorytrans<10000;memorytrans++){
 		velocity[memorytrans]=26 ;
+		steering[memorytrans]=26 ;
 		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[memorytrans]) ;
+		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[memorytrans]) ;
 		}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
@@ -207,6 +210,7 @@ int main(void)
 			uwtick_Hold1s += 1000;
 			count_1s++;	
 			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
+			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
 		}		// Code Georg
 		
 		HAL_ADC_Start(&hadc1);		
