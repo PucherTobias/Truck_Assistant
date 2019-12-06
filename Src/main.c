@@ -82,8 +82,7 @@ int itrans = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
-int countspin=0 ;
-int tim2callback = 0 ;
+float countspin=0 ;
 float spins = 0 ;
 int setvalmemory = 0 ;
 int setvaltrans = 0 ;
@@ -902,8 +901,9 @@ static void MX_GPIO_Init(void)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
-	spins=countspin/256 ;
+	spins = (256*0.05)/countspin ;
 	
+	countspin=0;
 	
   /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_TIM_PeriodElapsedCallback could be implemented in the user file
