@@ -81,6 +81,8 @@ int itrans = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
+int countspin=0 ;
+int timstop = 0 ;
 int setvalmemory = 0 ;
 int setvaltrans = 0 ;
 /* USER CODE END PV */
@@ -162,7 +164,7 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	
-
+	
 	
 	// htim4.Instance->CCR1 = 1000; //temp
 	
@@ -186,15 +188,6 @@ int main(void)
 		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[im]) ;
 		}
 		
-		if(setvaltrans==1)	{
-			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
-			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
-			itrans++ ;
-			if(itrans>=9999)	{
-			setvaltrans = 0 ;	
-			}
-				
-			}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
@@ -221,8 +214,15 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;	
-			
+			count_1s++;
+			if(setvaltrans==1)	{
+				HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
+				HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
+				itrans++ ;
+				if(itrans>=9999)	{
+					setvaltrans = 0 ;	
+				}	
+			}	
 		}		// Code Georg
 		
 		HAL_ADC_Start(&hadc1);		
@@ -308,6 +308,8 @@ int main(void)
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);	
 
   }
+	
+	
   /* USER CODE END 3 */
 }
 
@@ -811,6 +813,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : Counterrisingedge_Pin */
+  GPIO_InitStruct.Pin = Counterrisingedge_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Counterrisingedge_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -831,10 +839,29 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
-
+	void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(GPIO_Pin);
+  countspin++ ;
+	
+	if(countspin>=512)
+	{	
+		timstop = 0 ;
+		countspin=0 ;
+	}
+  /* NOTE: This function Should not be modified, when the callback is needed,
+           the HAL_GPIO_EXTI_Callback could be implemented in the user file
+   */
+	
+}
 /* USER CODE END 4 */
 
 /**

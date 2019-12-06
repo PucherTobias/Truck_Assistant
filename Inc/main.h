@@ -70,6 +70,9 @@ void Error_Handler(void);
 #define Memorytrans_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
+#define Counterrisingedge_Pin GPIO_PIN_0
+#define Counterrisingedge_GPIO_Port GPIOF
+#define Counterrisingedge_EXTI_IRQn EXTI0_IRQn
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1
