@@ -118,8 +118,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
+int main(void){
   /* USER CODE BEGIN 1 */
 	int setval = 0;
 	static int32_t uwtick_Hold10ms;
@@ -901,7 +900,7 @@ static void MX_GPIO_Init(void)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
-	spins = (256*0.05)/countspin ;
+	spins = 1/((256*0.05)/countspin) ;
 	
 	countspin=0;
 	
