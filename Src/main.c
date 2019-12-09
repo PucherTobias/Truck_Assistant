@@ -84,6 +84,7 @@ int count_100ms=0 ;
 int count_1s=0 ;
 float countspin=0 ;
 float spins = 0 ;
+uint8_t spinstrans = 0 ;
 int setvalmemory = 0 ;
 int setvaltrans = 0 ;
 /* USER CODE END PV */
@@ -122,7 +123,7 @@ int main(void){
   /* USER CODE BEGIN 1 */
 	int setval = 0;
 	static int32_t uwtick_Hold10ms;
-  static int32_t uwtick_Hold100ms; //lul
+  static int32_t uwtick_Hold100ms; 
   static int32_t uwtick_Hold1s;
 	
 	
@@ -183,13 +184,6 @@ int main(void){
 		{	setvaltrans = 1 ;
 		}
 		
-		for(im=0;im<10000;im++){
-		velocity[im]=26 ;
-		steering[im]=26 ;
-		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[im]) ;
-		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[im]) ;
-		}
-		
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
@@ -204,8 +198,14 @@ int main(void){
 			if(setvalmemory == 2){
 				velocity[iw]=0;
 				steering[iw]=0;
-				iw++ ;// not tested yet
+				iw++ ;
 			}
+		if(count_10ms<10000)	{
+		velocity[count_10ms]=spinstrans ;
+		steering[count_10ms]= 26 ;
+		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
+		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;
+		}
 						
 		}
 		
@@ -901,7 +901,7 @@ static void MX_GPIO_Init(void)
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
 	spins = 1/((256*0.05)/countspin) ;
-	
+	spinstrans = spins*100 ;
 	countspin=0;
 	
   /* NOTE : This function should not be modified, when the callback is needed,
