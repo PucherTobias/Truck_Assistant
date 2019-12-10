@@ -58,8 +58,9 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
+ADC_ChannelConfTypeDef sConfig;
 uint32_t adcvaluek;
-uint32_t adcvaluew;
+uint32_t adc_steering;
 uint32_t testadc2;
 uint32_t testadc3;
 uint32_t lenken = 0;
@@ -119,7 +120,8 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
   * @brief  The application entry point.
   * @retval int
   */
-int main(void){
+int main(void)
+{
   /* USER CODE BEGIN 1 */
 	int setval = 0;
 	static int32_t uwtick_Hold10ms;
@@ -228,12 +230,17 @@ int main(void){
 		}		// Code Georg
 		
 		HAL_ADC_Start(&hadc1);		
-		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
+		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)	{
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
+			sensork=2*(2076.0/(adcvaluek-11));
+		}
 		
-		
-		sensork=2*(2076.0/(adcvaluek-11));
-		
+		sConfig.Channel = ADC_CHANNEL_4 ;
+		HAL_ADC_ConfigChannel(&hadc1,&sConfig) ;
+		HAL_ADC_Start(&hadc1);		
+		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)	{
+			adc_steering = HAL_ADC_GetValue(&hadc1);
+		}
 		
 ////		if((sensork > 0.1)&&(sensork <= 6)) {
 ////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
@@ -379,7 +386,7 @@ static void MX_ADC1_Init(void)
 
   /* USER CODE END ADC1_Init 0 */
 
-  ADC_ChannelConfTypeDef sConfig = {0};
+ 
 
   /* USER CODE BEGIN ADC1_Init 1 */
 
@@ -388,7 +395,7 @@ static void MX_ADC1_Init(void)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc1.Init.Resolution = ADC_RESOLUTION_10B;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
@@ -406,7 +413,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -456,7 +463,7 @@ static void MX_ADC2_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
