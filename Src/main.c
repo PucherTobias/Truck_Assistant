@@ -46,9 +46,11 @@
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 ADC_HandleTypeDef hadc3;
+DMA_HandleTypeDef hdma_adc3;
 
 ETH_HandleTypeDef heth;
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
@@ -58,10 +60,10 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-ADC_ChannelConfTypeDef sConfig = {0};
-int adc_switchchannels = 0 ;
+ADC_ChannelConfTypeDef sConfig3;
 uint32_t adcvaluek;
 uint32_t adc_steering;
+uint32_t adcval[2] ;
 uint32_t testadc2;
 uint32_t testadc3;
 uint32_t lenken = 0;
@@ -88,6 +90,7 @@ float spins = 0 ;
 uint8_t spinstrans = 0 ;
 int setvalmemory = 0 ;
 int setvaltrans = 0 ;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,6 +106,7 @@ static void MX_TIM4_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_ADC2_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -165,12 +169,15 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_ADC2_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	HAL_TIM_Base_Start_IT(&htim2) ;
-	
-	
+	// Start tim1
+	HAL_TIM_Base_Start(&htim1) ;
+	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;
+	 
 	// htim4.Instance->CCR1 = 1000; //temp
 	
   /* USER CODE END 2 */
@@ -220,8 +227,9 @@ int main(void)
 		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{
 				adc_steering = HAL_ADC_GetValue(&hadc2);
 				steering_conv = adc_steering/11.375 ;
-		}	
 		}
+	
+	}
 			
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
@@ -272,22 +280,7 @@ int main(void)
 			while(1){}
 		}
 		
-		sConfig.Channel = ADC_CHANNEL_3 ;
-		HAL_ADC_ConfigChannel(&hadc3, &sConfig) ;
-		HAL_ADC_Start(&hadc3);
-		if(HAL_ADC_PollForConversion(&hadc3, 5) == HAL_OK) {
-			testadc2 = HAL_ADC_GetValue(&hadc3);
-		}
 		
-		if(HAL_ADC_STATE_READY==1){
-			sConfig.Channel = ADC_CHANNEL_4 ;
-			HAL_ADC_ConfigChannel(&hadc3, &sConfig) ;
-			HAL_ADC_Start(&hadc3);
-			if(HAL_ADC_PollForConversion(&hadc3, 5) == HAL_OK) {
-				testadc3 = HAL_ADC_GetValue(&hadc3);
-			}
-		}
-
 		//Servo
 		
 		// Clock ... 32MHz
@@ -305,25 +298,32 @@ int main(void)
 //		if (i > 2000)
 //			i = 1000;
 		
-		lenken = map(testadc2, 0, 1023, 50, 135);
+		if(adcval[1] >= 775){
+			lenken = map(adcval[1], 775, 1023, 90, 135);
+		}
+		
+		if(adcval[1] < 775){
+			lenken = map(adcval[1], 388, 774, 50, 90);
+		}
 		
 		i = map(lenken, 0, 180, 250, 1250);
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(testadc3 <= 512)
-			testadc3 = 512;
-		if(testadc3 >= 754)
-			testadc3 = 754;
+		if(adcval[0] <= 410)
+			adcval[0] = 410;
+		if(adcval[0] >= 754)
+			adcval[0] = 754;
 		
-		gas = map(testadc3, 512, 754, 0, 30);  //269 - 754
+		gas = map(adcval[0], 754, 410, 0, 30);  //269 - 754
 		if(gas < 7)
 			gas = 0;
 		
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);	
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+		
 
   }
-	
+
 	
   /* USER CODE END 3 */
 }
@@ -425,7 +425,7 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
-
+	
   /* USER CODE END ADC1_Init 2 */
 
 }
@@ -505,28 +505,28 @@ static void MX_ADC3_Init(void)
   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc3.Init.ContinuousConvMode = DISABLE;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
-  hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc3.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+  hadc3.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T1_TRGO;
   hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc3.Init.NbrOfConversion = 2;
-  hadc3.Init.DMAContinuousRequests = DISABLE;
-  hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc3.Init.DMAContinuousRequests = ENABLE;
+  hadc3.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   if (HAL_ADC_Init(&hadc3) != HAL_OK)
   {
     Error_Handler();
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. 
   */
-  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. 
   */
-  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_2;
   if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
   {
@@ -580,6 +580,53 @@ static void MX_ETH_Init(void)
   /* USER CODE BEGIN ETH_Init 2 */
 
   /* USER CODE END ETH_Init 2 */
+
+}
+
+/**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 32000;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 50;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
 
 }
 
@@ -824,11 +871,15 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
@@ -929,6 +980,7 @@ static void MX_GPIO_Init(void)
             the HAL_TIM_PeriodElapsedCallback could be implemented in the user file
    */
 }
+
 
 
   
