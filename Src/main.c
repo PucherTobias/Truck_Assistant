@@ -60,12 +60,9 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-ADC_ChannelConfTypeDef sConfig3;
 uint32_t adcvaluek;
 uint32_t adc_steering;
 uint32_t adcval[2] ;
-uint32_t testadc2;
-uint32_t testadc3;
 uint32_t lenken = 0;
 uint32_t gas = 0;
 int i = 0;
@@ -76,20 +73,19 @@ float steering_conv;
 
 // Georg
 uint8_t velocity[10000] = {0} ;
-uint8_t steering[10000] = {0} ;
-unsigned char velocityASCII[10000] ;
+uint8_t steering[10000] = {0} ;					//Speicherfelder
+unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 unsigned char steeringASCII[10000] ;
 int iw=0 ;
-int im	=	0 ;
 int itrans = 0 ;
 int count_10ms=0 ;
-int count_100ms=0 ;
+int count_100ms=0 ;							// Verzögerungen
 int count_1s=0 ;
-float countspin=0 ;
-float spins = 0 ;
-uint8_t spinstrans = 0 ;
-int setvalmemory = 0 ;
-int setvaltrans = 0 ;
+float countspin=0 ;							// Messung von Sensorausgang
+float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
+uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)
+int setvalmemory = 0 ;					// Speicherungen der Messungen wird gestartet
+int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
 
 /* USER CODE END PV */
 
