@@ -60,16 +60,15 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-uint32_t adcvaluek;
-uint32_t adc_steering;
-uint32_t adcval[2] ;
+uint32_t adcvaluek;					// Distanzsensor ADC value
+uint32_t adc_steering;			// Winkelsensor ADC value
+uint32_t adcval[2] ;				// Joysticks adc Wert
 uint32_t lenken = 0;
-uint32_t gas = 0;
+uint32_t gas = 0;						// gas & lenk wert
 int i = 0;
 
-float sensork;
-float sensorw;
-float steering_conv;
+float sensork;						// Sensorwert in cm
+float steering_conv;			// Winkelsensorwert in °
 
 // Georg
 uint8_t velocity[10000] = {0} ;
@@ -170,9 +169,9 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	HAL_TIM_Base_Start_IT(&htim2) ;
-	// Start tim1
-	HAL_TIM_Base_Start(&htim1) ;
-	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;
+	
+	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
+	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
 	 
 	// htim4.Instance->CCR1 = 1000; //temp
 	
@@ -185,66 +184,66 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(Memorytrans_GPIO_Port,Memorytrans_Pin))
-		{	setvaltrans = 1 ;
+		if(HAL_GPIO_ReadPin(Memorytrans_GPIO_Port,Memorytrans_Pin))			// Übertragung Start
+		{	setvaltrans = 1 ;																		
 		}
 		
 	
-		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
+		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
 			count_10ms++;
 			
 			if(setvalmemory == 1){
-			velocity[iw] =	gas	;
+			velocity[iw] =	gas	;				// Gas und lenken werden gespeichert
 			steering[iw] =	lenken ;
 			iw++ ;
 			}
 			
 			if(setvalmemory == 2){
-				velocity[iw]=0;
+				velocity[iw]=0;					// Gas und lenken werden bei stop immer auf 0 gesetzt 
 				steering[iw]=0;
 				iw++ ;
 			}
 		if(count_10ms<10000)	{
-		velocity[count_10ms]=spinstrans ;
+		velocity[count_10ms]=spinstrans ;		// Übergabe der Sensorwerte
 		steering[count_10ms]= 26 ;
 		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
-		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;
+		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
 		}
 		
 		
 		
 		HAL_ADC_Start(&hadc1);		
-		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{
+		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 			sensork=2*(2076.0/(adcvaluek-11));
 		}	
 		HAL_ADC_Start(&hadc2);		
-		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{
+		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
 				steering_conv = adc_steering/11.375 ;
 		}
 	
-	}
+	}	// 10ms Ende
 			
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;	
-		}
+		}	// 100ms Ende
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;
 			if(setvaltrans==1)	{
-				HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);
+				HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);		// Übertragung über UART
 				HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
 				itrans++ ;
 				if(itrans>=9999)	{
 					setvaltrans = 0 ;	
 				}	
 			}	
-		}		// Code Georg
+		}		// 1s Ende		
 	
 		
 		
@@ -262,15 +261,15 @@ int main(void)
 ////			}
 ////			setval = 0;
 ////		}
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Code Georg
+		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
 				setvalmemory = 1 ;
 		}
 		
-		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )
-			setvalmemory = 2 ;																																					// Code Georg
+		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
+			setvalmemory = 2 ;																																					
 		
 		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {
+		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
@@ -294,31 +293,31 @@ int main(void)
 //		if (i > 2000)
 //			i = 1000;
 		
-		if(adcval[1] >= 775){
-			lenken = map(adcval[1], 775, 1023, 90, 135);
+		if(adcval[1] >= 511){
+			lenken = map(adcval[1], 511, 772, 90, 135);					// Adcvals werden mit gas und lenken gemapt sprich umgewandelt in gewünschte werte
 		}
 		
-		if(adcval[1] < 775){
-			lenken = map(adcval[1], 388, 774, 50, 90);
+		if(adcval[1] < 511){
+			lenken = map(adcval[1], 253, 511, 50, 90);
 		}
 		
 		i = map(lenken, 0, 180, 250, 1250);
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(adcval[0] <= 410)
-			adcval[0] = 410;
+		if(adcval[0] <= 512)
+			adcval[0] = 512;
 		if(adcval[0] >= 754)
 			adcval[0] = 754;
 		
-		gas = map(adcval[0], 754, 410, 0, 30);  //269 - 754
+		gas = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
 		if(gas < 7)
 			gas = 0;
 		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
 		
 
-  }
+  }		// while Ende
 
 	
   /* USER CODE END 3 */
