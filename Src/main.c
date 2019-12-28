@@ -185,8 +185,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(Memorytrans_GPIO_Port,Memorytrans_Pin))			// Übertragung Start
-		{	setvaltrans = 1 ;																		
+		if((HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))&&(setvaltrans==0))			// Übertragung Start
+		{	setvaltrans = 1 ;
+			HAL_Delay(50) ;
 		}
 		
 	
@@ -204,17 +205,18 @@ int main(void)
 		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
 				steering_conv = map(adc_steering,539,3784,0,360) ;
-				if(steering_conv<0){
-					steering_conv=0;
+					if(steering_conv<0){
+						steering_conv=0;
 				}
-			steering_trailer = map(steering_conv,109,308,-90,90) ;
 		}
 		
-		if(count_10ms<10000)	{
-			velocity[count_10ms]=	spinstrans ;		// Übergabe der Sensorwerte
-			steering[count_10ms]= steering_trailer ;
-			snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
-			snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
+		if(setvaltrans==1){
+			if(count_10ms<10000)	{
+				velocity[count_10ms]=	spinstrans ;		// Übergabe der Sensorwerte
+				steering[count_10ms]= steering_trailer ;
+				snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
+				snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
+			}
 		}
 	}	// 10ms Ende
 		
@@ -253,12 +255,12 @@ int main(void)
 ////			}
 ////			setval = 0;
 ////		}
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-				setvalmemory = 1 ;
-		}
+//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
+//				setvalmemory = 1 ;
+//		}
 		
-		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-			setvalmemory = 2 ;																																					
+//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
+//			setvalmemory = 2 ;																																					
 		
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
@@ -895,16 +897,10 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : BlueButton_Pin RedButton_Pin */
-  GPIO_InitStruct.Pin = BlueButton_Pin|RedButton_Pin;
+  /*Configure GPIO pins : BlueButton_Pin RedButton_Pin Memorystop_Pin Memorytrans_Pin */
+  GPIO_InitStruct.Pin = BlueButton_Pin|RedButton_Pin|Memorystop_Pin|Memorytrans_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : Memorystop_Pin Memorytrans_Pin */
-  GPIO_InitStruct.Pin = Memorystop_Pin|Memorytrans_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USER_Btn_Pin */
