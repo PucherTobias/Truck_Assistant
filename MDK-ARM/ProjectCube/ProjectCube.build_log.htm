@@ -28,15 +28,15 @@ Project File Date:  12/19/2019
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Diplomarbeit\Keilv5\ARM\ARMCC\Bin'
 Build target 'ProjectCube'
 compiling main.c...
-../Src/main.c(210): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
 ../Src/main.c(211): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-  		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
-../Src/main.c(125): warning:  #177-D: variable "setval"  was declared but never referenced
+  		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
+../Src/main.c(245): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+  				HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
+../Src/main.c(126): warning:  #177-D: variable "setval"  was declared but never referenced
   	int setval = 0;
 ../Src/main.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=25052 RO-data=568 RW-data=500 ZI-data=71876  
+Program Size: Code=25112 RO-data=568 RW-data=500 ZI-data=71876  
 FromELF: creating hex file...
 "ProjectCube\ProjectCube.axf" - 0 Error(s), 3 Warning(s).
 
@@ -61,7 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.3.0
-Build Time Elapsed:  00:00:06
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

@@ -69,12 +69,13 @@ int i = 0;
 
 float sensork;						// Sensorwert in cm
 float steering_conv;			// Winkelsensorwert in °
+int8_t steering_trailer; 
 
 // Georg
 uint8_t velocity[10000] = {0} ;
-uint8_t steering[10000] = {0} ;					//Speicherfelder
+int8_t steering[10000] = {0} ;					//Speicherfelder
 unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
-unsigned char steeringASCII[10000] ;
+char steeringASCII[10000] ;
 int iw=0 ;
 int itrans = 0 ;
 int count_10ms=0 ;
@@ -195,7 +196,7 @@ int main(void)
 			
 			if(setvalmemory == 1){
 			velocity[iw] =	gas	;				// Gas und lenken werden gespeichert
-			steering[iw] =	lenken ;
+			steering[iw] =	steering_trailer ;
 			iw++ ;
 			}
 			
@@ -206,7 +207,7 @@ int main(void)
 			}
 		if(count_10ms<10000)	{
 		velocity[count_10ms]=spinstrans ;		// Übergabe der Sensorwerte
-		steering[count_10ms]= 26 ;
+		steering[count_10ms]= steering_trailer ;
 		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
 		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
 		}
@@ -221,7 +222,11 @@ int main(void)
 		HAL_ADC_Start(&hadc2);		
 		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
-				steering_conv = adc_steering/11.375 ;
+				steering_conv = map(adc_steering,539,3784,0,360) ;
+				if(steering_conv<0){
+					steering_conv=0;
+				}
+			steering_trailer = map(steering_conv,109,308,-90,90) ;
 		}
 	
 	}	// 10ms Ende
@@ -298,7 +303,7 @@ int main(void)
 		}
 		
 		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 50, 90);
+			lenken = map(adcval[1], 253, 511, 45 , 90);
 		}
 		
 		i = map(lenken, 0, 180, 250, 1250);
