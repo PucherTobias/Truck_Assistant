@@ -194,25 +194,6 @@ int main(void)
 			uwtick_Hold10ms += 10;
 			count_10ms++;
 			
-			if(setvalmemory == 1){
-			velocity[iw] =	gas	;				// Gas und lenken werden gespeichert
-			steering[iw] =	steering_trailer ;
-			iw++ ;
-			}
-			
-			if(setvalmemory == 2){
-				velocity[iw]=0;					// Gas und lenken werden bei stop immer auf 0 gesetzt 
-				steering[iw]=0;
-				iw++ ;
-			}
-		if(count_10ms<10000)	{
-		velocity[count_10ms]=spinstrans ;		// Übergabe der Sensorwerte
-		steering[count_10ms]= steering_trailer ;
-		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
-		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
-		}
-		
-		
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
@@ -228,9 +209,23 @@ int main(void)
 				}
 			steering_trailer = map(steering_conv,109,308,-90,90) ;
 		}
-	
+		
+		if(count_10ms<10000)	{
+			velocity[count_10ms]=	spinstrans ;		// Übergabe der Sensorwerte
+			steering[count_10ms]= steering_trailer ;
+			snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
+			snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
+		}
 	}	// 10ms Ende
-			
+		
+		if(setvaltrans==1)	{
+			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),10);		// Übertragung über UART
+			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),10);
+			itrans++ ;
+			if(itrans>=9999)	{
+				setvaltrans = 0 ;	
+			}	
+		}
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
@@ -239,15 +234,7 @@ int main(void)
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;
-			if(setvaltrans==1)	{
-				HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1000);		// Übertragung über UART
-				HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1000);
-				itrans++ ;
-				if(itrans>=9999)	{
-					setvaltrans = 0 ;	
-				}	
-			}	
+			count_1s++;	
 		}		// 1s Ende		
 	
 		
@@ -651,7 +638,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 32000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 50;
+  htim2.Init.Period = 200;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -972,7 +959,7 @@ static void MX_GPIO_Init(void)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
-	spins = 1/((256*0.05)/countspin) ;
+	spins = 1/((256*0.2)/countspin) ;
 	spinstrans = spins*100 ;
 	countspin=0;
 	
