@@ -212,10 +212,10 @@ int main(void)
 		
 		if(setvaltrans==1){
 			if(icom<10000)	{
-				velocity[count_10ms]=	spinstrans ;		// Übergabe der Sensorwerte
-				steering[count_10ms]= steering_trailer ;
-				snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
-				snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
+				velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
+				steering[icom]= steering_trailer ;
+				snprintf(velocityASCII,10000,"v %d\n\r",velocity[icom]) ;
+				snprintf(steeringASCII,10000,"\ts %d\r",steering[icom]) ;	// Umwandlung in ASCII
 				icom++ ;
 			}
 			else{
