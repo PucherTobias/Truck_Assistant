@@ -237,6 +237,11 @@
           <WinNumber>2</WinNumber>
           <ItemText>setvalmemory</ItemText>
         </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>gas,0x0A</ItemText>
+        </Ww>
       </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>

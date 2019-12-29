@@ -78,13 +78,13 @@ unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 char steeringASCII[10000] ;
 int iw=0 ;
 int itrans = 0 ;
+int icom = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;							// Verzögerungen
 int count_1s=0 ;
 float countspin=0 ;							// Messung von Sensorausgang
 float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
-uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)
-int setvalmemory = 0 ;					// Speicherungen der Messungen wird gestartet
+uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)					
 int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
 
 /* USER CODE END PV */
@@ -185,9 +185,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if((HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))&&(setvaltrans==0))			// Übertragung Start
+		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
 		{	setvaltrans = 1 ;
-			HAL_Delay(50) ;
 		}
 		
 	
@@ -204,19 +203,24 @@ int main(void)
 		HAL_ADC_Start(&hadc2);		
 		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
-				steering_conv = map(adc_steering,539,3784,0,360) ;
+				steering_conv = map(adc_steering,500,4000,0,360) ;
 					if(steering_conv<0){
 						steering_conv=0;
-				}
+					}
+				steering_trailer = map(steering_conv,135,323,-90,90) ;
 		}
 		
 		if(setvaltrans==1){
-			if(count_10ms<10000)	{
+			if(icom<10000)	{
 				velocity[count_10ms]=	spinstrans ;		// Übergabe der Sensorwerte
 				steering[count_10ms]= steering_trailer ;
 				snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
 				snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;	// Umwandlung in ASCII
+				icom++ ;
 			}
+			else{
+			setvaltrans = 0 ;
+			}		
 		}
 	}	// 10ms Ende
 		
