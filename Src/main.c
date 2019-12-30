@@ -209,34 +209,32 @@ int main(void)
 					}
 				steering_trailer = map(steering_conv,135,323,-90,90) ;
 		}
-		
-		if(setvaltrans==1){
-			if(icom<10000)	{
-				velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
-				steering[icom]= steering_trailer ;
-				snprintf(velocityASCII,10000,"v %d\n\r",velocity[icom]) ;
-				snprintf(steeringASCII,10000,"\ts %d\r",steering[icom]) ;	// Umwandlung in ASCII
-				icom++ ;
-			}
-			else{
-			setvaltrans = 0 ;
-			}		
-		}
 	}	// 10ms Ende
 		
-		if(setvaltrans==1)	{
-			HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),10);		// Übertragung über UART
-			HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),10);
-			itrans++ ;
-			if(itrans>=9999)	{
-				setvaltrans = 0 ;	
-			}	
-		}
+	
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
-			count_100ms++;	
-		}	// 100ms Ende
+			count_100ms++;
+			
+			if(count_100ms%2==0)	{
+				if(setvaltrans==1){
+					if(icom<10000)	{
+						velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
+						steering[icom]= steering_trailer ;
+						snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
+						snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
+						HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
+						HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
+						icom++ ;
+					}
+				else{
+					setvaltrans = 0 ;
+				}		
+			}
+		}
+	}	// 100ms Ende
+			
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
