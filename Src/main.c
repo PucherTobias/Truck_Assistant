@@ -87,6 +87,8 @@ float countspin=0 ;							// Messung von Sensorausgang
 float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
 uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)					
 int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
+int autobetrieb=0;							// Fuzzy
+int handbetrieb=0;
 
 /* USER CODE END PV */
 
@@ -189,7 +191,14 @@ int main(void)
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
 		{	setvaltrans = 1 ;
 		}
-		
+		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
+				autobetrieb= 1;																																		  // oder Autobetrieb
+				handbetrieb= 0;
+		}
+		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+				autobetrieb= 0;
+				handbetrieb= 1;
+		}		
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -274,7 +283,16 @@ int main(void)
 		
 		/* Fuzzy - 
 		*/
-
+		if((autobetrieb==1)&&(handbetrieb == 0)){
+			
+		NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
+		
+		FuzzyV1_F4_SetNumType(); 
+		FuzzyV1_F4_init();
+		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
+		FuzzyV1_F4_free(); 
+		
+		}
 		//Servo
 		
 		// Clock ... 32MHz
@@ -292,6 +310,7 @@ int main(void)
 //		if (i > 2000)
 //			i = 1000;
 		
+	if((handbetrieb == 1)&&(autobetrieb == 0)){		
 		if(adcval[1] >= 511){
 			lenken = map(adcval[1], 511, 772, 90, 135);					// Adcvals werden mit gas und lenken gemapt sprich umgewandelt in gewünschte werte
 		}
@@ -314,7 +333,8 @@ int main(void)
 			gas = 0;
 		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-		
+
+  }		
 
   }		// while Ende
 
@@ -544,21 +564,18 @@ static void MX_ETH_Init(void)
 
   /* USER CODE END ETH_Init 0 */
 
-   uint8_t MACAddr[6] ;
-
   /* USER CODE BEGIN ETH_Init 1 */
 
   /* USER CODE END ETH_Init 1 */
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
   heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
-  MACAddr[0] = 0x00;
-  MACAddr[1] = 0x80;
-  MACAddr[2] = 0xE1;
-  MACAddr[3] = 0x00;
-  MACAddr[4] = 0x00;
-  MACAddr[5] = 0x00;
-  heth.Init.MACAddr = &MACAddr[0];
+  heth.Init.MACAddr[0] =   0x00;
+  heth.Init.MACAddr[1] =   0x80;
+  heth.Init.MACAddr[2] =   0xE1;
+  heth.Init.MACAddr[3] =   0x00;
+  heth.Init.MACAddr[4] =   0x00;
+  heth.Init.MACAddr[5] =   0x00;
   heth.Init.RxMode = ETH_RXPOLLING_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
@@ -919,6 +936,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Counterrisingedge_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Auto_Hand_Betrieb_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Auto_Hand_Betrieb_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;

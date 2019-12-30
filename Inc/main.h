@@ -73,6 +73,8 @@ void Error_Handler(void);
 #define Counterrisingedge_Pin GPIO_PIN_0
 #define Counterrisingedge_GPIO_Port GPIOF
 #define Counterrisingedge_EXTI_IRQn EXTI0_IRQn
+#define Auto_Hand_Betrieb_Pin GPIO_PIN_3
+#define Auto_Hand_Betrieb_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1
