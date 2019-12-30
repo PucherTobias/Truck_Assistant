@@ -74,6 +74,10 @@ int8_t steering_trailer;
 // Georg
 uint8_t velocity[10000] = {0} ;
 int8_t steering[10000] = {0} ;					//Speicherfelder
+uint8_t gasvalues[10000] = {0} ;
+uint8_t	lenkenvalues[10000] = {0} ;
+unsigned char gasvaluesASCII[10000] ;
+unsigned char lenkenvaluesASCII[10000] ;
 unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 char steeringASCII[10000] ;
 int iw=0 ;
@@ -220,12 +224,18 @@ int main(void)
 			if(count_100ms%2==0)	{
 				if(setvaltrans==1){
 					if(icom<10000)	{
+						gasvalues[icom] = gas ;
+						lenkenvalues[icom] = lenken ;
 						velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
 						steering[icom]= steering_trailer ;
 						snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
-						snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
+						snprintf(steeringASCII,10000,"\ts %d\r",steering[icom]) ;	// Umwandlung in ASCII
+						snprintf(gasvaluesASCII,10000,"\t\tg %d\r",gasvalues[icom]) ;	// Umwandlung in ASCII
+						snprintf(lenkenvaluesASCII,10000,"\t\t\tl %d\n\r",lenkenvalues[icom]) ;	// Umwandlung in ASCII
 						HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
 						HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
+						HAL_UART_Transmit(&huart3,gasvaluesASCII,sizeof(gasvaluesASCII),1);
+						HAL_UART_Transmit(&huart3,lenkenvaluesASCII,sizeof(lenkenvaluesASCII),1);
 						icom++ ;
 					}
 				else{
