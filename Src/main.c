@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "FuzzyV1_F4.h" 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -271,7 +272,9 @@ int main(void)
 			while(1){}
 		}
 		
-		
+		/* Fuzzy - 
+		*/
+
 		//Servo
 		
 		// Clock ... 32MHz
