@@ -67,7 +67,7 @@ uint32_t adcval[2] ;				// Joysticks adc Wert
 uint32_t lenken = 0;
 uint32_t gas = 0;						// gas & lenk wert
 int i = 0;
-uint32_t w_speed[] = {246,
+uint32_t w_velocity[] = {246,
 99,
 171,
 1,
@@ -774,6 +774,19 @@ int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
 int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 
+//Pucher
+NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
+int i_w = 0;
+int auto_steering = 90; //sollwert
+int auto_thrust = 0; //sollwert
+int auto_steering_pwm = 0;
+int auto_thrust_pwm = 0;
+int auto_start_selfcontrol = 0;
+int auto_angle_w = 0; //sollwert
+int auto_angle_y = 0; //istwert
+int auto_velocity_w = 0; //sollwert
+int auto_velocity_y = 0; //istwert
+int auto_test = 0; //temp var 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -821,12 +834,7 @@ int main(void)
   uwtick_Hold1s=0;
 
 	//Pucher
-	NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
-	int i_w = 0;
-	int auto_steering = 90;
-	int auto_thrust = 0;
-	int auto_steering_pwm = 0;
-	int auto_thrust_pwm = 0;
+
 
   /* USER CODE END 1 */
   
@@ -916,9 +924,14 @@ int main(void)
 						steering_conv=0;
 					}
 				steering_trailer = map(steering_conv,135,323,-90,90) ;
+
+				/////Pucher Begin///////					
+				auto_angle_y = steering_trailer;	
+				/////Pucher End/////////
 		}
 		
 		//Pucher 10ms
+		e_winkel = auto_angle_w - auto_angle_y;
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
 		
@@ -945,10 +958,25 @@ int main(void)
 						setvaltrans = 0 ;
 					}		
 				}
+				
+				////// Pucher Beginn //////
 				if(autobetrieb){
+					if(i_w >= 167){
+						i_w = 167;
+						auto_start_selfcontrol = 0;
+					}
+					if(i_w <= 0)
+						i_w = 0;
+				
+				}
+				if((autobetrieb) && (auto_start_selfcontrol)){
 					auto_steering = w_steering[i_w];
 					auto_thrust = w_thrust[i_w];
+					auto_velocity_w = w_velocity[i_w];
+					auto_angle_w = w_angle[i_w];
+					i_w++;
 				}
+			////// Pucher Ende //////	
 			}
 		}	// 100ms Ende
 			
@@ -991,13 +1019,21 @@ int main(void)
 		/* Fuzzy 
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
-		
 		//Pucher autobetrieb BEGINN////////////////////////////////////////////////////////////////////////
+		auto_start_selfcontrol = 1;
 		FuzzyV1_F4_free();
-			
+
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
+		if(auto_steering > 135)
+			auto_steering = 135;
+		if(auto_steering < 45)
+			auto_steering = 45;
 		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
+		
+		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
+		auto_test = auto_steering - u_winkel;
+		
 		htim4.Instance->CCR1 = auto_steering_pwm;
 			
 		//Motor - Thrust
@@ -1025,13 +1061,15 @@ int main(void)
 //		if (i > 2000)
 //			i = 1000;
 		
-	if((handbetrieb == 1)&&(autobetrieb == 0)){		
+	if((handbetrieb == 1)&&(autobetrieb == 0)){
+		auto_start_selfcontrol = 0;
+		i_w = 0;
 		if(adcval[1] >= 511){
-			lenken = map(adcval[1], 511, 772, 90, 135);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 		}
 		
 		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 45 , 90);
+			lenken = map(adcval[1], 253, 511, 60 , 90);
 		}
 		
 		i = map(lenken, 0, 180, 250, 1250);
