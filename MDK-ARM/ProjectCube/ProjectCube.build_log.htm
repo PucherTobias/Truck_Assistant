@@ -21,76 +21,67 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.6.0
 Dialog DLL:      TCM.DLL V1.36.2.0
  
 <h2>Project:</h2>
-C:\Users\puche\Documents\GitHub\Truck_Assistant\MDK-ARM\ProjectCube.uvprojx
-Project File Date:  01/02/2020
+C:\Users\puche\OneDrive\Dokumente\GitHub\Truck_Assistant\MDK-ARM\ProjectCube.uvprojx
+Project File Date:  01/03/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Build target 'ProjectCube'
+Rebuild target 'ProjectCube'
+compiling NumType_F4.c...
+assembling startup_stm32f767xx.s...
+compiling FuzzyV1_F4.c...
+..\Src\FuzzyV1_F4.c(226): warning:  #144-D: a value of type "const char *" cannot be used to initialize an entity of type "const signed char *"
+     FuzzyV1_F4_RuleBase_pre,
+..\Src\FuzzyV1_F4.c: 1 warning, 0 errors
+compiling fuzzy_F4.c...
+compiling system_stm32f7xx.c...
+compiling stm32f7xx_hal_rcc_ex.c...
+compiling usb_device.c...
+compiling MY_FLASH.c...
+compiling stm32f7xx_hal_flash.c...
+compiling stm32f7xx_it.c...
+compiling stm32f7xx_hal_pcd_ex.c...
+compiling usbd_desc.c...
+compiling stm32f7xx_ll_usb.c...
+compiling usbd_cdc_if.c...
+compiling stm32f7xx_hal_msp.c...
+compiling usbd_conf.c...
+compiling stm32f7xx_hal_rcc.c...
+compiling stm32f7xx_hal_pcd.c...
 compiling main.c...
-../Src/main.c(262): warning:  #68-D: integer conversion resulted in a change of sign
-  -2,
-../Src/main.c(263): warning:  #68-D: integer conversion resulted in a change of sign
-  -4,
-../Src/main.c(264): warning:  #68-D: integer conversion resulted in a change of sign
-  -4,
-../Src/main.c(265): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(266): warning:  #68-D: integer conversion resulted in a change of sign
-  -9,
-../Src/main.c(267): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(268): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(269): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(270): warning:  #68-D: integer conversion resulted in a change of sign
-  -6,
-../Src/main.c(271): warning:  #68-D: integer conversion resulted in a change of sign
-  -6,
-../Src/main.c(272): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(273): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(274): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(275): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(276): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(277): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(278): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(279): warning:  #68-D: integer conversion resulted in a change of sign
-  -9,
-../Src/main.c(280): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(281): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(282): warning:  #68-D: integer conversion resulted in a change of sign
-  -5,
-../Src/main.c(283): warning:  #68-D: integer conversion resulted in a change of sign
-  -4,
-../Src/main.c(284): warning:  #68-D: integer conversion resulted in a change of sign
-  -3,
-../Src/main.c(285): warning:  #68-D: integer conversion resulted in a change of sign
-  -2,
-../Src/main.c(286): warning:  #68-D: integer conversion resulted in a change of sign
-  -1,
-../Src/main.c(291): warning:  #68-D: integer conversion resulted in a change of sign
-  -3,
-../Src/main.c(942): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+../Src/main.c(291): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
   						snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
-../Src/main.c(945): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+../Src/main.c(294): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
   						HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
-../Src/main.c(822): warning:  #177-D: variable "setval"  was declared but never referenced
+../Src/main.c(148): warning:  #177-D: variable "setval"  was declared but never referenced
   	int setval = 0;
-../Src/main.c: 29 warnings, 0 errors
+../Src/main.c: 3 warnings, 0 errors
+compiling stm32f7xx_hal.c...
+compiling stm32f7xx_hal_adc_ex.c...
+compiling stm32f7xx_hal_i2c_ex.c...
+compiling stm32f7xx_hal_dma_ex.c...
+compiling stm32f7xx_hal_pwr.c...
+compiling stm32f7xx_hal_i2c.c...
+compiling stm32f7xx_hal_eth.c...
+compiling stm32f7xx_hal_exti.c...
+compiling stm32f7xx_hal_dma.c...
+compiling stm32f7xx_hal_flash_ex.c...
+compiling stm32f7xx_hal_pwr_ex.c...
+compiling stm32f7xx_hal_gpio.c...
+compiling stm32f7xx_hal_cortex.c...
+compiling stm32f7xx_hal_tim.c...
+compiling stm32f7xx_hal_adc.c...
+compiling stm32f7xx_hal_uart_ex.c...
+compiling usbd_ctlreq.c...
+compiling usbd_core.c...
+compiling usbd_ioreq.c...
+compiling usbd_cdc.c...
+compiling stm32f7xx_hal_tim_ex.c...
+compiling stm32f7xx_hal_uart.c...
 linking...
-Program Size: Code=28880 RO-data=1372 RW-data=1888 ZI-data=71896  
+Program Size: Code=29140 RO-data=1372 RW-data=560 ZI-data=74600  
 FromELF: creating hex file...
-"ProjectCube\ProjectCube.axf" - 0 Error(s), 29 Warning(s).
+"ProjectCube\ProjectCube.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -100,20 +91,20 @@ Package Vendor: ARM
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: CORE Version: 5.2.0
 
-Package Vendor: STMicroelectronics
-                http://www.ST.com/STMicroelectronics.STM32F7xx_DFP.1.0.3.pack
-                STMicroelectronics.STM32F7xx_DFP.1.0.3
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F7xx_DFP.2.12.0.pack
+                Keil.STM32F7xx_DFP.2.12.0
                 STMicroelectronics STM32F7 Series Device Support, Drivers and Examples
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_ProjectCube
   C:\Users\puche\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include
-  C:\Users\puche\AppData\Local\Arm\Packs\STMicroelectronics\STM32F7xx_DFP\1.0.3\Device\Include
+  C:\Users\puche\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.2.0
-Build Time Elapsed:  00:00:10
+Build Time Elapsed:  00:00:13
 </pre>
 </body>
 </html>
