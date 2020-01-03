@@ -26,6 +26,8 @@
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
 #include "FuzzyV1_F4.h" 
+#include "MY_FLASH.h" 
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -909,7 +911,8 @@ int main(void)
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
 			count_10ms++;
-			
+		
+		
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
@@ -1090,6 +1093,12 @@ int main(void)
 
   }		
 
+	//flash datenübertragung
+	
+	MY_FLASH_SetSectorAddrs(
+	
+	
+	
   }		// while Ende
 
 	
