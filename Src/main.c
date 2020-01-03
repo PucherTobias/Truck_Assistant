@@ -931,7 +931,8 @@ int main(void)
 		}
 		
 		//Pucher 10ms
-		e_winkel = auto_angle_w - auto_angle_y;
+		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
+		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
 		
