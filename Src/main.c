@@ -25,7 +25,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "FuzzyV1_F4.h" 
 #include "MY_FLASH.h" 
 
 /* USER CODE END Includes */
@@ -63,51 +62,10 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-uint32_t adcvaluek;					// Distanzsensor ADC value
-uint32_t adc_steering;			// Winkelsensor ADC value
-uint32_t adcval[2] ;				// Joysticks adc Wert
-uint32_t lenken = 0;
-uint32_t gas = 0;						// gas & lenk wert
-int i = 0;
-float sensork;						// Sensorwert in cm
-float steering_conv;			// Winkelsensorwert in °
-int8_t steering_trailer; 
-
-// Georg
-uint8_t velocity[10000] = {0} ;
-int8_t steering[10000] = {0} ;					//Speicherfelder
-unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
-char steeringASCII[10000] ;
-int iw=0 ;
-int itrans = 0 ;
-int icom = 0 ;
-int count_10ms=0 ;
-int count_100ms=0 ;							// Verzögerungen
-int count_1s=0 ;
-float countspin=0 ;							// Messung von Sensorausgang
-float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
-uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)					
-int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
-int autobetrieb=0;							// Fuzzy
-int handbetrieb=0;
-
-//Pucher
-NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
 
 uint32_t test_writearray[] = {1,2,3,4,5,6,7,8,9};
 uint32_t test_readarray[9];
 
-int i_w = 0;
-int auto_steering = 90; //sollwert
-int auto_thrust = 0; //sollwert
-int auto_steering_pwm = 0;
-int auto_thrust_pwm = 0;
-int auto_start_selfcontrol = 0;
-int auto_angle_w = 0; //sollwert
-int auto_angle_y = 0; //istwert
-int auto_velocity_w = 0; //sollwert
-int auto_velocity_y = 0; //istwert
-int auto_test = 0; //temp var 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,9 +83,6 @@ static void MX_TIM2_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
-long map(long x, long in_min, long in_max, long out_min, long out_max) {
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
 
 
 /* USER CODE END PFP */
@@ -191,21 +146,7 @@ int main(void)
   MX_ADC2_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
-	HAL_TIM_Base_Start_IT(&htim2) ;
-	
-	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
-	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
-	// htim4.Instance->CCR1 = 1000; //temp
-	
-	//Pucher
-	FuzzyV1_F4_SetNumType(); 
-	FuzzyV1_F4_init();
-	
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
-	htim4.Instance->CCR1 = 750; //default 90°
-	
+
 	////////////////flash
 	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
 	MY_FLASH_WriteN(0, test_writearray, 9, DATA_TYPE_32);
@@ -219,189 +160,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
-		{	setvaltrans = 1 ;
-		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
-				autobetrieb= 1;																																		  // oder Autobetrieb
-				handbetrieb= 0;
-		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-				autobetrieb= 0;
-				handbetrieb= 1;
-		}		
-	
-		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
-			uwtick_Hold10ms += 10;
-			count_10ms++;
-		
-		
-		
-		HAL_ADC_Start(&hadc1);		
-		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
-			adcvaluek = HAL_ADC_GetValue(&hadc1);
-			sensork=2*(2076.0/(adcvaluek-11));
-		}	
-		HAL_ADC_Start(&hadc2);		
-		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
-				adc_steering = HAL_ADC_GetValue(&hadc2);
-				steering_conv = map(adc_steering,500,4000,0,360) ;
-					if(steering_conv<0){
-						steering_conv=0;
-					}
-				steering_trailer = map(steering_conv,135,323,-90,90) ;
-
-				/////Pucher Begin///////					
-				auto_angle_y = steering_trailer;	
-				/////Pucher End/////////
-		}
-		
-		//Pucher 10ms
-		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
-		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
-		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
-		
-		
-	}	// 10ms Ende
-		
-	
-		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
-			uwtick_Hold100ms += 100;
-			count_100ms++;
-			
-			if(count_100ms%2==0)	{ //200ms
-				if(setvaltrans==1){
-					if(icom<10000)	{
-						velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
-						steering[icom]= steering_trailer ;
-						snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
-						snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
-						HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
-						HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
-						icom++ ;
-					}	
-					else{
-						setvaltrans = 0 ;
-					}		
-				}
-				
-				////// Pucher Beginn //////
-				if(autobetrieb){
-
-				}
-			////// Pucher Ende //////	
-			}
-		}	// 100ms Ende
-			
-		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
-			uwtick_Hold1s += 1000;
-			count_1s++;	
-		}		// 1s Ende		
-	
-		
-		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-////			}
-////			setval = 0;
-////		}
-//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-//				setvalmemory = 1 ;
-//		}
-		
-//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-//			setvalmemory = 2 ;																																					
-		
-		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-			__HAL_TIM_DISABLE(&htim3);
-			while(1){}
-		}
-		
-		/* Fuzzy 
-		*/
-		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//Pucher autobetrieb BEGINN////////////////////////////////////////////////////////////////////////
-		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
-
-		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
-		//Lenkung - Steering
-		if(auto_steering > 135)
-			auto_steering = 135;
-		if(auto_steering < 45)
-			auto_steering = 45;
-		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
-		
-		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
-		auto_test = auto_steering - u_winkel;
-		
-		htim4.Instance->CCR1 = auto_steering_pwm;
-			
-		//Motor - Thrust
-		if(auto_thrust < 7)
-			auto_thrust = 0;
-		if(auto_thrust >= 30)
-			auto_thrust = 30;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
-		
-		}//autobetrieb ENDE/////////////////////////////////////////////////////////////////////////////////
-		
-
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		
-//		htim4.Instance->CCR1 = i;
-//		
-//		i++;
-//		if (i > 2000)
-//			i = 1000;
-		
-	if((handbetrieb == 1)&&(autobetrieb == 0)){
-		auto_start_selfcontrol = 0;
-		i_w = 0;
-		if(adcval[1] >= 511){
-			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
-		}
-		
-		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 60 , 90);
-		}
-		
-		i = map(lenken, 0, 180, 250, 1250);
-		
-		htim4.Instance->CCR1 = i;
-		
-		if(adcval[0] <= 512)
-			adcval[0] = 512;
-		if(adcval[0] >= 754)
-			adcval[0] = 754;
-		
-		gas = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
-		if(gas < 7)
-			gas = 0;
-		
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-
-  }		
 
 	//flash datenübertragung
 	MY_FLASH_ReadN(0, test_readarray, 9, DATA_TYPE_32);
@@ -1043,32 +801,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-	void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(GPIO_Pin);
-	/* NOTE: This function Should not be modified, when the callback is needed,
-           the HAL_GPIO_EXTI_Callback could be implemented in the user file
-   */
-  countspin++ ;
-	}
-	void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(htim);
-	spins = 1/((256*0.2)/countspin) ;
-	spinstrans = spins*100 ;
-	countspin=0;
-	
-  /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_TIM_PeriodElapsedCallback could be implemented in the user file
-   */
-}
 
-
-
-  
-	
 
 /* USER CODE END 4 */
 

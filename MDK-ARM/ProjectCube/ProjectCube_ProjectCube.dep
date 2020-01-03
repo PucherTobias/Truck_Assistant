@@ -22,7 +22,7 @@ I (../Inc/fuzzy_enums.h)(0x5E0A007C)
 I (../Inc/NumType_F4.h)(0x5E0A007C)
 I (C:\Keil_v5\ARM\ARMCC\include\float.h)(0x5CEBCE42)
 I (C:\Keil_v5\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
-F (../Src/main.c)(0x5E0F316E)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\puche\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\puche\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\main.o --omf_browse projectcube\main.crf --depend projectcube\main.d)
+F (../Src/main.c)(0x5E0F3BCE)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\puche\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\puche\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\main.o --omf_browse projectcube\main.crf --depend projectcube\main.d)
 I (../Inc/main.h)(0x5E0B5DE3)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5DC7E5F2)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5DC7E5F2)
@@ -73,12 +73,6 @@ I (../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h)(0x5DC7E5
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x5DC7E5F3)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x5DC7E5F3)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x5DC7E5F3)
-I (../Inc/FuzzyV1_F4.h)(0x5E0A007C)
-I (../Inc/fuzzy_F4.h)(0x5E0A007C)
-I (../Inc/fuzzy_enums.h)(0x5E0A007C)
-I (../Inc/NumType_F4.h)(0x5E0A007C)
-I (C:\Keil_v5\ARM\ARMCC\include\float.h)(0x5CEBCE42)
-I (C:\Keil_v5\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
 I (../Inc/MY_FLASH.h)(0x5E0F2DE5)
 F (../Src/usb_device.c)(0x5DC7E5F3)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\puche\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\puche\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\usb_device.o --omf_browse projectcube\usb_device.crf --depend projectcube\usb_device.d)
 I (../Inc/usb_device.h)(0x5DC7E5F2)
