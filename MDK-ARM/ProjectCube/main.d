@@ -57,3 +57,4 @@ projectcube\main.o: ../Inc/fuzzy_enums.h
 projectcube\main.o: ../Inc/NumType_F4.h
 projectcube\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\float.h
 projectcube\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\assert.h
+projectcube\main.o: ../Inc/MY_FLASH.h
