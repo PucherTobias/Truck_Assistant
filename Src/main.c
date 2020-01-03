@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
@@ -30,7 +29,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -48,18 +46,14 @@ ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 ADC_HandleTypeDef hadc3;
 DMA_HandleTypeDef hdma_adc3;
-
 ETH_HandleTypeDef heth;
-
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
-
 /* USER CODE BEGIN PV */
 uint32_t adcvaluek;					// Distanzsensor ADC value
 uint32_t adc_steering;			// Winkelsensor ADC value
@@ -67,520 +61,17 @@ uint32_t adcval[2] ;				// Joysticks adc Wert
 uint32_t lenken = 0;
 uint32_t gas = 0;						// gas & lenk wert
 int i = 0;
-uint32_t w_velocity[] = {246,
-99,
-171,
-1,
-7,
-46,
-230,
-214,
-214,
-220,
-207,
-205,
-148,
-91,
-85,
-74,
-83,
-50,
-50,
-52,
-56,
-101,
-144,
-195,
-158,
-95,
-115,
-95,
-128,
-56,
-37,
-60,
-35,
-99,
-148,
-185,
-201,
-121,
-74,
-68,
-80,
-25,
-35,
-44,
-119,
-138,
-152,
-64,
-60,
-158,
-230,
-199,
-99,
-66,
-66,
-93,
-60,
-19,
-33,
-27,
-31,
-66,
-76,
-199,
-179,
-144,
-83,
-93,
-66,
-89,
-119,
-42,
-27,
-46,
-78,
-80,
-50,
-64,
-101,
-107,
-126,
-113,
-201,
-152,
-128,
-136,
-80,
-42,
-60,
-78,
-52,
-44,
-42,
-80,
-123,
-93,
-68,
-33,
-31,
-25,
-27,
-44,
-27,
-33,
-39,
-33,
-27,
-37,
-58,
-60,
-58,
-72,
-44,
-33,
-27,
-27,
-25,
-21,
-19,
-23,
-31,
-42,
-42,
-48,
-50,
-54,
-70,
-68,
-66,
-91,
-160,
-152,
-123,
-58,
-70,
-87,
-85,
-62,
-99,
-152,
-199,
-82,
-70,
-78,
-126,
-99,
-156,
-148,
-95,
-85,
-76,
-132,
-111,
-68,
-169,
-201,
-128,
-66,
-27,
-5,
-17,
-7,
-17,
-21,
-17,
-25,
-15,
-21,
-13,
-};
+uint32_t w_velocity[] = {246,99,171,1,7,46,230,214,214,220,207,205,148,91,85,74,83,50,50,52,56,101,144,195,158,95,115,95,128,56,37,60,35,99,148,185,
+201,121,74,68,80,25,35,44,119,138,152,64,60,158,230,199,99,66,66,93,60,19,33,27,31,66,76,199,179,144,83,93,66,89,119,42,27,46,78,80,
+50,64,101,107,126,113,201,152,128,136,80,42,60,78,52,44,42,80,123,93,68,33,31,25,27,44,27,33,39,33,27,37,58,60,58,72,44,33,27,27,
+25,21,19,23,31,42,42,48,50,54,70,68,66,91,160,152,123,58,70,87,85,62,99,152,199,82,70,78,126,99,156,148,95,85,76,132,111,68,169,
+201,128,66,27,5,17,7,17,21,17,25,15,21,13,};
 
-uint32_t w_angle[] = {6,
-6,
-6,
-6,
-6,
-6,
-6,
-6,
-5,
-6,
-6,
-6,
-5,
-5,
-5,
-5,
-4,
-0,
-3,
-1,
-0,
--2,
--4,
--4,
--5,
--9,
--5,
--5,
--5,
--6,
--6,
--5,
--5,
--5,
--5,
--5,
--5,
--5,
--9,
--5,
--5,
--5,
--4,
--3,
--2,
--1,
-0,
-0,
-0,
-0,
--3,
-0,
-1,
-1,
-2,
-4,
-4,
-4,
-5,
-4,
-4,
-5,
-5,
-7,
-3,
-6,
-5,
-6,
-6,
-8,
-10,
-11,
-10,
-12,
-11,
-12,
-13,
-12,
-14,
-10,
-14,
-15,
-15,
-12,
-16,
-18,
-18,
-18,
-18,
-19,
-20,
-21,
-22,
-22,
-23,
-23,
-23,
-23,
-23,
-23,
-19,
-22,
-21,
-22,
-22,
-21,
-21,
-21,
-22,
-21,
-21,
-20,
-15,
-18,
-17,
-17,
-16,
-15,
-15,
-14,
-14,
-13,
-13,
-12,
-12,
-10,
-10,
-9,
-8,
-5,
-8,
-8,
-8,
-5,
-8,
-7,
-7,
-7,
-7,
-6,
-7,
-3,
-7,
-7,
-7,
-4,
-7,
-8,
-7,
-8,
-8,
-9,
-9,
-9,
-9,
-10,
-10,
-11,
-10,
-12,
-10,
-11,
-10,
-6,
-10,
-10,
-5,
-10,
-10
-};
-	
+uint32_t w_angle[] = {6,6,6,6,6,6,6,6,5,6,6,6,5,5,5,5,4,0,3,1,0,-2,-4,-4,-5,-9,-5,-5,-5,-6,-6,-5,-5,-5,-5,-5,-5,-5,-9,-5,-5,-5,-4,-3,-2,-1,0,0,0,0,-3,0,1,1,2,4,4,4,5,4,4,5,5,7,3,6,5,6,6,8,10,11,10,12,11,12,13,12,14,10,14,15,15,12,16,18,18,18,18,19,20,21,22,22,23,23,23,23,23,23,19,22,21,22,22,21,21,21,22,21,21,20,15,18,17,17,16,15,15,14,14,13,13,12,12,10,10,9,8,5,8,8,8,5,8,7,7,7,7,6,7,3,7,7,7,4,7,8,7,8,8,9,9,9,9,10,10,11,10,12,10,11,10,6,10,10,5,10,10};
 
-uint32_t w_thrust[] = {0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-11,
-13,
-12,
-13,
-17,
-21,
-22,
-23,
-22,
-20,
-22,
-21,
-21,
-20,
-19,
-18,
-19,
-16,
-8,
-9,
-9,
-18,
-17,
-17,
-17,
-17,
-16,
-16,
-11,
-13,
-29,
-30,
-27,
-20,
-21,
-21,
-21,
-20,
-19,
-18,
-18,
-18,
-18,
-18,
-18,
-19,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-18,
-21,
-21,
-21,
-21,
-21,
-20,
-21,
-21,
-21,
-20,
-20,
-20,
-18,
-19,
-19,
-19,
-19,
-19,
-20,
-19,
-19,
-19,
-19,
-18,
-19,
-20,
-21,
-21,
-21,
-21,
-21,
-21,
-21,
-21,
-21,
-21,
-21,
-22,
-22,
-22,
-22,
-22,
-22,
-22,
-22,
-22,
-21,
-21,
-21,
-21,
-22,
-22,
-22,
-21,
-21,
-21,
-21,
-20,
-20,
-20,
-20,
-20,
-20,
-20,
-20,
-20,
-20,
-19,
-20,
-20,
-20,
-20,
-19,
-19,
-20,
-19,
-19,
-19,
-20,
-19,
-19,
-19,
-20,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0
-};
-
+uint32_t w_thrust[] = {0,0,0,0,0,0,0,0,0,0,0,11,13,12,13,17,21,22,23,22,20,22,21,21,20,19,18,19,16,8,9,9,18,17,17,17,17,16,16,11,13,29,30,27,20,21,21,21,20,19,18,18,18,18,18,18,19,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,21,21,21,21,21,20,21,21,21,20,20,
+20,18,19,19,19,19,19,20,19,19,19,19,18,19,20,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,21,21,21,21,22,22,22,21,21,21,
+21,20,20,20,20,20,20,20,20,20,20,19,20,20,20,20,19,19,20,19,19,19,20,19,19,19,20,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 uint32_t w_steering[] = {90,
 90,
@@ -773,7 +264,6 @@ uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)
 int setvaltrans = 0 ;						// Messdaten werden über Uart übertragen
 int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
-
 //Pucher
 NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
 int i_w = 0;
@@ -788,7 +278,6 @@ int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 int auto_test = 0; //temp var 
 /* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -807,35 +296,26 @@ static void MX_TIM1_Init(void);
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 	
 /* USER CODE END 0 */
-
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
-{
-  /* USER CODE BEGIN 1 */
+{  /* USER CODE BEGIN 1 */
 	int setval = 0;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms; 
   static int32_t uwtick_Hold1s;
-	
-	
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
-
 	//Pucher
-
-
   /* USER CODE END 1 */
   
 
@@ -877,7 +357,6 @@ int main(void)
 	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
 	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
 	// htim4.Instance->CCR1 = 1000; //temp
-	
 	//Pucher
 	FuzzyV1_F4_SetNumType(); 
 	FuzzyV1_F4_init();
@@ -909,8 +388,7 @@ int main(void)
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
 			count_10ms++;
-			
-		
+				
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
@@ -936,9 +414,6 @@ int main(void)
 		
 		
 	}	// 10ms Ende
-		
-	
-		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
@@ -957,8 +432,7 @@ int main(void)
 					else{
 						setvaltrans = 0 ;
 					}		
-				}
-				
+				}	
 				////// Pucher Beginn //////
 				if(autobetrieb){
 					if(i_w >= 167){
@@ -985,44 +459,18 @@ int main(void)
 			uwtick_Hold1s += 1000;
 			count_1s++;	
 		}		// 1s Ende		
-	
-		
-		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-////			}
-////			setval = 0;
-////		}
-//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-//				setvalmemory = 1 ;
-//		}
-		
-//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-//			setvalmemory = 2 ;																																					
-		
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
-		
 		/* Fuzzy 
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
 		//Pucher autobetrieb BEGINN////////////////////////////////////////////////////////////////////////
 		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
-
+		FuzzyV1_F4_free();				//Freigabefunktion 
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
 		if(auto_steering > 135)
@@ -1032,35 +480,21 @@ int main(void)
 		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
 		
 		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
+		
 		auto_test = auto_steering - u_winkel;
 		
-		htim4.Instance->CCR1 = auto_steering_pwm;
-			
+		if(auto_steering > 135)
+			auto_steering = 135;
+		if(auto_steering < 45)
+			auto_steering = 45;
+		htim4.Instance->CCR1 = auto_steering_pwm;	
 		//Motor - Thrust
 		if(auto_thrust < 7)
 			auto_thrust = 0;
 		if(auto_thrust >= 30)
 			auto_thrust = 30;
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
-		
 		}//autobetrieb ENDE/////////////////////////////////////////////////////////////////////////////////
-		
-
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		
-//		htim4.Instance->CCR1 = i;
-//		
-//		i++;
-//		if (i > 2000)
-//			i = 1000;
-		
 	if((handbetrieb == 1)&&(autobetrieb == 0)){
 		auto_start_selfcontrol = 0;
 		i_w = 0;
@@ -1071,9 +505,7 @@ int main(void)
 		if(adcval[1] < 511){
 			lenken = map(adcval[1], 253, 511, 60 , 90);
 		}
-		
 		i = map(lenken, 0, 180, 250, 1250);
-		
 		htim4.Instance->CCR1 = i;
 		
 		if(adcval[0] <= 512)
@@ -1086,12 +518,8 @@ int main(void)
 			gas = 0;
 		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-
   }		
-
   }		// while Ende
-
-	
   /* USER CODE END 3 */
 }
 
@@ -1131,7 +559,6 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
@@ -1146,7 +573,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
 /**
   * @brief ADC1 Initialization Function
   * @param None
@@ -1154,15 +580,10 @@ void SystemClock_Config(void)
   */
 static void MX_ADC1_Init(void)
 {
-
   /* USER CODE BEGIN ADC1_Init 0 */
-
   /* USER CODE END ADC1_Init 0 */
-
   ADC_ChannelConfTypeDef sConfig = {0};
-
   /* USER CODE BEGIN ADC1_Init 1 */
-
   /* USER CODE END ADC1_Init 1 */
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
   */
@@ -1194,9 +615,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 2 */
 	
   /* USER CODE END ADC1_Init 2 */
-
 }
-
 /**
   * @brief ADC2 Initialization Function
   * @param None
@@ -1204,15 +623,10 @@ static void MX_ADC1_Init(void)
   */
 static void MX_ADC2_Init(void)
 {
-
   /* USER CODE BEGIN ADC2_Init 0 */
-
   /* USER CODE END ADC2_Init 0 */
-
   ADC_ChannelConfTypeDef sConfig = {0};
-
   /* USER CODE BEGIN ADC2_Init 1 */
-
   /* USER CODE END ADC2_Init 1 */
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
   */
@@ -1242,9 +656,7 @@ static void MX_ADC2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC2_Init 2 */
-
   /* USER CODE END ADC2_Init 2 */
-
 }
 
 /**
@@ -1253,16 +665,10 @@ static void MX_ADC2_Init(void)
   * @retval None
   */
 static void MX_ADC3_Init(void)
-{
-
-  /* USER CODE BEGIN ADC3_Init 0 */
-
+{  /* USER CODE BEGIN ADC3_Init 0 */
   /* USER CODE END ADC3_Init 0 */
-
   ADC_ChannelConfTypeDef sConfig = {0};
-
   /* USER CODE BEGIN ADC3_Init 1 */
-
   /* USER CODE END ADC3_Init 1 */
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
   */
@@ -1302,9 +708,7 @@ static void MX_ADC3_Init(void)
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
-
 }
-
 /**
   * @brief ETH Initialization Function
   * @param None
@@ -1312,13 +716,9 @@ static void MX_ADC3_Init(void)
   */
 static void MX_ETH_Init(void)
 {
-
   /* USER CODE BEGIN ETH_Init 0 */
-
   /* USER CODE END ETH_Init 0 */
-
   /* USER CODE BEGIN ETH_Init 1 */
-
   /* USER CODE END ETH_Init 1 */
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
@@ -1342,11 +742,8 @@ static void MX_ETH_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ETH_Init 2 */
-
   /* USER CODE END ETH_Init 2 */
-
 }
-
 /**
   * @brief TIM1 Initialization Function
   * @param None
@@ -1389,11 +786,8 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM1_Init 2 */
-
   /* USER CODE END TIM1_Init 2 */
-
 }
-
 /**
   * @brief TIM2 Initialization Function
   * @param None
@@ -1434,11 +828,8 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
-
   /* USER CODE END TIM2_Init 2 */
-
 }
-
 /**
   * @brief TIM3 Initialization Function
   * @param None
@@ -1497,7 +888,6 @@ static void MX_TIM3_Init(void)
   HAL_TIM_MspPostInit(&htim3);
 
 }
-
 /**
   * @brief TIM4 Initialization Function
   * @param None
@@ -1551,10 +941,8 @@ static void MX_TIM4_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM4_Init 2 */
-
   /* USER CODE END TIM4_Init 2 */
   HAL_TIM_MspPostInit(&htim4);
-
 }
 
 /**
@@ -1566,11 +954,8 @@ static void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
-
   /* USER CODE END USART2_Init 0 */
-
   /* USER CODE BEGIN USART2_Init 1 */
-
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
@@ -1587,11 +972,8 @@ static void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
-
   /* USER CODE END USART2_Init 2 */
-
 }
-
 /**
   * @brief USART3 Initialization Function
   * @param None
@@ -1599,13 +981,9 @@ static void MX_USART2_UART_Init(void)
   */
 static void MX_USART3_UART_Init(void)
 {
-
   /* USER CODE BEGIN USART3_Init 0 */
-
   /* USER CODE END USART3_Init 0 */
-
   /* USER CODE BEGIN USART3_Init 1 */
-
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
   huart3.Init.BaudRate = 115200;
@@ -1624,19 +1002,15 @@ static void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 2 */
 
   /* USER CODE END USART3_Init 2 */
-
 }
-
 /** 
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void) 
 {
-
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
-
   /* DMA interrupt init */
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
@@ -1644,7 +1018,6 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
-
 }
 
 /**
@@ -1709,7 +1082,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : USB_OverCurrent_Pin */
   GPIO_InitStruct.Pin = USB_OverCurrent_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -1744,12 +1116,6 @@ static void MX_GPIO_Init(void)
             the HAL_TIM_PeriodElapsedCallback could be implemented in the user file
    */
 }
-
-
-
-  
-	
-
 /* USER CODE END 4 */
 
 /**
@@ -1780,5 +1146,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
