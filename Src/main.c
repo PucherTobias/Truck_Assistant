@@ -96,6 +96,7 @@ uint32_t w_velocity[169];
 int32_t w_angle[169];
 uint32_t w_thrust[169];
 uint32_t w_steering[169];
+uint32_t flasharray_length[] = {0};
 
 NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
 int i_w = 0;
@@ -207,22 +208,26 @@ int main(void)
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
 	htim4.Instance->CCR1 = 750; //default 90°
 	
-	//Flash auslesen -> Sollwertkurve
+	//Flash auslesen -> Sollwertkurve, Anzahl gespeicherter Werte
+	//Flasharray Length
+	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_32);
+	
 	//Velocity
 	MY_FLASH_SetSectorAddrs(8, 0x08100000);
-	MY_FLASH_ReadN(0, w_velocity, 169, DATA_TYPE_32);
+	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_8);
 
 	//Angle
 	MY_FLASH_SetSectorAddrs(9, 0x08140000);
-	MY_FLASH_ReadN(0, w_angle, 169, DATA_TYPE_32);
+	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_8);
 
-//Thrust
+	//Thrust
 	MY_FLASH_SetSectorAddrs(10, 0x08180000);
-	MY_FLASH_ReadN(0, w_thrust, 169, DATA_TYPE_32);
+	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_8);
 	
-//Steering
+	//Steering
 	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-	MY_FLASH_ReadN(0, w_steering, 169, DATA_TYPE_32);
+	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_8);
 	
   /* USER CODE END 2 */
 
@@ -403,6 +408,7 @@ int main(void)
 		
 	if((handbetrieb == 1)&&(autobetrieb == 0)){
 		auto_start_selfcontrol = 0;
+		
 		i_w = 0;
 		if(adcval[1] >= 511){
 			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
