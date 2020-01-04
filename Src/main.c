@@ -95,10 +95,10 @@ int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 
 //Pucher
-uint32_t w_velocity[169];
-int32_t w_angle[169];
-uint32_t w_thrust[169];
-uint32_t w_steering[169];
+uint32_t w_velocity[10000] = {0};
+int32_t w_angle[10000] = {0};
+uint32_t w_thrust[10000] = {0};
+uint32_t w_steering[10000] = {0};
 uint32_t flasharray_length[] = {0};
 
 NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
@@ -211,7 +211,7 @@ int main(void)
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
 	htim4.Instance->CCR1 = 750; //default 90°
 	
-	//Flash auslesen -> Sollwertkurve, Anzahl gespeicherter Werte
+	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
 	//Flasharray Length
 	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
 	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_32);
@@ -298,6 +298,33 @@ int main(void)
 //					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
+					
+					flasharray_length[0] = icom+1;
+					
+					
+					//Flash abspeichern icom+1 (=anzahl der Sollwerte)
+					/*//void MY_FLASH_WriteN(uint32_t idx, void *wrBuf, uint32_t Nsize, DataTypeDef dataType)//*/
+					
+					//Length Anzahl der Werte
+					MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+					MY_FLASH_WriteN(0, flasharray_length, 1, DATA_TYPE_32);
+					
+					//Velocity
+					MY_FLASH_SetSectorAddrs(8, 0x08100000);
+					MY_FLASH_WriteN(0, velocity, flasharray_length[0], DATA_TYPE_8);
+					
+					//Angle
+					MY_FLASH_SetSectorAddrs(9, 0x08140000);
+					MY_FLASH_WriteN(0, angle, flasharray_length[0], DATA_TYPE_8);
+					
+					//Thrust
+					MY_FLASH_SetSectorAddrs(10, 0x08180000);
+					MY_FLASH_WriteN(0, thrust, flasharray_length[0], DATA_TYPE_8);
+					
+					//Steering
+					MY_FLASH_SetSectorAddrs(11, 0x081C0000);
+					MY_FLASH_WriteN(0, steering, flasharray_length[0], DATA_TYPE_8);
+					
 			}
 				else{
 					velocity[icom]=0;
@@ -374,7 +401,7 @@ int main(void)
 		/* Fuzzy 
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//Pucher autobetrieb BEGINN////////////////////////////////////////////////////////////////////////
+		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
 		setval_memory = 0 ;
 		auto_start_selfcontrol = 1;
 		FuzzyV1_F4_free();
@@ -400,7 +427,7 @@ int main(void)
 			auto_thrust = 30;
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
 		
-		}//autobetrieb ENDE/////////////////////////////////////////////////////////////////////////////////
+		}//autobetrieb ENDE////////////////////////////////////////////////////////
 		
 
 		// Clock ... 32MHz
