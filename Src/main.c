@@ -360,7 +360,6 @@ int main(void)
 		if((autobetrieb==1)&&(handbetrieb == 0)){
 		//Pucher autobetrieb BEGINN////////////////////////////////////////////////////////////////////////
 		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
 
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
@@ -374,7 +373,7 @@ int main(void)
 		auto_test = auto_steering - u_winkel;
 		
 		//achtung wenn regler aktiviert wird.. sicherheitsmaßnahme um unkontrollierten thrust zu verhindern, wenn Kurve abgearbeitet wurde.
-		htim4.Instance->CCR1 = auto_steering_pwm;
+	//	htim4.Instance->CCR1 = auto_steering_pwm;
 			
 		//Motor - Thrust
 		if(auto_thrust < 7)
