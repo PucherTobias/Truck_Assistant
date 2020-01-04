@@ -423,16 +423,6 @@
               <FilePath>..\Inc\NumType_F4.h</FilePath>
             </File>
             <File>
-              <FileName>FuzzyV1_F4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\FuzzyV1_F4.h</FilePath>
-            </File>
-            <File>
-              <FileName>FuzzyV1_F4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\FuzzyV1_F4.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -476,6 +466,36 @@
               <FileName>MY_FLASH.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\MY_FLASH.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\stm32f7xx_hal_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_it.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\stm32f7xx_it.h</FilePath>
+            </File>
+            <File>
+              <FileName>usb_device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\usb_device.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\usbd_cdc_if.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV3_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\FuzzyV3_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV3_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\FuzzyV3_F4.c</FilePath>
             </File>
           </Files>
         </Group>
