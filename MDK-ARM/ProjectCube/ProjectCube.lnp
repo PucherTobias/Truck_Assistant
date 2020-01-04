@@ -1,6 +1,5 @@
 --cpu Cortex-M7.fp.dp
 "projectcube\startup_stm32f767xx.o"
-"projectcube\numtype_f4.o"
 "projectcube\main.o"
 "projectcube\usb_device.o"
 "projectcube\usbd_conf.o"
@@ -8,8 +7,9 @@
 "projectcube\usbd_cdc_if.o"
 "projectcube\stm32f7xx_it.o"
 "projectcube\stm32f7xx_hal_msp.o"
+"projectcube\fuzzytry_f4.o"
 "projectcube\fuzzy_f4.o"
-"projectcube\rangierfuzzy_f4.o"
+"projectcube\numtype_f4.o"
 "projectcube\system_stm32f7xx.o"
 "projectcube\stm32f7xx_hal_pcd.o"
 "projectcube\stm32f7xx_hal_pcd_ex.o"

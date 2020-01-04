@@ -1,12 +1,6 @@
 Dependencies for Project 'ProjectCube', Target 'ProjectCube': (DO NOT MODIFY !)
 F (startup_stm32f767xx.s)(0x5E0A0676)(--cpu Cortex-M7.fp.dp --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include--pd "__UVISION_VERSION SETA 528" --pd "_RTE_ SETA 1" --pd "STM32F767xx SETA 1"--list startup_stm32f767xx.lst --xref -o projectcube\startup_stm32f767xx.o --depend projectcube\startup_stm32f767xx.d)
-F (..\Src\NumType_F4.c)(0x3B8B5424)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\numtype_f4.o --omf_browse projectcube\numtype_f4.crf --depend projectcube\numtype_f4.d)
-I (../Inc/NumType_F4.h)(0x3B8B91CA)
-I (C:\ARM\ARMCC\include\float.h)(0x5CEBCE42)
-F (..\Inc\fuzzy_F4.h)(0x5E106175)()
-F (..\Inc\NumType_F4.h)(0x3B8B91CA)()
-F (..\Inc\rangierFuzzy_F4.h)(0x5E10C9F4)()
-F (../Src/main.c)(0x5E10CBCB)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\main.o --omf_browse projectcube\main.crf --depend projectcube\main.d)
+F (../Src/main.c)(0x5E10F12E)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\main.o --omf_browse projectcube\main.crf --depend projectcube\main.d)
 I (../Inc/main.h)(0x5E10C9F4)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5DB44FD5)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E0A0671)
@@ -57,9 +51,9 @@ I (../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h)(0x5DB44F
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x5DB44FDE)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x5DB44FDE)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x5DB44FDE)
-I (../Inc/rangierFuzzy_F4.h)(0x5E10C9F4)
-I (../Inc/fuzzy_F4.h)(0x5E106175)
-I (../Inc/fuzzy_enums.h)(0x5E106175)
+I (../Inc/FuzzyTry_F4.h)(0x5E10E1E8)
+I (../Inc/fuzzy_F4.h)(0x4C8E0E00)
+I (../Inc/fuzzy_enums.h)(0x4C8E0E00)
 I (../Inc/NumType_F4.h)(0x3B8B91CA)
 I (C:\ARM\ARMCC\include\float.h)(0x5CEBCE42)
 I (C:\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
@@ -262,7 +256,7 @@ I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h)(0x5DB44FD5)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h)(0x5DB44FD5)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x5DB44FDE)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x5DB44FDE)
-F (../Src/stm32f7xx_it.c)(0x5E10C9F5)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\stm32f7xx_it.o --omf_browse projectcube\stm32f7xx_it.crf --depend projectcube\stm32f7xx_it.d)
+F (../Src/stm32f7xx_it.c)(0x5E10CC59)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\stm32f7xx_it.o --omf_browse projectcube\stm32f7xx_it.crf --depend projectcube\stm32f7xx_it.d)
 I (../Inc/main.h)(0x5E10C9F4)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5DB44FD5)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E0A0671)
@@ -343,20 +337,27 @@ I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h)(0x5DB44FD5)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h)(0x5DB44FD5)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h)(0x5DB44FD5)
 I (../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h)(0x5DB44FD5)
-F (..\Src\fuzzy_F4.c)(0x5E106303)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\fuzzy_f4.o --omf_browse projectcube\fuzzy_f4.crf --depend projectcube\fuzzy_f4.d)
+F (..\Src\FuzzyTry_F4.c)(0x5E10E72C)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\fuzzytry_f4.o --omf_browse projectcube\fuzzytry_f4.crf --depend projectcube\fuzzytry_f4.d)
+I (../Inc/FuzzyTry_F4.h)(0x5E10E1E8)
+I (../Inc/fuzzy_F4.h)(0x4C8E0E00)
+I (../Inc/fuzzy_enums.h)(0x4C8E0E00)
+I (../Inc/NumType_F4.h)(0x3B8B91CA)
+I (C:\ARM\ARMCC\include\float.h)(0x5CEBCE42)
+I (C:\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
+F (..\Src\fuzzy_F4.c)(0x5E10E067)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\fuzzy_f4.o --omf_browse projectcube\fuzzy_f4.crf --depend projectcube\fuzzy_f4.d)
 I (C:\ARM\ARMCC\include\stdlib.h)(0x5CEBCE42)
-I (../Inc/fuzzy_F4.h)(0x5E106175)
-I (../Inc/fuzzy_enums.h)(0x5E106175)
+I (../Inc/fuzzy_F4.h)(0x4C8E0E00)
+I (../Inc/fuzzy_enums.h)(0x4C8E0E00)
 I (../Inc/NumType_F4.h)(0x3B8B91CA)
 I (C:\ARM\ARMCC\include\float.h)(0x5CEBCE42)
 I (C:\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
-F (..\Src\rangierFuzzy_F4.c)(0x5E10C9F5)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\rangierfuzzy_f4.o --omf_browse projectcube\rangierfuzzy_f4.crf --depend projectcube\rangierfuzzy_f4.d)
-I (../Inc/rangierFuzzy_F4.h)(0x5E10C9F4)
-I (../Inc/fuzzy_F4.h)(0x5E106175)
-I (../Inc/fuzzy_enums.h)(0x5E106175)
+F (..\Src\NumType_F4.c)(0x3B8B5424)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\numtype_f4.o --omf_browse projectcube\numtype_f4.crf --depend projectcube\numtype_f4.d)
 I (../Inc/NumType_F4.h)(0x3B8B91CA)
 I (C:\ARM\ARMCC\include\float.h)(0x5CEBCE42)
-I (C:\ARM\ARMCC\include\assert.h)(0x5CEBCE36)
+F (..\Inc\fuzzy_F4.h)(0x4C8E0E00)()
+F (..\Inc\fuzzy_enums.h)(0x4C8E0E00)()
+F (..\Inc\FuzzyTry_F4.h)(0x5E10E1E8)()
+F (..\Inc\NumType_F4.h)(0x3B8B91CA)()
 F (../Src/system_stm32f7xx.c)(0x5D922A92)(--c99 -c --cpu Cortex-M7.fp.dp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc -I ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_ProjectCube-IC:\Users\Florian\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\Florian\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx -DUSE_HAL_DRIVER -DSTM32F767xx-o projectcube\system_stm32f7xx.o --omf_browse projectcube\system_stm32f7xx.crf --depend projectcube\system_stm32f7xx.d)
 I (../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h)(0x5DB44FBE)
 I (../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h)(0x5DB44FBE)

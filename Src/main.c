@@ -25,7 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "rangierFuzzy_F4.h" 
+#include "FuzzyTry_F4.h" 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,6 +63,7 @@ uint32_t testadc3;
 uint32_t lenken = 0;
 uint32_t gas = 0;
 int i = 0;
+float e01=0,e02=0; 
 
 float sensork;
 float sensorw;
@@ -77,15 +78,6 @@ int iw=0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;
 int count_1s=0 ;
-int setvalmemory = 0 ;
-		//originalwerte 
-//float velocitydata[75] = {0,11,20,20,20,20,22,22,21,21,22,22,21,21,21,21,21,22,22,22,22,22,0,16,26,26,22,22,22,18,16,29,20,18,18,18,24,24,24,24,24,25,25,17,0,18,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,00,0,0,0,0,0,0,0,0}; 
-//float steeringdata[75] = {58,50,50,50,60,93,93,122,125,125,125,125,124,107,113,113,113,93,93,93,93,92,77,50,50,50,50,93,93,73,93,93,93,93,135,134,67,68,93,93,93,84,74,93,93,93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; 
-
-
-
-float velocitydata[75] = {0,11,20,20,20,20,22,22,21,21,22,22,21,21,21,21,21,22,22,22,22,22,0,16,26,26,22,22,22,18,16,29,20,18,18,18,24,24,24,24,24,25,25,17,0,18,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,00,0,0,0,0,0,0,0,0}; 
-float steeringdata[75] = {58,50,50,50,60,93,93,122,125,125,125,125,124,107,113,113,113,93,93,93,93,92,77,50,50,50,50,93,93,73,93,93,93,93,120,124,67,68,93,93,93,84,74,93,93,93,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; 
 int inf=0;
 int count1=0;
 int autobetrieb=0;
@@ -126,27 +118,32 @@ int main(void)
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms;
   static int32_t uwtick_Hold1s;
-	
-	
+
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
 
   /* USER CODE END 1 */
   
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	
+	//		if((autobetrieb==1)&&(handbetrieb == 0)){
+		
+//			for(int i=0; i<10;i++,e01=0,e02=0){
+//				e01+=100;
+//				e02+=100; 
+//			}
+//			
+
+		
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -162,11 +159,7 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
-	
-	// htim4.Instance->CCR1 = 1000; //temp
-	
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -176,15 +169,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){
-//				autobetrieb= 1;
-//				handbetrieb= 0;
-//		}
-//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-//				autobetrieb= 0;
-//				handbetrieb= 1;
-//		}			
-//		
+		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
@@ -193,127 +178,33 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
-/*			if(setvalmemory == 1){
-				velocity[iw] =	gas	;
-				steering[iw] =	lenken ;
-				iw++ ;
-			}
-			
-			if(setvalmemory == 2){
-				velocity[iw]=0;
-				steering[iw]=0;
-				iw++ ;// not tested yet
-			} 
-	*/
-			if((autobetrieb == 1)&&(handbetrieb==0)){
-			
-			gas = velocitydata[count1];
-			lenken = steeringdata[count1];
-			
-			if(inf>=4){
-				count1++;
-				inf=0;
-			}
-			inf++;
-			
-			}
 		}
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;												
+			count_1s++;			
+						e01=10000;
+		e02=-10000; 
+		e1 = e01;
+		e2 = e02;
+	//FuzzyTry_F4_SetNumType();
+	  FuzzyTry_F4_init();
+		FuzzyTry_F4_calc(e1, e2, &a1, &a2);  
+ 	  
+
+			                         
 		}																																							// Code Georg
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,5) == HAL_OK)
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 		
-		
-		sensork=2*(2076.0/(adcvaluek-11));
-		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}
-////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-////			}
-////			setval = 0;
-////		}
 
-		
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Code Georg
-				setvalmemory = 1 ;
-		}
-		
-		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )
-			setvalmemory = 2 ;																																					// Code Georg
-		
-		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-			__HAL_TIM_DISABLE(&htim3);
-			while(1){}
-		}
-		
-		HAL_ADC_Start(&hadc2);
-		if(HAL_ADC_PollForConversion(&hadc2, 5) == HAL_OK) {
-			testadc2 = HAL_ADC_GetValue(&hadc2);
-		}
-		
-		HAL_ADC_Start(&hadc3);
-		if(HAL_ADC_PollForConversion(&hadc3, 5) == HAL_OK) {
-			testadc3 = HAL_ADC_GetValue(&hadc3);
-		}
-
-		//Servo
-		
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		
-//		htim4.Instance->CCR1 = i;
-//		
-//		i++;
-//		if (i > 2000)
-//			i = 1000;
-		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//e1 = gas;
-		//e2 = lenken;
-		rangierFuzzy_F4_SetNumType();
-	  rangierFuzzy_F4_init();
-		rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
-//	rangierFuzzy_F4_free();
-
-
-			
-//		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-//		
-//		i = map(lenken, 0, 180, 250, 1250);
-//		
-//		htim4.Instance->CCR1 = i;
-		
-			
-		}
 		
 		if((handbetrieb == 1)&&(autobetrieb == 0)){
-			
 		
 		lenken = map(testadc2, 0, 1023, 50, 135);
-		
 		i = map(lenken, 0, 180, 250, 1250);
-		
 		htim4.Instance->CCR1 = i;
 		
 		if(testadc3 <= 512)
@@ -326,10 +217,11 @@ int main(void)
 			gas = 0;
 		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);	
-
-					
+				
 		}
+
   }
+				FuzzyTry_F4_free();
   /* USER CODE END 3 */
 }
 
