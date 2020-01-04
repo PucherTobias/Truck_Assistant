@@ -176,15 +176,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){
-				autobetrieb= 1;
-				handbetrieb= 0;
-		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-				autobetrieb= 0;
-				handbetrieb= 1;
-		}			
-		
+//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){
+//				autobetrieb= 1;
+//				handbetrieb= 0;
+//		}
+//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+//				autobetrieb= 0;
+//				handbetrieb= 1;
+//		}			
+//		
 		if( uwTick - uwtick_Hold10ms >= 10 ) {																				// 10ms Zykluszeit Code Georg
 			uwtick_Hold10ms += 10;
 			count_10ms++;
@@ -291,18 +291,18 @@ int main(void)
 		if((autobetrieb==1)&&(handbetrieb == 0)){
 		//e1 = gas;
 		//e2 = lenken;
-	//	rangierFuzzy_F4_SetNumType();
-	//	rangierFuzzy_F4_init();
-	//	rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
-	//	rangierFuzzy_F4_free();
+		rangierFuzzy_F4_SetNumType();
+	  rangierFuzzy_F4_init();
+		rangierFuzzy_F4_calc(e1, e2, &a1, &a2); 
+//	rangierFuzzy_F4_free();
 
 
 			
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-		
-		i = map(lenken, 0, 180, 250, 1250);
-		
-		htim4.Instance->CCR1 = i;
+//		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+//		
+//		i = map(lenken, 0, 180, 250, 1250);
+//		
+//		htim4.Instance->CCR1 = i;
 		
 			
 		}

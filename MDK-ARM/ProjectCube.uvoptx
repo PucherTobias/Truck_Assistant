@@ -185,32 +185,32 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lenken</ItemText>
+          <ItemText>autobetrieb,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>gas</ItemText>
+          <ItemText>handbetrieb,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
-          <ItemText>velocitydata</ItemText>
+          <ItemText>a1</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>2</WinNumber>
-          <ItemText>steeringdata</ItemText>
+          <ItemText>a2</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>2</WinNumber>
-          <ItemText>autobetrieb</ItemText>
+          <ItemText>e2</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>handbetrieb</ItemText>
+          <ItemText>e1</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>
