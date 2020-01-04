@@ -51,7 +51,7 @@ projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ior
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 projectcube\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
-projectcube\main.o: ../Inc/FuzzyTry_F4.h
+projectcube\main.o: ../Inc/FC_v_F4.h
 projectcube\main.o: ../Inc/fuzzy_F4.h
 projectcube\main.o: ../Inc/fuzzy_enums.h
 projectcube\main.o: ../Inc/NumType_F4.h

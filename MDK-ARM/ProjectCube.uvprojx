@@ -428,11 +428,6 @@
               <FilePath>../Src/stm32f7xx_hal_msp.c</FilePath>
             </File>
             <File>
-              <FileName>FuzzyTry_F4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\FuzzyTry_F4.c</FilePath>
-            </File>
-            <File>
               <FileName>fuzzy_F4.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fuzzy_F4.c</FilePath>
@@ -453,14 +448,19 @@
               <FilePath>..\Inc\fuzzy_enums.h</FilePath>
             </File>
             <File>
-              <FileName>FuzzyTry_F4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\FuzzyTry_F4.h</FilePath>
-            </File>
-            <File>
               <FileName>NumType_F4.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\NumType_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FC_v_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\FC_v_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FC_v_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\FC_v_F4.c</FilePath>
             </File>
           </Files>
         </Group>
