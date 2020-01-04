@@ -83,6 +83,7 @@ uint8_t	steering[10000] = {0};
 int iw=0 ;
 int itrans = 0 ;
 int icom = 0 ;
+int length = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;							// Verzögerungen
 int count_1s=0 ;
@@ -286,7 +287,7 @@ int main(void)
 		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
-		if(count_10ms%2==0)	{ //200ms
+		if(count_10ms%2==0)	{ //20ms
 			if((memory_start==1)&&(icom<10000)){
 				if(setval_memory==1){
 					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
@@ -298,6 +299,7 @@ int main(void)
 //					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
+<<<<<<< HEAD
 					
 					flasharray_length[0] = icom+1;
 					
@@ -325,15 +327,18 @@ int main(void)
 					MY_FLASH_SetSectorAddrs(11, 0x081C0000);
 					MY_FLASH_WriteN(0, steering, flasharray_length[0], DATA_TYPE_8);
 					
+=======
+					length++ ;
+>>>>>>> 0acf041fec552226a84d6525da67b86811fa8c15
 			}
-				else{
+				if(setval_memory==0){
 					velocity[icom]=0;
 					angle[icom]=0 ;
 					steering[icom] = 0 ;
 					thrust[icom] = 0 ;
 					}
 				}
-			}
+			
 				
 				////// Pucher Beginn //////
 				if(autobetrieb){
