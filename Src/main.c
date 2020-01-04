@@ -245,6 +245,9 @@ int main(void)
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
 		{	memory_start = 1 ;
 		}
+		if(HAL_GPIO_ReadPin(Memory_store_GPIO_Port,Memory_store_Pin))
+		{	memory_start = 0 ;
+		}
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
 				handbetrieb= 0;
@@ -288,8 +291,8 @@ int main(void)
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
 		if(count_10ms%2==0)	{ //20ms
-			if((memory_start==1)&&(icom<10000)){
-				if(setval_memory==1){
+			if((setval_memory==1)&&(icom<10000)){
+				if(memory_start==1){
 					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
@@ -303,38 +306,14 @@ int main(void)
 					flasharray_length[0] = icom+1;
 					
 					
-					//Flash abspeichern icom+1 (=anzahl der Sollwerte)
-					/*//void MY_FLASH_WriteN(uint32_t idx, void *wrBuf, uint32_t Nsize, DataTypeDef dataType)//*/
-					
-					//Length Anzahl der Werte
-					MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-					MY_FLASH_WriteN(0, flasharray_length, 1, DATA_TYPE_32);
-					
-					//Velocity
-					MY_FLASH_SetSectorAddrs(8, 0x08100000);
-					MY_FLASH_WriteN(0, velocity, flasharray_length[0], DATA_TYPE_8);
-					
-					//Angle
-					MY_FLASH_SetSectorAddrs(9, 0x08140000);
-					MY_FLASH_WriteN(0, angle, flasharray_length[0], DATA_TYPE_8);
-					
-					//Thrust
-					MY_FLASH_SetSectorAddrs(10, 0x08180000);
-					MY_FLASH_WriteN(0, thrust, flasharray_length[0], DATA_TYPE_8);
-					
-					//Steering
-					MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-					MY_FLASH_WriteN(0, steering, flasharray_length[0], DATA_TYPE_8);
-					
-			}
-			if(setval_memory==0){
+				}
+				if(setval_memory==0){
 					velocity[icom]=0;
 					angle[icom]=0 ;
 					steering[icom] = 0 ;
 					thrust[icom] = 0 ;
-					}
-
 				}
+			}
 			
 				
 				////// Pucher Beginn //////
