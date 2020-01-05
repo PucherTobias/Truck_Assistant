@@ -423,16 +423,6 @@
               <FilePath>..\Inc\NumType_F4.h</FilePath>
             </File>
             <File>
-              <FileName>FuzzyV1_F4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\FuzzyV1_F4.h</FilePath>
-            </File>
-            <File>
-              <FileName>FuzzyV1_F4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\FuzzyV1_F4.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -476,6 +466,16 @@
               <FileName>MY_FLASH.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\MY_FLASH.c</FilePath>
+            </File>
+            <File>
+              <FileName>FC_v_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\FC_v_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>FC_v_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\FC_v_F4.h</FilePath>
             </File>
           </Files>
         </Group>

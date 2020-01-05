@@ -25,7 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "FuzzyV1_F4.h" 
+#include "FC_v_F4.h" 
 #include "MY_FLASH.h"
 /* USER CODE END Includes */
 
@@ -201,8 +201,8 @@ int main(void)
 	// htim4.Instance->CCR1 = 1000; //temp
 	
 	//Pucher
-	FuzzyV1_F4_SetNumType(); 
-	FuzzyV1_F4_init();
+
+
 	
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
 	htim4.Instance->CCR1 = 750; //default 90°
@@ -233,17 +233,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
-		{	setvaltrans = 1 ;
-		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
-				autobetrieb= 1;																																		  // oder Autobetrieb
-				handbetrieb= 0;
-		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-				autobetrieb= 0;
-				handbetrieb= 1;
-		}		
+//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
+//		{	setvaltrans = 1 ;
+//		}
+//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
+//				autobetrieb= 1;																																		  // oder Autobetrieb
+//				handbetrieb= 0;
+//		}
+//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+//				autobetrieb= 0;
+//				handbetrieb= 1;
+//		}		
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -271,12 +271,13 @@ int main(void)
 		
 		//Pucher 10ms
 		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
-		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
-		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
-		
-		
-	}	// 10ms Ende
-		
+		//e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
+		e_winkel = 20;
+		e_v=10; 
+		FC_v_F4_init();
+		FC_v_F4_calc(e_winkel,e_v,&u_winkel);
+	}	
+		FC_v_F4_free();
 	
 		
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
@@ -296,7 +297,8 @@ int main(void)
 					}	
 					else{
 						setvaltrans = 0 ;
-					}		
+					}
+				
 				}
 				
 				////// Pucher Beginn //////
@@ -317,6 +319,7 @@ int main(void)
 				}
 			////// Pucher Ende //////	
 			}
+
 		}	// 100ms Ende
 			
 		
@@ -349,11 +352,11 @@ int main(void)
 //			setvalmemory = 2 ;																																					
 		
 		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-			__HAL_TIM_DISABLE(&htim3);
-			while(1){}
-		}
+//		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
+//			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
+//			__HAL_TIM_DISABLE(&htim3);
+//			while(1){}
+//		}
 		
 		/* Fuzzy 
 		*/
