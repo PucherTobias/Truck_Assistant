@@ -104,6 +104,8 @@ uint8_t w_thrust[10000] = {0};
 uint8_t w_steering[10000] = {0};
 uint8_t flasharray_length[1] = {0};
 
+int curve_was_taken = 0;
+
 NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
 int i_w = 0;
 int auto_steering = 90; //sollwert
@@ -253,6 +255,7 @@ int main(void)
 		if(HAL_GPIO_ReadPin(Memory_store_GPIO_Port,Memory_store_Pin))
 		{	memory_start = 2 ;
 			memorystorebutton++;
+			curve_was_taken = 2;
 		}
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
@@ -315,6 +318,7 @@ int main(void)
 		if(count_10ms%2==0)	{ //20ms
 			if(setval_memory_storage==1){
 				if(memory_start==1){
+					curve_was_taken = 1;
 					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
@@ -325,7 +329,7 @@ int main(void)
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
 					
-					flasharray_length[0] = icom+1;	
+					
 				}
 				
 				if((memory_start==2)&&(icom>=9999)){
@@ -333,6 +337,7 @@ int main(void)
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
 					thrust[icom] = 0 ;
+					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
 				}
 			}
 			
@@ -451,6 +456,35 @@ int main(void)
 			setval_memory_storage=1 ;
 			auto_start_selfcontrol = 0;
 		
+			if(curve_was_taken == 2){ //wenn eine kurvenaufnahme gestartet und beendet wurde, dann werden die Werte der Sollkurve in den Flashspeicher geschrieben
+			//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve
+			//Flasharray Length
+			MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+			MY_FLASH_WriteN(0, flasharray_length, 1, DATA_TYPE_32);
+
+			//Velocity
+			MY_FLASH_SetSectorAddrs(8, 0x08100000);
+			MY_FLASH_WriteN(0, velocity, flasharray_length[0], DATA_TYPE_8);
+
+			//Angle
+			MY_FLASH_SetSectorAddrs(9, 0x08140000);
+			MY_FLASH_WriteN(0, angle, flasharray_length[0], DATA_TYPE_8);
+
+			//Thrust
+			MY_FLASH_SetSectorAddrs(10, 0x08180000);
+			MY_FLASH_WriteN(0, thrust, flasharray_length[0], DATA_TYPE_8);
+
+			//Steering
+			MY_FLASH_SetSectorAddrs(11, 0x081C0000);
+			MY_FLASH_WriteN(0, steering, flasharray_length[0], DATA_TYPE_8);
+
+			curve_was_taken = 0;
+
+
+			HAL_Delay(5000);
+			}
+
+			
 		i_w = 0;
 		if(adcval[1] >= 511){
 			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
