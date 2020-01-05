@@ -74,10 +74,10 @@ float steering_conv;			// Winkelsensorwert in °
 int8_t steering_trailer; 
 
 // Georg
-uint8_t velocity[10000] = {0} ;
-int8_t 	angle[10000] = {0} ;					//Speicherfelder
-uint8_t thrust[10000]	= {0};
-uint8_t	steering[10000] = {0};
+uint16_t velocity[10000] = {0} ;
+int16_t 	angle[10000] = {0} ;					//Speicherfelder
+uint16_t thrust[10000]	= {0};
+uint16_t	steering[10000] = {0};
 //unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 //char steeringASCII[10000] ;
 int iw=0 ;
@@ -98,11 +98,12 @@ int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 
 //Pucher
-uint8_t w_velocity[10000] = {0};
-int8_t w_angle[10000] = {0};
-uint8_t w_thrust[10000] = {0};
-uint8_t w_steering[10000] = {0};
-uint8_t flasharray_length[1] = {0};
+uint16_t w_velocity[10000] = {0};
+int16_t w_angle[10000] = {0};
+uint16_t w_thrust[10000] = {0};
+uint16_t w_steering[10000] = {0};
+uint16_t flasharray_length[1];
+uint32_t test = 69;
 
 int curve_was_taken = 0;
 
@@ -219,23 +220,23 @@ int main(void)
 	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
 	//Flasharray Length
 	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_32);
+	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_16);
 	
 	//Velocity
 	MY_FLASH_SetSectorAddrs(8, 0x08100000);
-	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_8);
+	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_16);
 
 	//Angle
 	MY_FLASH_SetSectorAddrs(9, 0x08140000);
-	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_8);
+	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_16);
 
 	//Thrust
 	MY_FLASH_SetSectorAddrs(10, 0x08180000);
-	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_8);
+	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_16);
 	
 	//Steering
 	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_8);
+	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
 	
   /* USER CODE END 2 */
 
@@ -332,12 +333,13 @@ int main(void)
 					
 				}
 				
-				if((memory_start==2)&&(icom>=9999)){
+				if((memory_start==2)||(icom>=9999)){
 					velocity[icom]=	0 ;		
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
 					thrust[icom] = 0 ;
 					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
+					test = icom;
 				}
 			}
 			
@@ -460,23 +462,23 @@ int main(void)
 			//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve
 			//Flasharray Length
 			MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-			MY_FLASH_WriteN(0, flasharray_length, 1, DATA_TYPE_32);
+			MY_FLASH_WriteN(0, &test, 1, DATA_TYPE_16);
 
 			//Velocity
 			MY_FLASH_SetSectorAddrs(8, 0x08100000);
-			MY_FLASH_WriteN(0, velocity, flasharray_length[0], DATA_TYPE_8);
+			MY_FLASH_WriteN(0, velocity, test, DATA_TYPE_16);
 
 			//Angle
 			MY_FLASH_SetSectorAddrs(9, 0x08140000);
-			MY_FLASH_WriteN(0, angle, flasharray_length[0], DATA_TYPE_8);
+			MY_FLASH_WriteN(0, angle, test, DATA_TYPE_16);
 
 			//Thrust
 			MY_FLASH_SetSectorAddrs(10, 0x08180000);
-			MY_FLASH_WriteN(0, thrust, flasharray_length[0], DATA_TYPE_8);
+			MY_FLASH_WriteN(0, thrust, test, DATA_TYPE_16);
 
 			//Steering
 			MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-			MY_FLASH_WriteN(0, steering, flasharray_length[0], DATA_TYPE_8);
+			MY_FLASH_WriteN(0, steering, test, DATA_TYPE_16);
 
 			curve_was_taken = 0;
 
