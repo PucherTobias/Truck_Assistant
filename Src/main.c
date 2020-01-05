@@ -90,8 +90,10 @@ int count_1s=0 ;
 float countspin=0 ;							// Messung von Sensorausgang
 float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
 uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)					
-int setval_memory	 = 0 ;	
+int setval_memory_storage	 = 0 ;	
 int memory_start = 0 ;
+int bluebutton = 0 ;
+int memorystorebutton = 0 ;
 int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 
@@ -242,11 +244,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		
+		
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
 		{	memory_start = 1 ;
+			bluebutton++;
 		}
 		if(HAL_GPIO_ReadPin(Memory_store_GPIO_Port,Memory_store_Pin))
-		{	memory_start = 0 ;
+		{	memory_start = 2 ;
+			memorystorebutton++;
 		}
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
@@ -255,7 +261,12 @@ int main(void)
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
 				autobetrieb= 0;
 				handbetrieb= 1;
-		}		
+		}
+			
+		if(icom>=9999)
+			icom=9999 ;
+		if(icom<0)
+			icom=0;
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -274,10 +285,21 @@ int main(void)
 					if(steering_conv<0){
 						steering_conv=0;
 					}
-				steering_trailer = map(steering_conv,135,323,-90,90) ;
-				if(steering_trailer==0)	{
-					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+				if(steering_conv >= 237){
+					steering_trailer = map(steering_conv, 237,139, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 				}
+				if(steering_conv < 237){
+					steering_trailer = map(steering_conv, 237, 330, 0 , -90);
+				}
+				if(steering_trailer==0){
+				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+				}
+				if(steering_trailer!=0){
+				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
+				}
+//				if(steering_trailer==0)	{
+//					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+//				}
 					
 
 				/////Pucher Begin///////					
@@ -291,7 +313,7 @@ int main(void)
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
 		if(count_10ms%2==0)	{ //20ms
-			if((setval_memory==1)&&(icom<10000)){
+			if(setval_memory_storage==1){
 				if(memory_start==1){
 					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
 					angle[icom]= steering_trailer ;
@@ -303,14 +325,13 @@ int main(void)
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
 					
-					flasharray_length[0] = icom+1;
-					
-					
+					flasharray_length[0] = icom+1;	
 				}
-				if(setval_memory==0){
-					velocity[icom]=0;
-					angle[icom]=0 ;
-					steering[icom] = 0 ;
+				
+				if((memory_start==2)&&(icom>=9999)){
+					velocity[icom]=	0 ;		
+					angle[icom]= steering_trailer ;
+					steering[icom] = lenken ;
 					thrust[icom] = 0 ;
 				}
 			}
@@ -384,7 +405,7 @@ int main(void)
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
 		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
-		setval_memory = 0 ;
+		setval_memory_storage = 0 ;
 		auto_start_selfcontrol = 1;
 		FuzzyV1_F4_free();
 
@@ -420,16 +441,15 @@ int main(void)
 		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
 		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
 		// Periodendauer ... 10ms
+		//		htim4.Instance->CCR1 = i;
+		//		
+		//		i++;
+		//		if (i > 2000)
+		//			i = 1000;
 		
-//		htim4.Instance->CCR1 = i;
-//		
-//		i++;
-//		if (i > 2000)
-//			i = 1000;
-		
-	if((handbetrieb == 1)&&(autobetrieb == 0)){
-		setval_memory=1 ;
-		auto_start_selfcontrol = 0;
+		if((handbetrieb == 1)&&(autobetrieb == 0)){
+			setval_memory_storage=1 ;
+			auto_start_selfcontrol = 0;
 		
 		i_w = 0;
 		if(adcval[1] >= 511){
@@ -450,6 +470,7 @@ int main(void)
 			adcval[0] = 754;
 		
 		gas = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
+		
 		if(gas < 7)
 			gas = 0;
 		
@@ -1035,13 +1056,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(angle_0_GPIO_Port, angle_0_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(angle_0_GPIO_Port, angle_0_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : BlueButton_Pin RedButton_Pin Memorystop_Pin Memorytrans_Pin */
   GPIO_InitStruct.Pin = BlueButton_Pin|RedButton_Pin|Memorystop_Pin|Memorytrans_Pin;
@@ -1061,11 +1082,24 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Counterrisingedge_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Flash_trans_Pin Memory_store_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Flash_trans_Pin|Memory_store_Pin;
+  /*Configure GPIO pin : angle_0_Pin */
+  GPIO_InitStruct.Pin = angle_0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Flash_trans_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Flash_trans_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Memory_store_Pin */
+  GPIO_InitStruct.Pin = Memory_store_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(Memory_store_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
@@ -1086,13 +1120,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : angle_0_Pin */
-  GPIO_InitStruct.Pin = angle_0_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
