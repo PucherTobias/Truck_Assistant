@@ -96,11 +96,11 @@ int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 
 //Pucher
-uint32_t w_velocity[10000] = {0};
-int32_t w_angle[10000] = {0};
-uint32_t w_thrust[10000] = {0};
-uint32_t w_steering[10000] = {0};
-uint32_t flasharray_length[] = {0};
+uint8_t w_velocity[10000] = {0};
+int8_t w_angle[10000] = {0};
+uint8_t w_thrust[10000] = {0};
+uint8_t w_steering[10000] = {0};
+uint8_t flasharray_length[1] = {0};
 
 NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
 int i_w = 0;
