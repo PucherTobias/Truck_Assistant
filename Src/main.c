@@ -119,6 +119,13 @@ int auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 int auto_test = 0; //temp var
+float u = 0;
+float Kp = 0;
+float e = 0;
+float lenken_regler = 90;
+
+int button_rot = 0;
+int button_green = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -219,24 +226,29 @@ int main(void)
 	
 	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
 	//Flasharray Length
-	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_16);
-	
-	//Velocity
-	MY_FLASH_SetSectorAddrs(8, 0x08100000);
-	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_16);
+//	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+//	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_16);
+//	
+//	//Velocity
+//	MY_FLASH_SetSectorAddrs(8, 0x08100000);
+//	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_16);
 
-	//Angle
-	MY_FLASH_SetSectorAddrs(9, 0x08140000);
-	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_16);
+//	//Angle
+//	MY_FLASH_SetSectorAddrs(9, 0x08140000);
+//	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_16);
 
-	//Thrust
-	MY_FLASH_SetSectorAddrs(10, 0x08180000);
-	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_16);
+//	//Thrust
+//	MY_FLASH_SetSectorAddrs(10, 0x08180000);
+//	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_16);
+//	
+//	//Steering
+//	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
+//	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
 	
-	//Steering
-	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
+	
+	//temp
+	autobetrieb = 0;
+	handbetrieb = 1;
 	
   /* USER CODE END 2 */
 
@@ -251,21 +263,25 @@ int main(void)
 		
 		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
 		{	memory_start = 1 ;
-			bluebutton++;
+			bluebutton = 1;
+//			button_rot++;
 		}
 		if(HAL_GPIO_ReadPin(Memory_store_GPIO_Port,Memory_store_Pin))
-		{	memory_start = 2 ;
-			memorystorebutton++;
-			curve_was_taken = 2;
+		{	
+//			memory_start = 2 ;
+//			memorystorebutton++;
+//			curve_was_taken = 2;
+			
 		}
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
-				autobetrieb= 1;																																		  // oder Autobetrieb
-				handbetrieb= 0;
+//				autobetrieb= 1;																																		  // oder Autobetrieb
+//				handbetrieb= 0;
+//			button_green++;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-				autobetrieb= 0;
-				handbetrieb= 1;
-		}
+//		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+////				autobetrieb= 0;
+////				handbetrieb= 1;
+//		}
 			
 		if(icom>=9999)
 			icom=9999 ;
@@ -305,101 +321,78 @@ int main(void)
 //					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
 //				}
 					
-
-				/////Pucher Begin///////					
+				
 				auto_angle_y = steering_trailer;	
-				/////Pucher End/////////
 		}
 		
 		//Pucher 10ms
 		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
-		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
-		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
-		
-		if(count_10ms%2==0)	{ //20ms
-			if(setval_memory_storage==1){
-				if(memory_start==1){
-					curve_was_taken = 1;
-					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
-					angle[icom]= steering_trailer ;
-					steering[icom] = lenken ;
-					thrust[icom] = gas ;
-//					snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
-//					snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
-//					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
-//					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
-					icom++ ;
-					
-					
-				}
-				
-				if((memory_start==2)||(icom>=9999)){
-					velocity[icom]=	0 ;		
-					angle[icom]= steering_trailer ;
-					steering[icom] = lenken ;
-					thrust[icom] = 0 ;
-					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
-					test = icom;
-				}
-			}
-			
-				
-				////// Pucher Beginn //////
-				if(autobetrieb){
-					if(i_w >= 168){
-						i_w = 168;
-						auto_start_selfcontrol = 0;
-					}
-					if(i_w <= 0)
-						i_w = 0;
-				}
-				if((autobetrieb) && (auto_start_selfcontrol)){
-					auto_steering = w_steering[i_w];
-					auto_thrust = w_thrust[i_w];
-					auto_velocity_w = w_velocity[i_w];
-					auto_angle_w = w_angle[i_w];
-					i_w++;
-				}
-			////// Pucher Ende //////
-			}
-		
-	}	// 10ms Ende
-		
-	
-		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
-			uwtick_Hold100ms += 100;
-			count_100ms++;
-		}	// 100ms Ende
-			
-		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
-			uwtick_Hold1s += 1000;
-			count_1s++;	
-		}		// 1s Ende		
-	
+		//e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
+		//FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
 		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+//		if(count_10ms%2==0)	{ //20ms
+////			if(setval_memory_storage==1){
+////				if(memory_start==1){
+////					curve_was_taken = 1;
+////					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
+////					angle[icom]= steering_trailer ;
+////					steering[icom] = lenken ;
+////					thrust[icom] = gas ;
+//////					snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
+//////					snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
+//////					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
+//////					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
+////					icom++ ;
+////					
+////					
+////				}
+////				
+//////				if((memory_start==2)||(icom>=9999)){
+//////					velocity[icom]=	0 ;		
+//////					angle[icom]= steering_trailer ;
+//////					steering[icom] = lenken ;
+//////					thrust[icom] = 0 ;
+//////					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
+//////					test = icom;
+//////				}
 ////			}
-////			setval = 0;
-////		}
-//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-//				setvalmemory = 1 ;
-//		}
+//			
+//				
+//				////// Pucher Beginn //////
+////				if(autobetrieb){
+////					if(i_w >= 168){
+////						i_w = 168;
+////						auto_start_selfcontrol = 0;
+////					}
+////					if(i_w <= 0)
+////						i_w = 0;
+////				}
+////				if((autobetrieb) && (auto_start_selfcontrol)){
+////					auto_steering = w_steering[i_w];
+////					auto_thrust = w_thrust[i_w];
+////					auto_velocity_w = w_velocity[i_w];
+////					auto_angle_w = w_angle[i_w];
+////					i_w++;
+////				}
+//			////// Pucher Ende //////
+//			}
 		
-//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-//			setvalmemory = 2 ;																																					
+//	}	// 10ms Ende
+		
+	
+		
+//		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+//			uwtick_Hold100ms += 100;
+//			count_100ms++;
+//		}	// 100ms Ende
+//			
+//		
+//		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
+//			uwtick_Hold1s += 1000;
+//			count_1s++;	
+//		}		// 1s Ende		
+																																			
 		
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
@@ -407,87 +400,15 @@ int main(void)
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
-		
-		/* Fuzzy 
-		*/
-		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
-		setval_memory_storage = 0 ;
-		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
 
-		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
-		//Lenkung - Steering
-		if(auto_steering > 135)
-			auto_steering = 135;
-		if(auto_steering < 45)
-			auto_steering = 45;
-		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
 		
-		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
-		auto_test = auto_steering - u_winkel;
-		
-		//achtung wenn regler aktiviert wird.. sicherheitsmaßnahme um unkontrollierten thrust zu verhindern, wenn Kurve abgearbeitet wurde.
-		htim4.Instance->CCR1 = auto_steering_pwm;
+		Kp = 4;
+		e = 0 - auto_angle_y;
 			
-		//Motor - Thrust
-		if(auto_thrust < 7)
-			auto_thrust = 0;
-		if(auto_thrust >= 30)
-			auto_thrust = 30;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
+		u=Kp*e;
 		
-		}//autobetrieb ENDE////////////////////////////////////////////////////////
+		lenken_regler = 90-u;		
 		
-
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		//		htim4.Instance->CCR1 = i;
-		//		
-		//		i++;
-		//		if (i > 2000)
-		//			i = 1000;
-		
-		if((handbetrieb == 1)&&(autobetrieb == 0)){
-			setval_memory_storage=1 ;
-			auto_start_selfcontrol = 0;
-		
-			if(curve_was_taken == 2){ //wenn eine kurvenaufnahme gestartet und beendet wurde, dann werden die Werte der Sollkurve in den Flashspeicher geschrieben
-			//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve
-			//Flasharray Length
-			MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-			MY_FLASH_WriteN(0, &test, 1, DATA_TYPE_16);
-
-			//Velocity
-			MY_FLASH_SetSectorAddrs(8, 0x08100000);
-			MY_FLASH_WriteN(0, velocity, test, DATA_TYPE_16);
-
-			//Angle
-			MY_FLASH_SetSectorAddrs(9, 0x08140000);
-			MY_FLASH_WriteN(0, angle, test, DATA_TYPE_16);
-
-			//Thrust
-			MY_FLASH_SetSectorAddrs(10, 0x08180000);
-			MY_FLASH_WriteN(0, thrust, test, DATA_TYPE_16);
-
-			//Steering
-			MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-			MY_FLASH_WriteN(0, steering, test, DATA_TYPE_16);
-
-			curve_was_taken = 0;
-
-
-			HAL_Delay(5000);
-			}
-
-			
-		i_w = 0;
 		if(adcval[1] >= 511){
 			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 		}
@@ -496,7 +417,15 @@ int main(void)
 			lenken = map(adcval[1], 253, 511, 60 , 90);
 		}
 		
+		if(lenken_regler > 120)
+			lenken_regler = 120;
+		if(lenken_regler < 60)
+			lenken_regler = 60;
+		
 		i = map(lenken, 0, 180, 250, 1250);
+		if(bluebutton){
+			i = map(lenken_regler, 0, 180, 250, 1250);
+		}
 		
 		htim4.Instance->CCR1 = i;
 		
