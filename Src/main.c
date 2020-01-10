@@ -56,6 +56,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim10;
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
@@ -135,6 +136,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_TIM10_Init(void);
 /* USER CODE BEGIN PFP */
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -201,8 +203,10 @@ int main(void)
   MX_TIM2_Init();
   MX_ADC2_Init();
   MX_TIM1_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
+	HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1) ;
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	HAL_TIM_Base_Start_IT(&htim2) ;
 	
@@ -405,6 +409,8 @@ int main(void)
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0) ;
+			__HAL_TIM_DISABLE(&htim10) ;
 			while(1){}
 		}
 		
@@ -500,18 +506,28 @@ int main(void)
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(adcval[0] <= 512)
-			adcval[0] = 512;
-		if(adcval[0] >= 754)
-			adcval[0] = 754;
+		if(adcval[0]>=509)	{
+			if(adcval[0] >= 754)
+				adcval[0] = 754;
 		
-		gas = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
+			gas = map(adcval[0], 509, 754 , 0, 31);  //269 - 754
 		
-		if(gas < 7)
-			gas = 0;
+			if(gas < 7)
+				gas = 0;
 		
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+		}
+		if(adcval[0]<=509)	{
+			if(adcval[0]<=274){
+				adcval[0] = 274;
+			}
+			gas = map(adcval[0],509,274,0,31);
+			
+			if(gas < 7)
+				gas = 0;
+			
+		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
+		}
   }		
 
   }		// while Ende
@@ -983,6 +999,52 @@ static void MX_TIM4_Init(void)
 }
 
 /**
+  * @brief TIM10 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM10_Init(void)
+{
+
+  /* USER CODE BEGIN TIM10_Init 0 */
+
+  /* USER CODE END TIM10_Init 0 */
+
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM10_Init 1 */
+
+  /* USER CODE END TIM10_Init 1 */
+  htim10.Instance = TIM10;
+  htim10.Init.Prescaler = 6400;
+  htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim10.Init.Period = 100;
+  htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim10.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim10) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim10) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim10, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM10_Init 2 */
+
+  /* USER CODE END TIM10_Init 2 */
+  HAL_TIM_MspPostInit(&htim10);
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -1125,17 +1187,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Flash_trans_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Flash_trans_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Memory_store_Pin */
-  GPIO_InitStruct.Pin = Memory_store_Pin;
+  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Memory_store_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Memory_store_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(Memory_store_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Flash_trans_Pin */
+  GPIO_InitStruct.Pin = Flash_trans_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Flash_trans_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
