@@ -65,9 +65,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 uint32_t adcvaluek;					// Distanzsensor ADC value
 uint32_t adc_steering;			// Winkelsensor ADC value
 uint32_t adcval[2] ;				// Joysticks adc Wert
-uint32_t lenken = 0;
-uint32_t gas = 0;						// gas & lenk wert
-int i = 0;
+
 
 float sensork;						// Sensorwert in cm
 float steering_conv;			// Winkelsensorwert in °
@@ -94,16 +92,22 @@ int setval_memory_storage	 = 0 ;
 int memory_start = 0 ;
 int bluebutton = 0 ;
 int memorystorebutton = 0 ;
-int autobetrieb=0;							// Fuzzy
-int handbetrieb=0;
+int autocontrol=0;							// Fuzzy
+int manualcontrol=0;
 
-//Pucher
+//Pucher variablen
+
+//manualcontrol
+uint32_t manual_steering = 0; //Steering-Wert für manuelcontrol
+uint32_t manual_thrust = 0;						//Thrust-Wert für manuelcontrol
+int manual_steering_pwm = 0;
+//Flash Sollwertkurve
 uint16_t w_velocity[10000] = {0};
 int16_t w_angle[10000] = {0};
 uint16_t w_thrust[10000] = {0};
 uint16_t w_steering[10000] = {0};
 uint16_t flasharray_length[1];
-uint32_t test = 69;
+uint32_t flash_index = 69;
 
 int curve_was_taken = 0;
 
@@ -113,7 +117,7 @@ int auto_steering = 90; //sollwert
 int auto_thrust = 0; //sollwert
 int auto_steering_pwm = 0;
 int auto_thrust_pwm = 0;
-int auto_start_selfcontrol = 0;
+int auto_start_driving = 0;
 int auto_angle_w = 0; //sollwert
 int auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
@@ -214,7 +218,7 @@ int main(void)
 	FuzzyV1_F4_SetNumType(); 
 	FuzzyV1_F4_init();
 	
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein thrust
 	htim4.Instance->CCR1 = 750; //default 90°
 	
 	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
@@ -258,13 +262,13 @@ int main(void)
 			memorystorebutton++;
 			curve_was_taken = 2;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
-				autobetrieb= 1;																																		  // oder Autobetrieb
-				handbetrieb= 0;
+		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob manualcontrol 
+				autocontrol= 1;																																		  // oder autocontrol
+				manualcontrol= 0;
 		}
 		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
-				autobetrieb= 0;
-				handbetrieb= 1;
+				autocontrol= 0;
+				manualcontrol= 1;
 		}
 			
 		if(icom>=9999)
@@ -300,11 +304,7 @@ int main(void)
 				}
 				if(steering_trailer!=0){
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
-				}
-//				if(steering_trailer==0)	{
-//					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
-//				}
-					
+				}					
 
 				/////Pucher Begin///////					
 				auto_angle_y = steering_trailer;	
@@ -313,210 +313,192 @@ int main(void)
 		
 		//Pucher 10ms
 		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
-		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
+		
 		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
 		
+		//20ms begin
 		if(count_10ms%2==0)	{ //20ms
+			//setval memory begin
 			if(setval_memory_storage==1){
 				if(memory_start==1){
 					curve_was_taken = 1;
 					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
 					angle[icom]= steering_trailer ;
-					steering[icom] = lenken ;
-					thrust[icom] = gas ;
+					steering[icom] = manual_steering ;
+					thrust[icom] = manual_thrust ;
 //					snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
 //					snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
 //					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
-					
-					
 				}
 				
 				if((memory_start==2)||(icom>=9999)){
 					velocity[icom]=	0 ;		
 					angle[icom]= steering_trailer ;
-					steering[icom] = lenken ;
+					steering[icom] = manual_steering ;
 					thrust[icom] = 0 ;
 					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
-					test = icom;
+					flash_index = icom;
 				}
 			}
+			//setval memory end
 			
-				
-				////// Pucher Beginn //////
-				if(autobetrieb){
-					if(i_w >= 168){
-						i_w = 168;
-						auto_start_selfcontrol = 0;
-					}
-					if(i_w <= 0)
-						i_w = 0;
+			//Autocontrol 20ms Cyclic begin
+			if(autocontrol){
+				if(i_w >= 168){
+					i_w = 168;
+					auto_start_driving = 0;
 				}
-				if((autobetrieb) && (auto_start_selfcontrol)){
-					auto_steering = w_steering[i_w];
-					auto_thrust = w_thrust[i_w];
-					auto_velocity_w = w_velocity[i_w];
-					auto_angle_w = w_angle[i_w];
-					i_w++;
+				if(i_w <= 0)
+					i_w = 0;
+				if(auto_start_driving){
+//					auto_steering = w_steering[i_w];
+//					auto_thrust = w_thrust[i_w];
+//					auto_velocity_w = w_velocity[i_w];
+//					auto_angle_w = w_angle[i_w];
+//					i_w++;
 				}
-			////// Pucher Ende //////
 			}
+			//Autocontrol 20ms Cyclic end
+			
+			}
+			//20ms end
 		
-	}	// 10ms Ende
+		}	// 10ms Ende
 		
 	
-		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+		// 100ms Cycle begin
+		if( uwTick - uwtick_Hold100ms >= 100 ) {																			
 			uwtick_Hold100ms += 100;
 			count_100ms++;
-		}	// 100ms Ende
+		}
+		// 100ms Cycle end
 			
 		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
+		// 1s Cycle begin
+		if( uwTick - uwtick_Hold1s >= 1000 ) {																				
 			uwtick_Hold1s += 1000;
 			count_1s++;	
-		}		// 1s Ende		
+		}
+		// 1s Cycle end	
 	
 		
-		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-////			}
-////			setval = 0;
-////		}
-//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-//				setvalmemory = 1 ;
-//		}
-		
-//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-//			setvalmemory = 2 ;																																					
-		
-		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
+		// NOT-Aus begin
+		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
 			while(1){}
 		}
+		// NOT-Aus end
 		
-		/* Fuzzy 
-		*/
-		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
-		setval_memory_storage = 0 ;
-		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
-
-		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
-		//Lenkung - Steering
-		if(auto_steering > 135)
-			auto_steering = 135;
-		if(auto_steering < 45)
-			auto_steering = 45;
-		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
 		
-		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
-		auto_test = auto_steering - u_winkel;
 		
-		//achtung wenn regler aktiviert wird.. sicherheitsmaßnahme um unkontrollierten thrust zu verhindern, wenn Kurve abgearbeitet wurde.
-		htim4.Instance->CCR1 = auto_steering_pwm;
-			
-		//Motor - Thrust
-		if(auto_thrust < 7)
-			auto_thrust = 0;
-		if(auto_thrust >= 30)
-			auto_thrust = 30;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
-		
-		}//autobetrieb ENDE////////////////////////////////////////////////////////
-		
-
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		//		htim4.Instance->CCR1 = i;
-		//		
-		//		i++;
-		//		if (i > 2000)
-		//			i = 1000;
-		
-		if((handbetrieb == 1)&&(autobetrieb == 0)){
+		//Autocontrol begin
+		if((autocontrol==1)&&(manualcontrol == 0)){
+			//Variablen setzten|rücksetzten begin
 			setval_memory_storage=1 ;
-			auto_start_selfcontrol = 0;
-		
-			if(curve_was_taken == 2){ //wenn eine kurvenaufnahme gestartet und beendet wurde, dann werden die Werte der Sollkurve in den Flashspeicher geschrieben
-			//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve
-			//Flasharray Length
-			MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-			MY_FLASH_WriteN(0, &test, 1, DATA_TYPE_16);
-
-			//Velocity
-			MY_FLASH_SetSectorAddrs(8, 0x08100000);
-			MY_FLASH_WriteN(0, velocity, test, DATA_TYPE_16);
-
-			//Angle
-			MY_FLASH_SetSectorAddrs(9, 0x08140000);
-			MY_FLASH_WriteN(0, angle, test, DATA_TYPE_16);
-
-			//Thrust
-			MY_FLASH_SetSectorAddrs(10, 0x08180000);
-			MY_FLASH_WriteN(0, thrust, test, DATA_TYPE_16);
-
-			//Steering
-			MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-			MY_FLASH_WriteN(0, steering, test, DATA_TYPE_16);
-
-			curve_was_taken = 0;
-
-
-			HAL_Delay(5000);
-			}
-
+			//auto_start_driving = 0;
+			//Variablen setzten|rücksetzten end
 			
-		i_w = 0;
-		if(adcval[1] >= 511){
-			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+			//Lenkwerte berechnen begin
+			
+			
+			if(auto_steering > 135)
+				auto_steering = 135;
+			if(auto_steering < 45)
+				auto_steering = 45;
+			auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
+			//Lenkwerte berechnen end
+			
+			//Servo ansteuern begin
+			htim4.Instance->CCR1 = auto_steering_pwm;
+			//Servo ansteuern end
+			
+			//Thrust berechnen begin
+				if(auto_thrust < 7)
+					auto_thrust = 0;
+				if(auto_thrust >= 30)
+					auto_thrust = 30;
+			//Thrust berechnen end
+			
+			//Motorcontroler ansteuern begin
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
+			//Motorcontroller ansteuern end
+			
 		}
-		
-		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 60 , 90);
-		}
-		
-		i = map(lenken, 0, 180, 250, 1250);
-		
-		htim4.Instance->CCR1 = i;
-		
-		if(adcval[0] <= 512)
-			adcval[0] = 512;
-		if(adcval[0] >= 754)
-			adcval[0] = 754;
-		
-		gas = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
-		
-		if(gas < 7)
-			gas = 0;
-		
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+		//Autocontrol end
 
-  }		
 
+		
+		//Manualcontrol begin
+		if((manualcontrol == 1)&&(autocontrol == 0)){
+			//Variablen setzten|rücksetzten begin
+			setval_memory_storage=1 ;
+			//auto_start_driving = 0;
+			//Variablen setzten|rücksetzten end
+			
+			//Flash write begin
+			if(curve_was_taken == 2){ 
+				/*wenn eine kurvenaufnahme gestartet und beendet wurde, dann 
+					werden die Werte der Sollkurve in den Flashspeicher geschrieben
+				//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve*/
+				//Flasharray Length
+				MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+				MY_FLASH_WriteN(0, &flash_index, 1, DATA_TYPE_16);
+				//Velocity
+				MY_FLASH_SetSectorAddrs(8, 0x08100000);
+				MY_FLASH_WriteN(0, velocity, flash_index, DATA_TYPE_16);
+				//Angle
+				MY_FLASH_SetSectorAddrs(9, 0x08140000);
+				MY_FLASH_WriteN(0, angle, flash_index, DATA_TYPE_16);
+				//Thrust
+				MY_FLASH_SetSectorAddrs(10, 0x08180000);
+				MY_FLASH_WriteN(0, thrust, flash_index, DATA_TYPE_16);
+				//Steering
+				MY_FLASH_SetSectorAddrs(11, 0x081C0000);
+				MY_FLASH_WriteN(0, steering, flash_index, DATA_TYPE_16);
+				curve_was_taken = 0;
+				HAL_Delay(5000);
+			}
+			//Flash write end
+			
+			//Lenkwerte berechnen begin
+			if(adcval[1] >= 511){
+				manual_steering = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und manual_steering gemapt, sprich, umgewandelt in gewünschte werte
+			}
+			if(adcval[1] < 511){
+				manual_steering = map(adcval[1], 253, 511, 60 , 90);
+			}
+			manual_steering_pwm = map(manual_steering, 0, 180, 250, 1250);
+			//Lenkwerte berechnen end
+			
+			//Servo ansteuern begin
+			htim4.Instance->CCR1 = manual_steering_pwm;
+			//Servo ansteuern end
+			
+			//Thrust berechnen begin
+			if(adcval[0] <= 512)
+				adcval[0] = 512;
+			if(adcval[0] >= 754)
+				adcval[0] = 754;
+			manual_thrust = map(adcval[0], 512, 754 , 0, 31);  //269 - 754
+			if(manual_thrust < 7)
+				manual_thrust = 0;
+			//Thrust berechnen end
+			
+			//Motorcontroler ansteuern begin
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, manual_thrust);
+			//Motorcontroler ansteuern end
+		
+		}//manualcontrol end
+
+		
+		
   }		// while Ende
 
 	
+
   /* USER CODE END 3 */
 }
 
