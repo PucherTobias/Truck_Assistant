@@ -97,6 +97,8 @@ int bluebutton = 0 ;
 int memorystorebutton = 0 ;
 int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
+int angle_sync=0;
+int angleconv_sync= 237;
 
 //Pucher
 uint16_t w_velocity[10000] = {0};
@@ -270,11 +272,19 @@ int main(void)
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
+		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_0_Pin))	{
+				angle_sync = 1;
+		}
 			
 		if(icom>=9999)
 			icom=9999 ;
 		if(icom<0)
 			icom=0;
+		
+		if(angle_sync==1)	{
+			angleconv_sync = steering_conv;
+			angle_sync=0 ;
+		}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -293,11 +303,11 @@ int main(void)
 					if(steering_conv<0){
 						steering_conv=0;
 					}
-				if(steering_conv >= 237){
-					steering_trailer = map(steering_conv, 237,139, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+				if(steering_conv >= angleconv_sync){
+					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 				}
-				if(steering_conv < 237){
-					steering_trailer = map(steering_conv, 237, 330, 0 , -90);
+				if(steering_conv < angleconv_sync){
+					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync+90, 0 , -90);
 				}
 				if(steering_trailer==0){
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
@@ -1187,8 +1197,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Memory_store_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Memory_store_Pin;
+  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin angle_sync_Pin Memory_store_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|angle_sync_Pin|Memory_store_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);

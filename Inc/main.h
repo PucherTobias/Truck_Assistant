@@ -79,6 +79,8 @@ void Error_Handler(void);
 #define Auto_Hand_Betrieb_GPIO_Port GPIOF
 #define Flash_trans_Pin GPIO_PIN_5
 #define Flash_trans_GPIO_Port GPIOF
+#define angle_sync_Pin GPIO_PIN_7
+#define angle_sync_GPIO_Port GPIOF
 #define Memory_store_Pin GPIO_PIN_8
 #define Memory_store_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
