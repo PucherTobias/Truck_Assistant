@@ -79,14 +79,14 @@ void Error_Handler(void);
 #define Auto_Hand_Betrieb_GPIO_Port GPIOF
 #define Flash_trans_Pin GPIO_PIN_5
 #define Flash_trans_GPIO_Port GPIOF
-#define angle_sync_Pin GPIO_PIN_7
-#define angle_sync_GPIO_Port GPIOF
 #define Memory_store_Pin GPIO_PIN_8
 #define Memory_store_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1
 #define RMII_MDC_GPIO_Port GPIOC
+#define angle_sync_Pin GPIO_PIN_2
+#define angle_sync_GPIO_Port GPIOC
 #define RMII_REF_CLK_Pin GPIO_PIN_1
 #define RMII_REF_CLK_GPIO_Port GPIOA
 #define RMII_MDIO_Pin GPIO_PIN_2
