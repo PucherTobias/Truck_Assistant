@@ -106,22 +106,24 @@ int16_t w_angle[10000] = {0};
 uint16_t w_thrust[10000] = {0};
 uint16_t w_steering[10000] = {0};
 uint16_t flasharray_length[1];
-uint32_t test = 69;
+uint32_t flash_index = 0;
 
 int curve_was_taken = 0;
 
-NumTypeF4_t e_winkel,e_v,u_winkel,u_v;
-int i_w = 0;
 int auto_steering = 90; //sollwert
 int auto_thrust = 0; //sollwert
 int auto_steering_pwm = 0;
 int auto_thrust_pwm = 0;
-int auto_start_selfcontrol = 0;
 int auto_angle_w = 0; //sollwert
 int auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
-int auto_test = 0; //temp var
+
+float u = 0;
+float Kp = 0;
+float e = 0;
+float lenken_regler = 90;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -326,11 +328,7 @@ int main(void)
 		}
 		
 		//Pucher 10ms
-		//e_winkel = auto_angle_w - auto_angle_y; //Soll-Ist-Wert vergleich 
-		e_winkel = 0 - auto_angle_y; //test: fixer sollwert um Reaktion des Reglers auf Änderung des Istwerts zu untersuchen
-		FuzzyV1_F4_calc(e_winkel,e_v,&u_winkel,&u_v);
-		
-		if(count_10ms%2==0)	{ //20ms
+		if(count_10ms%2==0)	{ //Pucher 20ms begin
 			if(setval_memory_storage==1){
 				if(memory_start==1){
 					curve_was_taken = 1;
@@ -343,41 +341,39 @@ int main(void)
 //					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
-					
-					
 				}
-				
 				if((memory_start==2)||(icom>=9999)){
 					velocity[icom]=	0 ;		
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
 					thrust[icom] = 0 ;
 					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
-					test = icom;
+					flash_index = icom;
 				}
 			}
 			
 				
 				////// Pucher Beginn //////
-				if(autobetrieb){
-					if(i_w >= 168){
-						i_w = 168;
-						auto_start_selfcontrol = 0;
-					}
-					if(i_w <= 0)
-						i_w = 0;
-				}
-				if((autobetrieb) && (auto_start_selfcontrol)){
-					auto_steering = w_steering[i_w];
-					auto_thrust = w_thrust[i_w];
-					auto_velocity_w = w_velocity[i_w];
-					auto_angle_w = w_angle[i_w];
-					i_w++;
-				}
+//				if(autobetrieb){
+//					if(i_w >= 168){
+//						i_w = 168;
+//						auto_start_selfcontrol = 0;
+//					}
+//					if(i_w <= 0)
+//						i_w = 0;
+//				}
+//				if((autobetrieb) && (auto_start_selfcontrol)){
+//					auto_steering = w_steering[i_w];
+//					auto_thrust = w_thrust[i_w];
+//					auto_velocity_w = w_velocity[i_w];
+//					auto_angle_w = w_angle[i_w];
+//					i_w++;
+//				}
+			
 			////// Pucher Ende //////
-			}
+			}//Pucher 20ms end
 		
-	}	// 10ms Ende
+		}	// 10ms Ende
 		
 	
 		
@@ -429,29 +425,51 @@ int main(void)
 		if((autobetrieb==1)&&(handbetrieb == 0)){
 		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
 		setval_memory_storage = 0 ;
-		auto_start_selfcontrol = 1;
-		FuzzyV1_F4_free();
 
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
+			
+		if(adcval[1] >= 511){
+			auto_angle_w = map(adcval[1], 511, 772, 0, 25);
+		}
+		
+		if(adcval[1] < 511){
+			auto_angle_w = map(adcval[1], 253, 511, -25 , 0);
+		}	
+			
+		e = auto_angle_w - auto_angle_y;
+		
+		Kp = 4;	
+		u=Kp*e;
+		
+		lenken_regler = 90-u;	
+		
+		auto_steering = lenken_regler;		
+			
+		
 		if(auto_steering > 135)
 			auto_steering = 135;
 		if(auto_steering < 45)
 			auto_steering = 45;
 		auto_steering_pwm = map(auto_steering, 0, 180, 250, 1250);
-		
-		/*temp Angle/Steering: reglerausgang auf unsere vorgegebene Sollkurve aufrechnen*/ 
-		auto_test = auto_steering - u_winkel;
-		
-		//achtung wenn regler aktiviert wird.. sicherheitsmaßnahme um unkontrollierten thrust zu verhindern, wenn Kurve abgearbeitet wurde.
+			
 		htim4.Instance->CCR1 = auto_steering_pwm;
 			
 		//Motor - Thrust
+		if(adcval[0]>=509)	{
+			if(adcval[0] >= 754)
+				adcval[0] = 754;
+			auto_thrust = map(adcval[0], 509, 754 , 0, 31);
+		}	
+			
 		if(auto_thrust < 7)
 			auto_thrust = 0;
 		if(auto_thrust >= 30)
 			auto_thrust = 30;
+		
+		
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
+		
 		
 		}//autobetrieb ENDE////////////////////////////////////////////////////////
 		
@@ -472,29 +490,28 @@ int main(void)
 		
 		if((handbetrieb == 1)&&(autobetrieb == 0)){
 			setval_memory_storage=1 ;
-			auto_start_selfcontrol = 0;
 		
 			if(curve_was_taken == 2){ //wenn eine kurvenaufnahme gestartet und beendet wurde, dann werden die Werte der Sollkurve in den Flashspeicher geschrieben
 			//Flash schreiben -> Anzahl gespeicherter Werte, Sollwertkurve
 			//Flasharray Length
 			MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-			MY_FLASH_WriteN(0, &test, 1, DATA_TYPE_16);
+			MY_FLASH_WriteN(0, &flash_index, 1, DATA_TYPE_16);
 
 			//Velocity
 			MY_FLASH_SetSectorAddrs(8, 0x08100000);
-			MY_FLASH_WriteN(0, velocity, test, DATA_TYPE_16);
+			MY_FLASH_WriteN(0, velocity, flash_index, DATA_TYPE_16);
 
 			//Angle
 			MY_FLASH_SetSectorAddrs(9, 0x08140000);
-			MY_FLASH_WriteN(0, angle, test, DATA_TYPE_16);
+			MY_FLASH_WriteN(0, angle, flash_index, DATA_TYPE_16);
 
 			//Thrust
 			MY_FLASH_SetSectorAddrs(10, 0x08180000);
-			MY_FLASH_WriteN(0, thrust, test, DATA_TYPE_16);
+			MY_FLASH_WriteN(0, thrust, flash_index, DATA_TYPE_16);
 
 			//Steering
 			MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-			MY_FLASH_WriteN(0, steering, test, DATA_TYPE_16);
+			MY_FLASH_WriteN(0, steering, flash_index, DATA_TYPE_16);
 
 			curve_was_taken = 0;
 
@@ -503,7 +520,6 @@ int main(void)
 			}
 
 			
-		i_w = 0;
 		if(adcval[1] >= 511){
 			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 		}
