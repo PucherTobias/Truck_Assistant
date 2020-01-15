@@ -274,7 +274,7 @@ int main(void)
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
-		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_0_Pin))	{
+		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_sync_Pin))	{
 				angle_sync = 1;
 		}
 			
@@ -1213,8 +1213,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin angle_sync_Pin Memory_store_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|angle_sync_Pin|Memory_store_Pin;
+  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Memory_store_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Memory_store_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
@@ -1224,6 +1224,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Flash_trans_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : angle_sync_Pin */
+  GPIO_InitStruct.Pin = angle_sync_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(angle_sync_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
