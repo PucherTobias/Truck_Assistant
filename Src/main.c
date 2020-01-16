@@ -423,7 +423,7 @@ int main(void)
 		/* Fuzzy 
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
-		//Pucher autobetrieb BEGINN/////////////////////////////////////////////////
+		//Pucher autobetrieb BEGINN///////////////////////////////
 		setval_memory_storage = 0 ;
 
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
@@ -439,7 +439,7 @@ int main(void)
 			
 		e = auto_angle_w - auto_angle_y;
 		
-		Kp = 4;	
+		Kp = 3;	
 		u=Kp*e;
 		
 		lenken_regler = 90-u;	
@@ -471,23 +471,8 @@ int main(void)
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
 		
 		
-		}//autobetrieb ENDE////////////////////////////////////////////////////////
-		
+		}//autobetrieb ENDE///////////////////////////////////////
 
-		// Clock ... 32MHz
-		//PRESCALER = 32
-		// ARR = 10000
-		// --> f = 100Hz 
-		// CCR1 = 0 ... 10000 = 0 ... 10ms --> 1x CCR1 = 0.001ms
-		// --> CCR1: 1000-2000 wichtig (1ms-2ms in 0.001ms Schritte)
-		// --> CCR1 = 1000 = 1ms 						CCR1 = 2000 = 2ms
-		// Periodendauer ... 10ms
-		//		htim4.Instance->CCR1 = i;
-		//		
-		//		i++;
-		//		if (i > 2000)
-		//			i = 1000;
-		
 		if((handbetrieb == 1)&&(autobetrieb == 0)){
 			setval_memory_storage=1 ;
 		
