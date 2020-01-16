@@ -60,14 +60,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define BlueButton_Pin GPIO_PIN_2
-#define BlueButton_GPIO_Port GPIOE
-#define RedButton_Pin GPIO_PIN_3
-#define RedButton_GPIO_Port GPIOE
-#define Memorystop_Pin GPIO_PIN_4
-#define Memorystop_GPIO_Port GPIOE
-#define Memorytrans_Pin GPIO_PIN_5
-#define Memorytrans_GPIO_Port GPIOE
+#define Flash_start_Pin GPIO_PIN_2
+#define Flash_start_GPIO_Port GPIOE
+#define NotAus_Pin GPIO_PIN_3
+#define NotAus_GPIO_Port GPIOE
+#define free_button1_Pin GPIO_PIN_4
+#define free_button1_GPIO_Port GPIOE
+#define free_button2_Pin GPIO_PIN_5
+#define free_button2_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
 #define Counterrisingedge_Pin GPIO_PIN_0
@@ -77,10 +77,8 @@ void Error_Handler(void);
 #define angle_0_GPIO_Port GPIOF
 #define Auto_Hand_Betrieb_Pin GPIO_PIN_3
 #define Auto_Hand_Betrieb_GPIO_Port GPIOF
-#define Flash_trans_Pin GPIO_PIN_5
-#define Flash_trans_GPIO_Port GPIOF
-#define Memory_store_Pin GPIO_PIN_8
-#define Memory_store_GPIO_Port GPIOF
+#define Flash_stop_Pin GPIO_PIN_8
+#define Flash_stop_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1

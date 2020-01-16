@@ -253,11 +253,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		
 		
-		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))			// Übertragung Start
+		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
 		{	memory_start = 1 ;
 			bluebutton++;
 		}
-		if(HAL_GPIO_ReadPin(Memory_store_GPIO_Port,Memory_store_Pin))
+		if(HAL_GPIO_ReadPin(Flash_stop_GPIO_Port,Flash_stop_Pin))
 		{	memory_start = 2 ;
 			memorystorebutton++;
 			curve_was_taken = 2;
@@ -379,7 +379,7 @@ int main(void)
 			count_1s++;	
 		}		// 1s Ende		
 		
-		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
+		if(HAL_GPIO_ReadPin(NotAus_GPIO_Port, NotAus_Pin)) {								// NOT-Aus
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 			__HAL_TIM_DISABLE(&htim3);
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0) ;
@@ -1140,8 +1140,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : BlueButton_Pin RedButton_Pin Memorystop_Pin Memorytrans_Pin */
-  GPIO_InitStruct.Pin = BlueButton_Pin|RedButton_Pin|Memorystop_Pin|Memorytrans_Pin;
+  /*Configure GPIO pins : Flash_start_Pin NotAus_Pin free_button1_Pin free_button2_Pin */
+  GPIO_InitStruct.Pin = Flash_start_Pin|NotAus_Pin|free_button1_Pin|free_button2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -1165,17 +1165,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Memory_store_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Memory_store_Pin;
+  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Flash_stop_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Flash_stop_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Flash_trans_Pin */
-  GPIO_InitStruct.Pin = Flash_trans_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Flash_trans_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : angle_sync_Pin */
   GPIO_InitStruct.Pin = angle_sync_Pin;
