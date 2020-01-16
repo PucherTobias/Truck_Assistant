@@ -170,10 +170,6 @@ int main(void)
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
-
-	//Pucher
-
-
   /* USER CODE END 1 */
   
 
@@ -216,15 +212,13 @@ int main(void)
 	
 	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
 	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
-	// htim4.Instance->CCR1 = 1000; //temp
 	
-	//Pucher
-	FuzzyV1_F4_SetNumType(); 
-	FuzzyV1_F4_init();
-	
+	//MOTOR / SERVO DEFAULT BEGIN
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
 	htim4.Instance->CCR1 = 750; //default 90°
+	//MOTOR / SERVO DEFAULT END
 	
+	//FLASH READ BEGIN
 	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
 	//Flasharray Length
 	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
@@ -245,6 +239,8 @@ int main(void)
 	//Steering
 	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
 	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
+	//FLASH READ END
+	
 	
   /* USER CODE END 2 */
 
@@ -316,13 +312,9 @@ int main(void)
 				}
 				if(steering_trailer!=0){
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
-				}
-//				if(steering_trailer==0)	{
-//					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
-//				}
-					
+				}					
 
-				/////Pucher Begin///////					
+				//ISTWERT 				
 				auto_angle_y = steering_trailer;	
 				/////Pucher End/////////
 		}
@@ -353,7 +345,7 @@ int main(void)
 			}
 			
 				
-				////// Pucher Beginn //////
+				//SOLLWERTKURVE BEGIN
 //				if(autobetrieb){
 //					if(i_w >= 168){
 //						i_w = 168;
@@ -370,9 +362,8 @@ int main(void)
 //					i_w++;
 //				}
 			
-			////// Pucher Ende //////
+				//SOLLWERTKURVE END
 			}//Pucher 20ms end
-		
 		}	// 10ms Ende
 		
 	
@@ -387,30 +378,6 @@ int main(void)
 			uwtick_Hold1s += 1000;
 			count_1s++;	
 		}		// 1s Ende		
-	
-		
-		
-		
-////		if((sensork > 0.1)&&(sensork <= 6)) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas); //!!! war 0
-////				setval = 0;
-////		}////		
-////		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))
-////				setval = 1;
-////		
-////		if(sensork > 6) {
-////			if(setval) {
-////			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
-////			}
-////			setval = 0;
-////		}
-//		if(HAL_GPIO_ReadPin(BlueButton_GPIO_Port, BlueButton_Pin))	{																	// Speicherung von Daten
-//				setvalmemory = 1 ;
-//		}
-		
-//		if((iw>=10000) || (HAL_GPIO_ReadPin(Memorystop_GPIO_Port, Memorystop_Pin))  )								// Stop der Speicherung
-//			setvalmemory = 2 ;																																					
-		
 		
 		if(HAL_GPIO_ReadPin(RedButton_GPIO_Port, RedButton_Pin)) {								// NOT-Aus
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
