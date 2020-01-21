@@ -124,6 +124,9 @@ float Kp = 0;
 float e = 0;
 float lenken_regler = 90;
 
+int servo_jitter = 0;
+int servo_jitter_steering = 110;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -371,6 +374,13 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
+			
+			if(servo_jitter) {
+				if(servo_jitter_steering > 90)
+					servo_jitter_steering = 70;
+				if(servo_jitter_steering < 90)
+					servo_jitter_steering = 110;
+			}
 		}	// 100ms Ende
 			
 		
@@ -413,6 +423,8 @@ int main(void)
 		
 		auto_steering = lenken_regler;		
 			
+		if(servo_jitter)
+			auto_steering = servo_jitter_steering;
 		
 		if(auto_steering > 135)
 			auto_steering = 135;
