@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F767xx,USE_HAL_DRIVER,STM32F767xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;     ../Drivers/STM32F7xx_HAL_Driver/Inc;     ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;     ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;     ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;     ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;     ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                                          ../Drivers/STM32F7xx_HAL_Driver/Inc;                                                          ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;                                                          ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;                                                          ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;                                                          ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;                                                          ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -393,6 +393,56 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
+              <FileName>fuzzy_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fuzzy_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>NumType_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\NumType_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>fuzzy_enums.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\fuzzy_enums.h</FilePath>
+            </File>
+            <File>
+              <FileName>fuzzy_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\fuzzy_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>NumType_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\NumType_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV1_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\FuzzyV1_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV1_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\FuzzyV1_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>MY_FLASH.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\MY_FLASH.h</FilePath>
+            </File>
+            <File>
+              <FileName>MY_FLASH.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\MY_FLASH.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -430,6 +480,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drivers/CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_stm32f7xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/system_stm32f7xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Drivers/STM32F7xx_HAL_Driver</GroupName>
           <Files>
             <File>
@@ -446,46 +506,6 @@
               <FileName>stm32f7xx_ll_usb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_adc_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_cortex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_eth.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_tim_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f7xx_hal_uart_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f7xx_hal_rcc.c</FileName>
@@ -533,6 +553,11 @@
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f7xx_hal_cortex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f7xx_hal.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c</FilePath>
@@ -552,15 +577,40 @@
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exti.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Drivers/CMSIS</GroupName>
-          <Files>
             <File>
-              <FileName>system_stm32f7xx.c</FileName>
+              <FileName>stm32f7xx_hal_adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../Src/system_stm32f7xx.c</FilePath>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_adc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_eth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f7xx_hal_uart_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart_ex.c</FilePath>
             </File>
           </Files>
         </Group>
