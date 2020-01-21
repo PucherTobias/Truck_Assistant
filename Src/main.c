@@ -396,16 +396,13 @@ int main(void)
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
 			
-//		if(adcval[1] >= 511){
-//			auto_angle_w = map(adcval[1], 511, 772, 0, 25);
-//		}
-//		
-//		if(adcval[1] < 511){
-//			auto_angle_w = map(adcval[1], 253, 511, -25 , 0);
-//		}	
-			
-		//hardcoded Angle_w
-		auto_angle_w = 15;
+		if(adcval[1] >= 511){
+			auto_angle_w = map(adcval[1], 511, 772, 0, 25);
+		}
+		
+		if(adcval[1] < 511){
+			auto_angle_w = map(adcval[1], 253, 511, -25 , 0);
+		}	
 			
 		e = auto_angle_w - auto_angle_y;
 		
