@@ -255,7 +255,7 @@ int main(void)
 		
 		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
 		{	memory_start = 1 ;
-			bluebutton++;
+			
 		}
 		if(HAL_GPIO_ReadPin(Flash_stop_GPIO_Port,Flash_stop_Pin))
 		{	memory_start = 2 ;
@@ -384,6 +384,7 @@ int main(void)
 			__HAL_TIM_DISABLE(&htim3);
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0) ;
 			__HAL_TIM_DISABLE(&htim10) ;
+				bluebutton++;
 			while(1){}
 		}
 		
