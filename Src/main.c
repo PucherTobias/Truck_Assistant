@@ -221,24 +221,24 @@ int main(void)
 	//FLASH READ BEGIN
 	//Flash auslesen -> Anzahl gespeicherter Werte, Sollwertkurve |
 	//Flasharray Length
-	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
-	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_16);
-	
-	//Velocity
-	MY_FLASH_SetSectorAddrs(8, 0x08100000);
-	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_16);
+//	MY_FLASH_SetSectorAddrs(7, 0x080C0000);
+//	MY_FLASH_ReadN(0, flasharray_length, 1, DATA_TYPE_16);
+//	
+//	//Velocity
+//	MY_FLASH_SetSectorAddrs(8, 0x08100000);
+//	MY_FLASH_ReadN(0, w_velocity, flasharray_length[0], DATA_TYPE_16);
 
-	//Angle
-	MY_FLASH_SetSectorAddrs(9, 0x08140000);
-	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_16);
+//	//Angle
+//	MY_FLASH_SetSectorAddrs(9, 0x08140000);
+//	MY_FLASH_ReadN(0, w_angle, flasharray_length[0], DATA_TYPE_16);
 
-	//Thrust
-	MY_FLASH_SetSectorAddrs(10, 0x08180000);
-	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_16);
-	
-	//Steering
-	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
-	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
+//	//Thrust
+//	MY_FLASH_SetSectorAddrs(10, 0x08180000);
+//	MY_FLASH_ReadN(0, w_thrust, flasharray_length[0], DATA_TYPE_16);
+//	
+//	//Steering
+//	MY_FLASH_SetSectorAddrs(11, 0x081C0000);
+//	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
 	//FLASH READ END
 	
 	
@@ -384,7 +384,6 @@ int main(void)
 			__HAL_TIM_DISABLE(&htim3);
 			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0) ;
 			__HAL_TIM_DISABLE(&htim10) ;
-				bluebutton++;
 			while(1){}
 		}
 		
