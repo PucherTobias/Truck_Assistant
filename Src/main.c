@@ -486,23 +486,23 @@ int main(void)
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(bluebuffer[1]<=127)	{
+		if(bluebuffer[1]<=126)	{
 		
-			gas = map(bluebuffer[1],128, 0 , 0, 30);  //269 - 754
+			gas = map(bluebuffer[1],126, 0 , 0, 30);  //269 - 754
 		
 			if(gas < 7)
 				gas = 0;
 		
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
 		}
-		if(bluebuffer[1]>=128)	{
+		if(bluebuffer[1]>=129)	{
 			
-			gas = map(bluebuffer[1],128,255,0,30);
+			gas = map(bluebuffer[1],129,255,0,30);
 			
 			if(gas < 7)
 				gas = 0;
 			
-		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
+		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
 		}
   }		
 
