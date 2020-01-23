@@ -100,7 +100,7 @@ int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 int angle_sync=0;
 int angleconv_sync= 237;
-uint8_t bluebuffer[100] ;
+uint8_t bluebuffer[4] ;
 
 //Pucher
 uint16_t w_velocity[10000] = {0};
@@ -266,11 +266,11 @@ int main(void)
 			memorystorebutton++;
 			curve_was_taken = 2;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
+		if((bluebuffer[3]==16)||(bluebuffer[3]==24 )){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
 				handbetrieb= 0;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+		else	{																	
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
@@ -479,34 +479,25 @@ int main(void)
 			}
 
 			
-		if(adcval[1] >= 511){
-			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
-		}
+		lenken = bluebuffer[2] ;
 		
-		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 60 , 90);
-		}
 		
 		i = map(lenken, 0, 180, 250, 1250);
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(adcval[0]>=509)	{
-			if(adcval[0] >= 754)
-				adcval[0] = 754;
+		if(bluebuffer[1]<=127)	{
 		
-			gas = map(adcval[0], 509, 754 , 0, 31);  //269 - 754
+			gas = map(bluebuffer[1],128, 0 , 0, 30);  //269 - 754
 		
 			if(gas < 7)
 				gas = 0;
 		
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
 		}
-		if(adcval[0]<=509)	{
-			if(adcval[0]<=274){
-				adcval[0] = 274;
-			}
-			gas = map(adcval[0],509,274,0,31);
+		if(bluebuffer[1]>=128)	{
+			
+			gas = map(bluebuffer[1],128,255,0,30);
 			
 			if(gas < 7)
 				gas = 0;

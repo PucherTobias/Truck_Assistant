@@ -2307,41 +2307,41 @@ Image Symbol Table
     i.__scatterload_zeroinit                 0x080062c4   Section       14  handlers.o(i.__scatterload_zeroinit)
     i.free                                   0x080062d4   Section        0  malloc.o(i.free)
     i.main                                   0x08006324   Section        0  main.o(i.main)
-    i.malloc                                 0x0800696c   Section        0  malloc.o(i.malloc)
-    i.map                                    0x080069d8   Section        0  main.o(i.map)
-    .constdata                               0x080069ec   Section       16  system_stm32f7xx.o(.constdata)
-    .constdata                               0x080069fc   Section        8  system_stm32f7xx.o(.constdata)
-    .constdata                               0x08006a04   Section        8  stm32f7xx_hal_dma.o(.constdata)
-    flagBitshiftOffset                       0x08006a04   Data           8  stm32f7xx_hal_dma.o(.constdata)
+    i.malloc                                 0x0800690c   Section        0  malloc.o(i.malloc)
+    i.map                                    0x08006978   Section        0  main.o(i.map)
+    .constdata                               0x0800698c   Section       16  system_stm32f7xx.o(.constdata)
+    .constdata                               0x0800699c   Section        8  system_stm32f7xx.o(.constdata)
+    .constdata                               0x080069a4   Section        8  stm32f7xx_hal_dma.o(.constdata)
+    flagBitshiftOffset                       0x080069a4   Data           8  stm32f7xx_hal_dma.o(.constdata)
     .data                                    0x20000000   Section        8  my_flash.o(.data)
     MY_SectorNum                             0x20000000   Data           1  my_flash.o(.data)
     MY_SectorAddrs                           0x20000004   Data           4  my_flash.o(.data)
-    .data                                    0x20000008   Section      148  main.o(.data)
+    .data                                    0x20000008   Section      152  main.o(.data)
     uwtick_Hold10ms                          0x20000078   Data           4  main.o(.data)
     uwtick_Hold100ms                         0x2000007c   Data           4  main.o(.data)
     uwtick_Hold1s                            0x20000080   Data           4  main.o(.data)
-    .data                                    0x2000009c   Section       32  usbd_desc.o(.data)
-    .data                                    0x200000bc   Section       62  usbd_desc.o(.data)
-    .data                                    0x200000fc   Section       16  usbd_cdc_if.o(.data)
-    .data                                    0x2000010c   Section        4  system_stm32f7xx.o(.data)
-    .data                                    0x20000110   Section       12  stm32f7xx_hal.o(.data)
-    .data                                    0x2000011c   Section        1  usbd_ctlreq.o(.data)
-    cfgidx                                   0x2000011c   Data           1  usbd_ctlreq.o(.data)
-    .data                                    0x20000120   Section      215  usbd_cdc.o(.data)
-    USBD_CDC_DeviceQualifierDesc             0x20000120   Data          10  usbd_cdc.o(.data)
-    .data                                    0x200001f8   Section       56  usbd_cdc.o(.data)
-    .data                                    0x20000230   Section        4  mvars.o(.data)
+    .data                                    0x200000a0   Section       32  usbd_desc.o(.data)
+    .data                                    0x200000c0   Section       62  usbd_desc.o(.data)
+    .data                                    0x20000100   Section       16  usbd_cdc_if.o(.data)
+    .data                                    0x20000110   Section        4  system_stm32f7xx.o(.data)
+    .data                                    0x20000114   Section       12  stm32f7xx_hal.o(.data)
+    .data                                    0x20000120   Section        1  usbd_ctlreq.o(.data)
+    cfgidx                                   0x20000120   Data           1  usbd_ctlreq.o(.data)
+    .data                                    0x20000124   Section      215  usbd_cdc.o(.data)
+    USBD_CDC_DeviceQualifierDesc             0x20000124   Data          10  usbd_cdc.o(.data)
+    .data                                    0x200001fc   Section       56  usbd_cdc.o(.data)
     .data                                    0x20000234   Section        4  mvars.o(.data)
-    .bss                                     0x20000238   Section    81092  main.o(.bss)
+    .data                                    0x20000238   Section        4  mvars.o(.data)
+    .bss                                     0x2000023c   Section    80992  main.o(.bss)
+    .bss                                     0x20013e9c   Section       96  main.o(.bss)
     .bss                                     0x20013efc   Section       96  main.o(.bss)
-    .bss                                     0x20013f5c   Section       96  main.o(.bss)
-    .bss                                     0x20013fbc   Section      668  usb_device.o(.bss)
-    .bss                                     0x20014258   Section     1028  usbd_conf.o(.bss)
-    .bss                                     0x2001465c   Section      512  usbd_desc.o(.bss)
-    .bss                                     0x2001485c   Section     4096  usbd_cdc_if.o(.bss)
-    .bss                                     0x2001585c   Section       28  stm32f7xx_hal_flash.o(.bss)
-    HEAP                                     0x20015878   Section     8192  startup_stm32f767xx.o(HEAP)
-    STACK                                    0x20017878   Section    16384  startup_stm32f767xx.o(STACK)
+    .bss                                     0x20013f5c   Section      668  usb_device.o(.bss)
+    .bss                                     0x200141f8   Section     1028  usbd_conf.o(.bss)
+    .bss                                     0x200145fc   Section      512  usbd_desc.o(.bss)
+    .bss                                     0x200147fc   Section     4096  usbd_cdc_if.o(.bss)
+    .bss                                     0x200157fc   Section       28  stm32f7xx_hal_flash.o(.bss)
+    HEAP                                     0x20015818   Section     8192  startup_stm32f767xx.o(HEAP)
+    STACK                                    0x20017818   Section    16384  startup_stm32f767xx.o(STACK)
 
     Global Symbols
 
@@ -2704,13 +2704,13 @@ Image Symbol Table
     __scatterload_null                       0x080062c3   Thumb Code     2  handlers.o(i.__scatterload_null)
     __scatterload_zeroinit                   0x080062c5   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
     free                                     0x080062d5   Thumb Code    76  malloc.o(i.free)
-    main                                     0x08006325   Thumb Code  1564  main.o(i.main)
-    malloc                                   0x0800696d   Thumb Code    92  malloc.o(i.malloc)
-    map                                      0x080069d9   Thumb Code    20  main.o(i.map)
-    AHBPrescTable                            0x080069ec   Data          16  system_stm32f7xx.o(.constdata)
-    APBPrescTable                            0x080069fc   Data           8  system_stm32f7xx.o(.constdata)
-    Region$$Table$$Base                      0x08006a0c   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08006a2c   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08006325   Thumb Code  1468  main.o(i.main)
+    malloc                                   0x0800690d   Thumb Code    92  malloc.o(i.malloc)
+    map                                      0x08006979   Thumb Code    20  main.o(i.map)
+    AHBPrescTable                            0x0800698c   Data          16  system_stm32f7xx.o(.constdata)
+    APBPrescTable                            0x0800699c   Data           8  system_stm32f7xx.o(.constdata)
+    Region$$Table$$Base                      0x080069ac   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080069cc   Number         0  anon$$obj.o(Region$$Table)
     spinstrans                               0x20000008   Data           1  main.o(.data)
     steering_trailer                         0x20000009   Data           1  main.o(.data)
     flasharray_length                        0x2000000a   Data           2  main.o(.data)
@@ -2745,51 +2745,51 @@ Image Symbol Table
     adc_steering                             0x20000088   Data           4  main.o(.data)
     sensork                                  0x2000008c   Data           4  main.o(.data)
     steering_conv                            0x20000090   Data           4  main.o(.data)
-    adcval                                   0x20000094   Data           8  main.o(.data)
-    FS_Desc                                  0x2000009c   Data          32  usbd_desc.o(.data)
-    USBD_LangIDDesc                          0x200000bc   Data           4  usbd_desc.o(.data)
-    USBD_FS_DeviceDesc                       0x200000c0   Data          18  usbd_desc.o(.data)
-    USBD_FS_BOSDesc                          0x200000d4   Data          12  usbd_desc.o(.data)
-    USBD_StringSerial                        0x200000e0   Data          26  usbd_desc.o(.data)
-    USBD_Interface_fops_FS                   0x200000fc   Data          16  usbd_cdc_if.o(.data)
-    SystemCoreClock                          0x2000010c   Data           4  system_stm32f7xx.o(.data)
-    uwTickFreq                               0x20000110   Data           1  stm32f7xx_hal.o(.data)
-    uwTickPrio                               0x20000114   Data           4  stm32f7xx_hal.o(.data)
-    uwTick                                   0x20000118   Data           4  stm32f7xx_hal.o(.data)
-    USBD_CDC_CfgHSDesc                       0x2000012c   Data          67  usbd_cdc.o(.data)
-    USBD_CDC_CfgFSDesc                       0x20000170   Data          67  usbd_cdc.o(.data)
-    USBD_CDC_OtherSpeedCfgDesc               0x200001b4   Data          67  usbd_cdc.o(.data)
-    USBD_CDC                                 0x200001f8   Data          56  usbd_cdc.o(.data)
-    __microlib_freelist                      0x20000230   Data           4  mvars.o(.data)
-    __microlib_freelist_initialised          0x20000234   Data           4  mvars.o(.data)
-    velocity                                 0x20000238   Data       20000  main.o(.bss)
-    angle                                    0x20005058   Data       20000  main.o(.bss)
-    thrust                                   0x20009e78   Data       20000  main.o(.bss)
-    steering                                 0x2000ec98   Data       20000  main.o(.bss)
-    hadc1                                    0x20013ab8   Data          72  main.o(.bss)
-    hadc2                                    0x20013b00   Data          72  main.o(.bss)
-    hadc3                                    0x20013b48   Data          72  main.o(.bss)
-    heth                                     0x20013b90   Data          72  main.o(.bss)
-    htim1                                    0x20013bd8   Data          64  main.o(.bss)
-    htim2                                    0x20013c18   Data          64  main.o(.bss)
-    htim3                                    0x20013c58   Data          64  main.o(.bss)
-    htim4                                    0x20013c98   Data          64  main.o(.bss)
-    htim10                                   0x20013cd8   Data          64  main.o(.bss)
-    huart4                                   0x20013d18   Data         128  main.o(.bss)
-    huart2                                   0x20013d98   Data         128  main.o(.bss)
-    huart3                                   0x20013e18   Data         128  main.o(.bss)
-    bluebuffer                               0x20013e98   Data         100  main.o(.bss)
-    hdma_adc3                                0x20013efc   Data          96  main.o(.bss)
-    hdma_usart2_rx                           0x20013f5c   Data          96  main.o(.bss)
-    hUsbDeviceFS                             0x20013fbc   Data         668  usb_device.o(.bss)
-    hpcd_USB_OTG_FS                          0x20014258   Data        1028  usbd_conf.o(.bss)
-    USBD_StrDesc                             0x2001465c   Data         512  usbd_desc.o(.bss)
-    UserRxBufferFS                           0x2001485c   Data        2048  usbd_cdc_if.o(.bss)
-    UserTxBufferFS                           0x2001505c   Data        2048  usbd_cdc_if.o(.bss)
-    pFlash                                   0x2001585c   Data          28  stm32f7xx_hal_flash.o(.bss)
-    __heap_base                              0x20015878   Data           0  startup_stm32f767xx.o(HEAP)
-    __heap_limit                             0x20017878   Data           0  startup_stm32f767xx.o(HEAP)
-    __initial_sp                             0x2001b878   Data           0  startup_stm32f767xx.o(STACK)
+    bluebuffer                               0x20000094   Data           4  main.o(.data)
+    adcval                                   0x20000098   Data           8  main.o(.data)
+    FS_Desc                                  0x200000a0   Data          32  usbd_desc.o(.data)
+    USBD_LangIDDesc                          0x200000c0   Data           4  usbd_desc.o(.data)
+    USBD_FS_DeviceDesc                       0x200000c4   Data          18  usbd_desc.o(.data)
+    USBD_FS_BOSDesc                          0x200000d8   Data          12  usbd_desc.o(.data)
+    USBD_StringSerial                        0x200000e4   Data          26  usbd_desc.o(.data)
+    USBD_Interface_fops_FS                   0x20000100   Data          16  usbd_cdc_if.o(.data)
+    SystemCoreClock                          0x20000110   Data           4  system_stm32f7xx.o(.data)
+    uwTickFreq                               0x20000114   Data           1  stm32f7xx_hal.o(.data)
+    uwTickPrio                               0x20000118   Data           4  stm32f7xx_hal.o(.data)
+    uwTick                                   0x2000011c   Data           4  stm32f7xx_hal.o(.data)
+    USBD_CDC_CfgHSDesc                       0x20000130   Data          67  usbd_cdc.o(.data)
+    USBD_CDC_CfgFSDesc                       0x20000174   Data          67  usbd_cdc.o(.data)
+    USBD_CDC_OtherSpeedCfgDesc               0x200001b8   Data          67  usbd_cdc.o(.data)
+    USBD_CDC                                 0x200001fc   Data          56  usbd_cdc.o(.data)
+    __microlib_freelist                      0x20000234   Data           4  mvars.o(.data)
+    __microlib_freelist_initialised          0x20000238   Data           4  mvars.o(.data)
+    velocity                                 0x2000023c   Data       20000  main.o(.bss)
+    angle                                    0x2000505c   Data       20000  main.o(.bss)
+    thrust                                   0x20009e7c   Data       20000  main.o(.bss)
+    steering                                 0x2000ec9c   Data       20000  main.o(.bss)
+    hadc1                                    0x20013abc   Data          72  main.o(.bss)
+    hadc2                                    0x20013b04   Data          72  main.o(.bss)
+    hadc3                                    0x20013b4c   Data          72  main.o(.bss)
+    heth                                     0x20013b94   Data          72  main.o(.bss)
+    htim1                                    0x20013bdc   Data          64  main.o(.bss)
+    htim2                                    0x20013c1c   Data          64  main.o(.bss)
+    htim3                                    0x20013c5c   Data          64  main.o(.bss)
+    htim4                                    0x20013c9c   Data          64  main.o(.bss)
+    htim10                                   0x20013cdc   Data          64  main.o(.bss)
+    huart4                                   0x20013d1c   Data         128  main.o(.bss)
+    huart2                                   0x20013d9c   Data         128  main.o(.bss)
+    huart3                                   0x20013e1c   Data         128  main.o(.bss)
+    hdma_adc3                                0x20013e9c   Data          96  main.o(.bss)
+    hdma_usart2_rx                           0x20013efc   Data          96  main.o(.bss)
+    hUsbDeviceFS                             0x20013f5c   Data         668  usb_device.o(.bss)
+    hpcd_USB_OTG_FS                          0x200141f8   Data        1028  usbd_conf.o(.bss)
+    USBD_StrDesc                             0x200145fc   Data         512  usbd_desc.o(.bss)
+    UserRxBufferFS                           0x200147fc   Data        2048  usbd_cdc_if.o(.bss)
+    UserTxBufferFS                           0x20014ffc   Data        2048  usbd_cdc_if.o(.bss)
+    pFlash                                   0x200157fc   Data          28  stm32f7xx_hal_flash.o(.bss)
+    __heap_base                              0x20015818   Data           0  startup_stm32f767xx.o(HEAP)
+    __heap_limit                             0x20017818   Data           0  startup_stm32f767xx.o(HEAP)
+    __initial_sp                             0x2001b818   Data           0  startup_stm32f767xx.o(STACK)
 
 
 
@@ -2799,9 +2799,9 @@ Memory Map of the image
 
   Image Entry point : 0x080001f9
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00006c64, Max: 0x00200000, ABSOLUTE, COMPRESSED[0x00006b08])
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00006c08, Max: 0x00200000, ABSOLUTE, COMPRESSED[0x00006aa8])
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00006a2c, Max: 0x00200000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000069cc, Max: 0x00200000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -3120,44 +3120,44 @@ Memory Map of the image
     0x080062c4   0x080062c4   0x0000000e   Code   RO         5581    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x080062d2   0x080062d2   0x00000002   PAD
     0x080062d4   0x080062d4   0x00000050   Code   RO         5525    i.free              mc_w.l(malloc.o)
-    0x08006324   0x08006324   0x00000648   Code   RO          344    i.main              main.o
-    0x0800696c   0x0800696c   0x0000006c   Code   RO         5526    i.malloc            mc_w.l(malloc.o)
-    0x080069d8   0x080069d8   0x00000014   Code   RO          345    i.map               main.o
-    0x080069ec   0x080069ec   0x00000010   Data   RO         1082    .constdata          system_stm32f7xx.o
-    0x080069fc   0x080069fc   0x00000008   Data   RO         1083    .constdata          system_stm32f7xx.o
-    0x08006a04   0x08006a04   0x00000008   Data   RO         2117    .constdata          stm32f7xx_hal_dma.o
-    0x08006a0c   0x08006a0c   0x00000020   Data   RO         5577    Region$$Table       anon$$obj.o
+    0x08006324   0x08006324   0x000005e8   Code   RO          344    i.main              main.o
+    0x0800690c   0x0800690c   0x0000006c   Code   RO         5526    i.malloc            mc_w.l(malloc.o)
+    0x08006978   0x08006978   0x00000014   Code   RO          345    i.map               main.o
+    0x0800698c   0x0800698c   0x00000010   Data   RO         1082    .constdata          system_stm32f7xx.o
+    0x0800699c   0x0800699c   0x00000008   Data   RO         1083    .constdata          system_stm32f7xx.o
+    0x080069a4   0x080069a4   0x00000008   Data   RO         2117    .constdata          stm32f7xx_hal_dma.o
+    0x080069ac   0x080069ac   0x00000020   Data   RO         5577    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08006a2c, Size: 0x0001b878, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000000dc])
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080069cc, Size: 0x0001b818, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000000dc])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x20000000   COMPRESSED   0x00000008   Data   RW          172    .data               my_flash.o
-    0x20000008   COMPRESSED   0x00000094   Data   RW          353    .data               main.o
-    0x2000009c   COMPRESSED   0x00000020   Data   RW          743    .data               usbd_desc.o
-    0x200000bc   COMPRESSED   0x0000003e   Data   RW          744    .data               usbd_desc.o
-    0x200000fa   COMPRESSED   0x00000002   PAD
-    0x200000fc   COMPRESSED   0x00000010   Data   RW          831    .data               usbd_cdc_if.o
-    0x2000010c   COMPRESSED   0x00000004   Data   RW         1084    .data               system_stm32f7xx.o
-    0x20000110   COMPRESSED   0x0000000c   Data   RW         2631    .data               stm32f7xx_hal.o
-    0x2000011c   COMPRESSED   0x00000001   Data   RW         5292    .data               usbd_ctlreq.o
-    0x2000011d   COMPRESSED   0x00000003   PAD
-    0x20000120   COMPRESSED   0x000000d7   Data   RW         5424    .data               usbd_cdc.o
-    0x200001f7   COMPRESSED   0x00000001   PAD
-    0x200001f8   COMPRESSED   0x00000038   Data   RW         5425    .data               usbd_cdc.o
-    0x20000230   COMPRESSED   0x00000004   Data   RW         5573    .data               mc_w.l(mvars.o)
-    0x20000234   COMPRESSED   0x00000004   Data   RW         5574    .data               mc_w.l(mvars.o)
-    0x20000238        -       0x00013cc4   Zero   RW          346    .bss                main.o
-    0x20013efc        -       0x00000060   Zero   RW          351    .bss                main.o
-    0x20013f5c        -       0x00000060   Zero   RW          352    .bss                main.o
-    0x20013fbc        -       0x0000029c   Zero   RW          502    .bss                usb_device.o
-    0x20014258        -       0x00000404   Zero   RW          562    .bss                usbd_conf.o
-    0x2001465c        -       0x00000200   Zero   RW          742    .bss                usbd_desc.o
-    0x2001485c        -       0x00001000   Zero   RW          830    .bss                usbd_cdc_if.o
-    0x2001585c        -       0x0000001c   Zero   RW         1871    .bss                stm32f7xx_hal_flash.o
-    0x20015878        -       0x00002000   Zero   RW            2    HEAP                startup_stm32f767xx.o
-    0x20017878        -       0x00004000   Zero   RW            1    STACK               startup_stm32f767xx.o
+    0x20000008   COMPRESSED   0x00000098   Data   RW          353    .data               main.o
+    0x200000a0   COMPRESSED   0x00000020   Data   RW          743    .data               usbd_desc.o
+    0x200000c0   COMPRESSED   0x0000003e   Data   RW          744    .data               usbd_desc.o
+    0x200000fe   COMPRESSED   0x00000002   PAD
+    0x20000100   COMPRESSED   0x00000010   Data   RW          831    .data               usbd_cdc_if.o
+    0x20000110   COMPRESSED   0x00000004   Data   RW         1084    .data               system_stm32f7xx.o
+    0x20000114   COMPRESSED   0x0000000c   Data   RW         2631    .data               stm32f7xx_hal.o
+    0x20000120   COMPRESSED   0x00000001   Data   RW         5292    .data               usbd_ctlreq.o
+    0x20000121   COMPRESSED   0x00000003   PAD
+    0x20000124   COMPRESSED   0x000000d7   Data   RW         5424    .data               usbd_cdc.o
+    0x200001fb   COMPRESSED   0x00000001   PAD
+    0x200001fc   COMPRESSED   0x00000038   Data   RW         5425    .data               usbd_cdc.o
+    0x20000234   COMPRESSED   0x00000004   Data   RW         5573    .data               mc_w.l(mvars.o)
+    0x20000238   COMPRESSED   0x00000004   Data   RW         5574    .data               mc_w.l(mvars.o)
+    0x2000023c        -       0x00013c60   Zero   RW          346    .bss                main.o
+    0x20013e9c        -       0x00000060   Zero   RW          351    .bss                main.o
+    0x20013efc        -       0x00000060   Zero   RW          352    .bss                main.o
+    0x20013f5c        -       0x0000029c   Zero   RW          502    .bss                usb_device.o
+    0x200141f8        -       0x00000404   Zero   RW          562    .bss                usbd_conf.o
+    0x200145fc        -       0x00000200   Zero   RW          742    .bss                usbd_desc.o
+    0x200147fc        -       0x00001000   Zero   RW          830    .bss                usbd_cdc_if.o
+    0x200157fc        -       0x0000001c   Zero   RW         1871    .bss                stm32f7xx_hal_flash.o
+    0x20015818        -       0x00002000   Zero   RW            2    HEAP                startup_stm32f767xx.o
+    0x20017818        -       0x00004000   Zero   RW            1    STACK               startup_stm32f767xx.o
 
 
 ==============================================================================
@@ -3168,7 +3168,7 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
          0          0          0          0          0       1444   fuzzy_f4.o
-      3290        284          0        148      81284      21453   main.o
+      3194        280          0        152      81184      21421   main.o
        160         10          0          8          0     929372   my_flash.o
         36          8        504          0      24576        844   startup_stm32f767xx.o
        150         24          0         12          0       9253   stm32f7xx_hal.o
@@ -3201,7 +3201,7 @@ Image component sizes
        132          0          0          0          0       4592   usbd_ioreq.o
 
     ----------------------------------------------------------------------
-     26018       1544        568        560     112192    1196390   Object Totals
+     25922       1540        568        564     112092    1196358   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         38          0          0          6          0          0   (incl. Padding)
 
@@ -3248,15 +3248,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     26612       1580        568        568     112192    1170546   Grand Totals
-     26612       1580        568        220     112192    1170546   ELF Image Totals (compressed)
-     26612       1580        568        220          0          0   ROM Totals
+     26516       1576        568        572     112092    1170514   Grand Totals
+     26516       1576        568        220     112092    1170514   ELF Image Totals (compressed)
+     26516       1576        568        220          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                27180 (  26.54kB)
-    Total RW  Size (RW Data + ZI Data)            112760 ( 110.12kB)
-    Total ROM Size (Code + RO Data + RW Data)      27400 (  26.76kB)
+    Total RO  Size (Code + RO Data)                27084 (  26.45kB)
+    Total RW  Size (RW Data + ZI Data)            112664 ( 110.02kB)
+    Total ROM Size (Code + RO Data + RW Data)      27304 (  26.66kB)
 
 ==============================================================================
 

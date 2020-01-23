@@ -158,134 +158,129 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>bluebutton</ItemText>
+          <ItemText>bluebuffer,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>sensork</ItemText>
+          <ItemText>lenken,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spins</ItemText>
+          <ItemText>gas,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>memory_start</ItemText>
+          <ItemText>uwtick_Hold10ms</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>bluebuffer</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>HAL_UART_Receive,0x0A</ItemText>
+          <ItemText>autobetrieb</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>countspin</ItemText>
+          <ItemText>spins</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>spins</ItemText>
+          <ItemText>gas,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
-          <ItemText>gas,0x0A</ItemText>
+          <ItemText>icom,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>2</WinNumber>
-          <ItemText>icom,0x0A</ItemText>
+          <ItemText>count_10ms,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>2</WinNumber>
-          <ItemText>count_10ms,0x0A</ItemText>
+          <ItemText>w_velocity,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>w_velocity,0x0A</ItemText>
+          <ItemText>memory_start</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>2</WinNumber>
-          <ItemText>memory_start</ItemText>
+          <ItemText>bluebutton,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>2</WinNumber>
-          <ItemText>bluebutton,0x0A</ItemText>
+          <ItemText>memorystorebutton,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>2</WinNumber>
-          <ItemText>memorystorebutton,0x0A</ItemText>
+          <ItemText>spins</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>2</WinNumber>
-          <ItemText>spins</ItemText>
+          <ItemText>steering_trailer,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>2</WinNumber>
-          <ItemText>steering_trailer,0x0A</ItemText>
+          <ItemText>adc_steering,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>2</WinNumber>
-          <ItemText>adc_steering,0x0A</ItemText>
+          <ItemText>steering_conv</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>2</WinNumber>
-          <ItemText>steering_conv</ItemText>
+          <ItemText>memory_start,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>2</WinNumber>
-          <ItemText>memory_start,0x0A</ItemText>
+          <ItemText>curve_was_taken,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>2</WinNumber>
-          <ItemText>curve_was_taken,0x0A</ItemText>
+          <ItemText>flasharray_length,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>2</WinNumber>
-          <ItemText>flasharray_length,0x0A</ItemText>
+          <ItemText>w_velocity,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>2</WinNumber>
-          <ItemText>w_velocity,0x0A</ItemText>
+          <ItemText>velocity,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>2</WinNumber>
-          <ItemText>velocity,0x0A</ItemText>
+          <ItemText>setval_memory_storage,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>2</WinNumber>
-          <ItemText>setval_memory_storage,0x0A</ItemText>
+          <ItemText>test,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>2</WinNumber>
-          <ItemText>test,0x0A</ItemText>
+          <ItemText>adcval[0]</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
@@ -295,7 +290,17 @@
         <Ww>
           <count>21</count>
           <WinNumber>2</WinNumber>
-          <ItemText>adcval[0]</ItemText>
+          <ItemText>lenken,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>handbetrieb</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>autobetrieb</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>
