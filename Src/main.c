@@ -69,6 +69,8 @@ uint32_t adc_steering;			// Winkelsensor ADC value
 uint32_t adcval[2] ;				// Joysticks adc Wert
 uint32_t lenken = 0;
 uint32_t gas = 0;						// gas & lenk wert
+int gas_v = 0;
+int gas_r = 0 ;
 int i = 0;
 
 float sensork;						// Sensorwert in cm
@@ -378,6 +380,7 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
+		
 		}	// 100ms Ende
 			
 		
@@ -486,25 +489,35 @@ int main(void)
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(bluebuffer[1]<=126)	{
+		if(bluebuffer[1]==128)	{
+			gas_v=0 ;
+			gas_r = 0 ;
+		}
 		
-			gas = map(bluebuffer[1],126, 0 , 0, 30);  //269 - 754
+		if(bluebuffer[1]<=127)	{
+			
+			gas_v=0;
 		
-			if(gas < 7)
-				gas = 0;
+			gas_r = map(bluebuffer[1],127, 0 , 0, 30);  //269 - 754
 		
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
+			if(gas_r < 7)
+				gas_r = 0;
+		
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 9);
 		}
 		if(bluebuffer[1]>=129)	{
 			
-			gas = map(bluebuffer[1],129,255,0,30);
+			gas_r=0;
 			
-			if(gas < 7)
-				gas = 0;
+			gas_v = map(bluebuffer[1],129,255,0,30);
 			
-		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 0);
+			if(gas_v < 7)
+				gas_v = 0;
+			
+		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, 9);
 		}
-  }		
+  }
+			
 
   }		// while Ende
 
