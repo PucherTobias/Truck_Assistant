@@ -58,6 +58,7 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim10;
 
+UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
@@ -79,6 +80,8 @@ uint16_t velocity[10000] = {0} ;
 int16_t 	angle[10000] = {0} ;					//Speicherfelder
 uint16_t thrust[10000]	= {0};
 uint16_t	steering[10000] = {0};
+uint8_t bluebuffer[4] = {0} ;
+
 //unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 //char steeringASCII[10000] ;
 int iw=0 ;
@@ -141,6 +144,7 @@ static void MX_TIM2_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM10_Init(void);
+static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -162,6 +166,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	int setval = 0;
+	bluebuffer[1] = 128 ;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms; 
   static int32_t uwtick_Hold1s;
@@ -204,6 +209,7 @@ int main(void)
   MX_ADC2_Init();
   MX_TIM1_Init();
   MX_TIM10_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Start the Motor PWM
 	HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1) ;
@@ -262,17 +268,18 @@ int main(void)
 			memorystorebutton++;
 			curve_was_taken = 2;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==1){						//Abfrage ob Handbetrieb 
+		if((bluebuffer[3]==16) || (bluebuffer[3]==24) ){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
 				handbetrieb= 0;
 		}
-		if(HAL_GPIO_ReadPin(Auto_Hand_Betrieb_GPIO_Port, Auto_Hand_Betrieb_Pin)==0)	{																	
+		else	{															
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
 		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_sync_Pin))	{
 				angle_sync = 1;
 		}
+		HAL_UART_Receive_IT(&huart4,bluebuffer, sizeof(bluebuffer)) ;
 			
 		if(icom>=9999)
 			icom=9999 ;
@@ -472,39 +479,34 @@ int main(void)
 			}
 
 			
-		if(adcval[1] >= 511){
-			lenken = map(adcval[1], 511, 772, 90, 120);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
-		}
-		
-		if(adcval[1] < 511){
-			lenken = map(adcval[1], 253, 511, 60 , 90);
-		}
+		lenken = bluebuffer[2] ;
 		
 		i = map(lenken, 0, 180, 250, 1250);
 		
 		htim4.Instance->CCR1 = i;
 		
-		if(adcval[0]>=509)	{
-			if(adcval[0] >= 754)
-				adcval[0] = 754;
+		if(bluebuffer[1]>=128)	{
+			if(bluebuffer[1] >= 255)
+				bluebuffer[1] = 255;
 		
-			gas = map(adcval[0], 509, 754 , 0, 31);  //269 - 754
+			gas = map(bluebuffer[1], 128, 255 , 0, 31);  //269 - 754
 		
 			if(gas < 7)
 				gas = 0;
 		
-			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+			
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
 		}
-		if(adcval[0]<=509)	{
-			if(adcval[0]<=274){
-				adcval[0] = 274;
+		if(bluebuffer[1]<=128)	{
+			if(bluebuffer[1]<=0){
+				bluebuffer[1] = 0;
 			}
-			gas = map(adcval[0],509,274,0,31);
+			gas = map(bluebuffer[1],128,0,0,31);
 			
 			if(gas < 7)
 				gas = 0;
 			
-		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
 		}
   }		
 
@@ -556,9 +558,10 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_USART3
-                              |RCC_PERIPHCLK_CLK48;
+                              |RCC_PERIPHCLK_UART4|RCC_PERIPHCLK_CLK48;
   PeriphClkInitStruct.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+  PeriphClkInitStruct.Uart4ClockSelection = RCC_UART4CLKSOURCE_PCLK1;
   PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
@@ -1019,6 +1022,41 @@ static void MX_TIM10_Init(void)
 
   /* USER CODE END TIM10_Init 2 */
   HAL_TIM_MspPostInit(&htim10);
+
+}
+
+/**
+  * @brief UART4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART4_Init(void)
+{
+
+  /* USER CODE BEGIN UART4_Init 0 */
+
+  /* USER CODE END UART4_Init 0 */
+
+  /* USER CODE BEGIN UART4_Init 1 */
+
+  /* USER CODE END UART4_Init 1 */
+  huart4.Instance = UART4;
+  huart4.Init.BaudRate = 9600;
+  huart4.Init.WordLength = UART_WORDLENGTH_8B;
+  huart4.Init.StopBits = UART_STOPBITS_1;
+  huart4.Init.Parity = UART_PARITY_NONE;
+  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart4.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART4_Init 2 */
+
+  /* USER CODE END UART4_Init 2 */
 
 }
 
