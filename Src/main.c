@@ -124,6 +124,8 @@ float Kp = 0;
 float e = 0;
 float lenken_regler = 90;
 
+int photodiode1 = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -251,6 +253,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		if(HAL_GPIO_ReadPin(photodiode1_GPIO_Port, photodiode1_Pin))
+		{	
+			photodiode1 = 1;
+		}else{
+			photodiode1 = 0;
+		}
 		
 		
 		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
@@ -1176,6 +1184,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(angle_sync_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : photodiode1_Pin photodiode2_Pin */
+  GPIO_InitStruct.Pin = photodiode1_Pin|photodiode2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
