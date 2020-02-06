@@ -285,7 +285,7 @@ int main(void)
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
-		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_sync_Pin))	{
+		if((bluebuffer[3]==8))	{
 				angle_sync = 1;
 		}
 		
