@@ -446,12 +446,12 @@ int main(void)
 		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
 		//Lenkung - Steering
 			
-		if(adcval[1] >= 511){
-			auto_angle_w = map(adcval[1], 511, 772, 0, 25);
+		if(bluebuffer[2] >= 90){
+			auto_angle_w = map(bluebuffer[2], 90, 120, 0, 25);
 		}
 		
-		if(adcval[1] < 511){
-			auto_angle_w = map(adcval[1], 253, 511, -25 , 0);
+		if(bluebuffer[2] < 90){
+			auto_angle_w = map(bluebuffer[2], 60, 90, -25 , 0);
 		}	
 			
 		e = auto_angle_w - auto_angle_y;
@@ -473,19 +473,33 @@ int main(void)
 		htim4.Instance->CCR1 = auto_steering_pwm;
 			
 		//Motor - Thrust
-		if(adcval[0]>=509)	{
-			if(adcval[0] >= 754)
-				adcval[0] = 754;
-			auto_thrust = map(adcval[0], 509, 754 , 0, 31);
-		}	
+			if(bluebuffer[1]<=128)	{
+			if(bluebuffer[1]<=0){
+				bluebuffer[1] = 0;
+			}
+			auto_thrust = map(bluebuffer[1],128,0,0,31);
 			
-		if(auto_thrust < 7)
-			auto_thrust = 0;
-		if(auto_thrust >= 30)
-			auto_thrust = 30;
-		
-		
+			if(auto_thrust < 7)
+				auto_thrust = 0;
+			if(auto_thrust >= 30)
+				auto_thrust = 30;
+			
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
+		}
+		
+//		if(adcval[0]>=509)	{
+//			if(adcval[0] >= 754)
+//				adcval[0] = 754;
+//			auto_thrust = map(adcval[0], 509, 754 , 0, 31);
+//		}	
+//			
+//		if(auto_thrust < 7)
+//			auto_thrust = 0;
+//		if(auto_thrust >= 30)
+//			auto_thrust = 30;
+//		
+//		
+//		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, auto_thrust);
 		
 		
 		}//autobetrieb ENDE///////////////////////////////////////
