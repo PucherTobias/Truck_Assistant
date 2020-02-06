@@ -61,6 +61,7 @@ TIM_HandleTypeDef htim10;
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_uart4_rx;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
@@ -81,12 +82,17 @@ int16_t 	angle[10000] = {0} ;					//Speicherfelder
 uint16_t thrust[10000]	= {0};
 uint16_t	steering[10000] = {0};
 uint8_t bluebuffer[4] = {0} ;
+uint8_t bluebuffer_sync[4] = {0} ;
+
 
 //unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
 //char steeringASCII[10000] ;
 int iw=0 ;
 int itrans = 0 ;
 int icom = 0 ;
+int b_count = 0;
+int b_sync = 0;
+int bluebufferval = 0;
 int length = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;							// Verzögerungen
@@ -219,6 +225,8 @@ int main(void)
 	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
 	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
 	
+	HAL_UART_Receive_DMA(&huart4,bluebuffer,sizeof(bluebuffer)) ;
+	
 	//MOTOR / SERVO DEFAULT BEGIN
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
 	htim4.Instance->CCR1 = 750; //default 90°
@@ -268,6 +276,7 @@ int main(void)
 			memorystorebutton++;
 			curve_was_taken = 2;
 		}
+		
 		if((bluebuffer[3]==16) || (bluebuffer[3]==24) ){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																																		  // oder Autobetrieb
 				handbetrieb= 0;
@@ -279,8 +288,42 @@ int main(void)
 		if(HAL_GPIO_ReadPin(angle_sync_GPIO_Port,angle_sync_Pin))	{
 				angle_sync = 1;
 		}
-		HAL_UART_Receive_IT(&huart4,bluebuffer, sizeof(bluebuffer)) ;
-			
+		
+//		if(HAL_UART_GetState(&huart4)	!= HAL_UART_STATE_BUSY)	{
+//		HAL_UART_Receive(&huart4,bluebuffer, sizeof(bluebuffer),50) ;
+//		}
+
+		
+		
+		
+		
+//		bluebuffer_sync[0] = bluebuffer[0] ;
+//			
+//		bluebuffer_sync[1] = bluebuffer[1] ;
+//			
+//		bluebuffer_sync[2] = bluebuffer[2] ;
+//			
+//		bluebuffer_sync[3] = bluebuffer[3] ;
+//		
+//		b_count = 0;
+//		bluebufferval = 0;
+//		
+//		if((bluebuffer[0]!= 0xF2) || (bluebuffer[0]!=0xF3) ||	(bluebuffer[0]!=0xF1) )	{
+//			
+//			while((bluebuffer[b_count]!= 0xF2) || (bluebuffer[b_count]!=0xF3))	{
+//				b_count++;
+//			}
+//			
+//			bluebuffer_sync[0] = bluebuffer[b_count-1] ;
+//			
+//			bluebuffer_sync[1] = bluebuffer[b_count] ;
+//			
+//			bluebuffer_sync[2] = bluebuffer[b_count+1] ;
+//			
+//			bluebuffer_sync[3] = bluebuffer[b_count+2] ;
+//				
+//		}
+		
 		if(icom>=9999)
 			icom=9999 ;
 		if(icom<0)
@@ -1141,6 +1184,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
@@ -1264,10 +1310,17 @@ static void MX_GPIO_Init(void)
    */
 }
 
-
-
-  
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  /* Prevent unused argument(s) compilation warning */
+	bluebufferval++;
 	
+  /* NOTE : This function should not be modified, when the callback is needed,
+            the HAL_UART_RxCpltCallback can be implemented in the user file.
+   */
+}
+	
+
 
 /* USER CODE END 4 */
 
