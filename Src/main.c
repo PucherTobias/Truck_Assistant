@@ -133,6 +133,9 @@ float Kp = 0;
 float e = 0;
 float lenken_regler = 90;
 
+//Sync
+int sync_allowed = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -286,7 +289,8 @@ int main(void)
 				handbetrieb= 1;
 		}
 		if((bluebuffer[3]==8))	{
-				angle_sync = 1;
+				// angle_sync = 1;
+			sync_allowed=1;
 		}
 		
 //		if(HAL_UART_GetState(&huart4)	!= HAL_UART_STATE_BUSY)	{
@@ -329,9 +333,8 @@ int main(void)
 		if(icom<0)
 			icom=0;
 		
-		if(angle_sync==1)	{
+		if(sync_allowed)	{
 			angleconv_sync = steering_conv;
-			angle_sync=0 ;
 		}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
@@ -454,14 +457,14 @@ int main(void)
 			auto_angle_w = map(bluebuffer[2], 60, 90, -25 , 0);
 		}	
 			
-		e = auto_angle_w - auto_angle_y;
-		
-		Kp = 3;	
-		u=Kp*e;
-		
-		lenken_regler = 90-u;	
-		
-		auto_steering = lenken_regler;		
+//		e = auto_angle_w - auto_angle_y;
+//		
+//		Kp = 3;	
+//		u=Kp*e;
+//		
+//		lenken_regler = 90-u;	
+//		
+//		auto_steering = lenken_regler;		
 			
 		
 		if(auto_steering > 135)
