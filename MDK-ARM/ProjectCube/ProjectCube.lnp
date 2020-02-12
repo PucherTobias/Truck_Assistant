@@ -11,6 +11,7 @@
 "projectcube\usbd_cdc_if.o"
 "projectcube\stm32f7xx_it.o"
 "projectcube\stm32f7xx_hal_msp.o"
+"projectcube\pid_controller.o"
 "projectcube\system_stm32f7xx.o"
 "projectcube\stm32f7xx_hal_pcd.o"
 "projectcube\stm32f7xx_hal_pcd_ex.o"

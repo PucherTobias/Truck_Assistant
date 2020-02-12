@@ -27,6 +27,7 @@
 #include "usbd_cdc_if.h"
 #include "FuzzyV1_F4.h" 
 #include "MY_FLASH.h"
+#include "pid_controller.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -128,13 +129,23 @@ int auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 
-float u = 0;
-float Kp = 0;
-float e = 0;
-float lenken_regler = 90;
+//Regler PID
+PIDControl pid_1;
+float kp = 3;
+float ki = 1;
+float kd = 0;
+float sampleTimeSeconds = 0.01; //10ms
+float minOutput = -180.0;
+float maxOutput = 180.0;
+PIDMode pid_1_Mode = AUTOMATIC;
+PIDDirection pid_1_direction = DIRECT;
+float setpoint=0;
+float x;
+float u;
 
 //Sync
 int sync_allowed = 0;
+int photodiode = 1;
 
 /* USER CODE END PV */
 
@@ -259,6 +270,10 @@ int main(void)
 	//FLASH READ END
 	
 	
+	//PID Regler
+	PIDInit(&pid_1,kp,ki,kd,sampleTimeSeconds,minOutput,maxOutput,
+	pid_1_Mode,pid_1_direction);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -291,6 +306,11 @@ int main(void)
 		if((bluebuffer[3]==8))	{
 				// angle_sync = 1;
 			sync_allowed=1;
+			if(HAL_GPIO_ReadPin(photodiode1_GPIO_Port, photodiode1_Pin))			// Übertragung Start
+				{	photodiode = 1;	}
+			else{
+				photodiode = 0;
+			}
 		}
 		
 //		if(HAL_UART_GetState(&huart4)	!= HAL_UART_STATE_BUSY)	{
@@ -334,13 +354,18 @@ int main(void)
 			icom=0;
 		
 		if(sync_allowed)	{
-			angleconv_sync = steering_conv;
+			if(photodiode == 0)
+				angleconv_sync = steering_conv;
 		}
 	
 		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
 			count_10ms++;
-			
+						
+		//Regler
+		setpoint = map(bluebuffer[2],60,120,-15,15);
+		PIDSetpointSet(&pid_1, setpoint);
+		PIDCompute(&pid_1);
 		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
@@ -457,14 +482,15 @@ int main(void)
 			auto_angle_w = map(bluebuffer[2], 60, 90, -25 , 0);
 		}	
 			
+			x = auto_angle_y;
+			PIDInputSet(&pid_1, x);
+			u = PIDOutputGet(&pid_1);
 //		e = auto_angle_w - auto_angle_y;
 //		
 //		Kp = 3;	
 //		u=Kp*e;
 //		
-//		lenken_regler = 90-u;	
-//		
-//		auto_steering = lenken_regler;		
+			auto_steering	= 90-u;	
 			
 		
 		if(auto_steering > 135)
@@ -1277,6 +1303,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(angle_sync_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : photodiode1_Pin */
+  GPIO_InitStruct.Pin = photodiode1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(photodiode1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
