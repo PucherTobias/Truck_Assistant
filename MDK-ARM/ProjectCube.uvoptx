@@ -220,6 +220,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>bluebufferval,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>statustest</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

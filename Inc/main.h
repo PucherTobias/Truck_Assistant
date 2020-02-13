@@ -103,6 +103,16 @@ void Error_Handler(void);
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
+#define Status_buzzer_Pin GPIO_PIN_15
+#define Status_buzzer_GPIO_Port GPIOD
+#define Status_LED_1_Pin GPIO_PIN_2
+#define Status_LED_1_GPIO_Port GPIOG
+#define Status_LED_2_Pin GPIO_PIN_3
+#define Status_LED_2_GPIO_Port GPIOG
+#define Status_LED_3_Pin GPIO_PIN_4
+#define Status_LED_3_GPIO_Port GPIOG
+#define Status_LED_4_Pin GPIO_PIN_5
+#define Status_LED_4_GPIO_Port GPIOG
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7

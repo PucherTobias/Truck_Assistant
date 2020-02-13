@@ -83,6 +83,8 @@ uint16_t thrust[10000]	= {0};
 uint16_t	steering[10000] = {0};
 uint8_t bluebuffer[4] = {0} ;
 uint8_t bluetransbuffer[14];
+int statuscount = 0;
+int statustest = 0;
 
 
 
@@ -405,12 +407,34 @@ int main(void)
 		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
+			
+			if(statustest==1){
+				if((count_100ms%7)==0){
+					if(statuscount<=9)	{
+						HAL_GPIO_TogglePin(Status_LED_1_GPIO_Port,Status_LED_1_Pin);
+						HAL_GPIO_TogglePin(Status_LED_2_GPIO_Port,Status_LED_2_Pin);
+						HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+						HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+						statuscount++;
+						}
+					else	{
+						HAL_GPIO_WritePin(Status_LED_1_GPIO_Port,Status_LED_1_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED_2_GPIO_Port,Status_LED_2_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
+					}
+				}
+			}
 		}	// 100ms Ende
 			
 		
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
-			count_1s++;	
+			count_1s++;
+			
+				
+				
+				
 		}		// 1s Ende		
 		
 		if(HAL_GPIO_ReadPin(NotAus_GPIO_Port, NotAus_Pin)) {								// NOT-Aus
@@ -1220,7 +1244,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Status_buzzer_GPIO_Port, Status_buzzer_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOG, Status_LED_1_Pin|Status_LED_2_Pin|Status_LED_3_Pin|Status_LED_4_Pin 
+                          |USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : Flash_start_Pin NotAus_Pin free_button1_Pin free_button2_Pin */
   GPIO_InitStruct.Pin = Flash_start_Pin|NotAus_Pin|free_button1_Pin|free_button2_Pin;
@@ -1265,6 +1293,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Status_buzzer_Pin */
+  GPIO_InitStruct.Pin = Status_buzzer_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Status_buzzer_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Status_LED_1_Pin Status_LED_2_Pin Status_LED_3_Pin Status_LED_4_Pin */
+  GPIO_InitStruct.Pin = Status_LED_1_Pin|Status_LED_2_Pin|Status_LED_3_Pin|Status_LED_4_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
