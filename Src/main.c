@@ -82,7 +82,8 @@ int16_t 	angle[10000] = {0} ;					//Speicherfelder
 uint16_t thrust[10000]	= {0};
 uint16_t	steering[10000] = {0};
 uint8_t bluebuffer[4] = {0} ;
-uint8_t bluebuffer_sync[4] = {0} ;
+uint8_t bluetransbuffer[14];
+
 
 
 //unsigned char velocityASCII[10000] ;		// ASCII Felder wegen UART
@@ -181,6 +182,19 @@ int main(void)
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
+	
+	bluetransbuffer[1] = 1;
+	bluetransbuffer[2] = 2;
+	bluetransbuffer[3] = 3;
+	bluetransbuffer[4] = 4;
+	bluetransbuffer[5] = 5;
+	bluetransbuffer[6] = 6;
+	bluetransbuffer[7] = 7;
+	bluetransbuffer[8] = 8;
+	bluetransbuffer[9] = 9;
+	bluetransbuffer[10] = 10;
+	bluetransbuffer[11] = 11;
+	bluetransbuffer[12] = 12;
   /* USER CODE END 1 */
   
 
@@ -278,51 +292,21 @@ int main(void)
 		}
 		
 		if((bluebuffer[3]==16) || (bluebuffer[3]==24) ){						//Abfrage ob Handbetrieb 
-				autobetrieb= 1;																																		  // oder Autobetrieb
+				autobetrieb= 1;																					// oder Autobetrieb
 				handbetrieb= 0;
 		}
 		else	{															
 				autobetrieb= 0;
 				handbetrieb= 1;
 		}
-		if((bluebuffer[3]==8))	{
+		if((bluebuffer[3] == 8))	{
 				angle_sync = 1;
 		}
 		
-//		if(HAL_UART_GetState(&huart4)	!= HAL_UART_STATE_BUSY)	{
-//		HAL_UART_Receive(&huart4,bluebuffer, sizeof(bluebuffer),50) ;
-//		}
+	
+		HAL_UART_Transmit(&huart4,bluetransbuffer,sizeof(bluetransbuffer),20);
 
 		
-		
-		
-		
-//		bluebuffer_sync[0] = bluebuffer[0] ;
-//			
-//		bluebuffer_sync[1] = bluebuffer[1] ;
-//			
-//		bluebuffer_sync[2] = bluebuffer[2] ;
-//			
-//		bluebuffer_sync[3] = bluebuffer[3] ;
-//		
-//		b_count = 0;
-//		bluebufferval = 0;
-//		
-//		if((bluebuffer[0]!= 0xF2) || (bluebuffer[0]!=0xF3) ||	(bluebuffer[0]!=0xF1) )	{
-//			
-//			while((bluebuffer[b_count]!= 0xF2) || (bluebuffer[b_count]!=0xF3))	{
-//				b_count++;
-//			}
-//			
-//			bluebuffer_sync[0] = bluebuffer[b_count-1] ;
-//			
-//			bluebuffer_sync[1] = bluebuffer[b_count] ;
-//			
-//			bluebuffer_sync[2] = bluebuffer[b_count+1] ;
-//			
-//			bluebuffer_sync[3] = bluebuffer[b_count+2] ;
-//				
-//		}
 		
 		if(icom>=9999)
 			icom=9999 ;
