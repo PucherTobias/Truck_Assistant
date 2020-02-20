@@ -307,6 +307,7 @@ int main(void)
 //		}
 		
 	
+
 		
 		while(freigabe==0)	{
 			
@@ -315,10 +316,17 @@ int main(void)
 			HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_SET);
 			HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_SET);
 			
+			if(HAL_GPIO_ReadPin(Freigabe_GPIO_Port,Freigabe_Pin))	{
+				freigabe=1;
+		}
 			uw_count=uwTick ;
 	}
 	
 	while(freigabe==1)	{
+		
+//		if(HAL_GPIO_ReadPin(Freigabe_GPIO_Port,Freigabe_Pin))	{
+//				freigabe=0 ;
+//			}
 		
 		uw_result = uwTick - uw_count ;
 		
@@ -612,7 +620,6 @@ int main(void)
 
 	}	// while end
   /* USER CODE END 3 */
-
 }
 
 /**
@@ -1290,8 +1297,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : NotAus_Pin free_button2_Pin */
-  GPIO_InitStruct.Pin = NotAus_Pin|free_button2_Pin;
+  /*Configure GPIO pins : NotAus_Pin free_Button_2_Pin */
+  GPIO_InitStruct.Pin = NotAus_Pin|free_Button_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -1315,11 +1322,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Auto_Hand_Betrieb_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin;
+  /*Configure GPIO pin : Freigabe_Pin */
+  GPIO_InitStruct.Pin = Freigabe_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(Auto_Hand_Betrieb_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(Freigabe_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : angle_sync_Pin */
   GPIO_InitStruct.Pin = angle_sync_Pin;

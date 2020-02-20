@@ -66,8 +66,8 @@ void Error_Handler(void);
 #define NotAus_GPIO_Port GPIOE
 #define Status_buzzer_Pin GPIO_PIN_4
 #define Status_buzzer_GPIO_Port GPIOE
-#define free_button2_Pin GPIO_PIN_5
-#define free_button2_GPIO_Port GPIOE
+#define free_Button_2_Pin GPIO_PIN_5
+#define free_Button_2_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
 #define Counterrisingedge_Pin GPIO_PIN_0
@@ -75,8 +75,8 @@ void Error_Handler(void);
 #define Counterrisingedge_EXTI_IRQn EXTI0_IRQn
 #define angle_0_Pin GPIO_PIN_1
 #define angle_0_GPIO_Port GPIOF
-#define Auto_Hand_Betrieb_Pin GPIO_PIN_3
-#define Auto_Hand_Betrieb_GPIO_Port GPIOF
+#define Freigabe_Pin GPIO_PIN_3
+#define Freigabe_GPIO_Port GPIOF
 #define Status_LED2_Pin GPIO_PIN_8
 #define Status_LED2_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
