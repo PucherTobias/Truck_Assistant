@@ -60,3 +60,4 @@ projectcube\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\assert.h
 projectcube\main.o: ../Inc/MY_FLASH.h
 projectcube\main.o: ../Src/pid_controller.h
 projectcube\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+projectcube\main.o: ../Src/pid_regler.h

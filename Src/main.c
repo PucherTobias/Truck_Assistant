@@ -186,7 +186,6 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	int setval = 0;
 	bluebuffer[1] = 128 ;
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms; 

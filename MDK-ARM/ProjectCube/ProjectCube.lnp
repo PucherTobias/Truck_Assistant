@@ -12,6 +12,7 @@
 "projectcube\stm32f7xx_it.o"
 "projectcube\stm32f7xx_hal_msp.o"
 "projectcube\pid_controller.o"
+"projectcube\pid_regler.o"
 "projectcube\system_stm32f7xx.o"
 "projectcube\stm32f7xx_hal_pcd.o"
 "projectcube\stm32f7xx_hal_pcd_ex.o"

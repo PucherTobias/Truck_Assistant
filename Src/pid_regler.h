@@ -1,17 +1,8 @@
-
-#ifndef PID_CONTROLLER_H
-#define PID_CONTROLLER_H
-
 #include <main.h>
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 typedef enum {
     ON, OFF
-}pid_freigabe
+}pid_freigabe;
 
 typedef struct
 {
@@ -44,10 +35,4 @@ pid_regler_struct;
 extern void pid_init(pid_regler_struct *pid);
 
 
-float limit(float wert, float min, float max) {
-    if(wert < min)
-        wert = min;
-    if(wert > max)
-        wert = max;
-    return wert;
-}
+float limit(float wert, float min, float max);
