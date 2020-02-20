@@ -84,6 +84,7 @@ uint16_t	steering[10000] = {0};
 uint8_t bluebuffer[4] = {0} ;
 uint8_t bluetransbuffer[14];
 int statuscount = 0;
+int buzzer_count = 0;
 int statustest = 0;
 
 
@@ -283,15 +284,15 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		
 		
-		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
-		{	memory_start = 1 ;
-			
-		}
-		if(HAL_GPIO_ReadPin(Flash_stop_GPIO_Port,Flash_stop_Pin))
-		{	memory_start = 2 ;
-			memorystorebutton++;
-			curve_was_taken = 2;
-		}
+//		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
+//		{	memory_start = 1 ;
+//			
+//		}
+//		if(HAL_GPIO_ReadPin(Flash_stop_GPIO_Port,Flash_stop_Pin))
+//		{	memory_start = 2 ;
+//			memorystorebutton++;
+//			curve_was_taken = 2;
+//		}
 		
 		if((bluebuffer[3]==16) || (bluebuffer[3]==24) ){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																					// oder Autobetrieb
@@ -411,15 +412,15 @@ int main(void)
 			if(statustest==1){
 				if((count_100ms%7)==0){
 					if(statuscount<=9)	{
-						HAL_GPIO_TogglePin(Status_LED_1_GPIO_Port,Status_LED_1_Pin);
-						HAL_GPIO_TogglePin(Status_LED_2_GPIO_Port,Status_LED_2_Pin);
+						HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+						HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
 						HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
 						HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
 						statuscount++;
 						}
 					else	{
-						HAL_GPIO_WritePin(Status_LED_1_GPIO_Port,Status_LED_1_Pin,GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(Status_LED_2_GPIO_Port,Status_LED_2_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED1_GPIO_Port,Status_LED1_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED2_GPIO_Port,Status_LED2_Pin,GPIO_PIN_RESET);
 						HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_RESET);
 						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
 					}
@@ -431,7 +432,15 @@ int main(void)
 		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;
-			
+			if(statustest==1)	{
+				if(buzzer_count<=3)	{
+					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_SET);
+					buzzer_count++;
+				}
+				else	{
+					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
+				}
+			}
 				
 				
 				
@@ -1238,20 +1247,26 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(angle_0_GPIO_Port, angle_0_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, Status_LED1_Pin|Status_buzzer_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOF, angle_0_Pin|Status_LED2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Status_buzzer_GPIO_Port, Status_buzzer_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, Status_LED_3_Pin|Status_LED_4_Pin|USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, Status_LED_1_Pin|Status_LED_2_Pin|Status_LED_3_Pin|Status_LED_4_Pin 
-                          |USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
+  /*Configure GPIO pins : Status_LED1_Pin Status_buzzer_Pin */
+  GPIO_InitStruct.Pin = Status_LED1_Pin|Status_buzzer_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Flash_start_Pin NotAus_Pin free_button1_Pin free_button2_Pin */
-  GPIO_InitStruct.Pin = Flash_start_Pin|NotAus_Pin|free_button1_Pin|free_button2_Pin;
+  /*Configure GPIO pins : NotAus_Pin free_button2_Pin */
+  GPIO_InitStruct.Pin = NotAus_Pin|free_button2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -1268,18 +1283,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Counterrisingedge_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : angle_0_Pin */
-  GPIO_InitStruct.Pin = angle_0_Pin;
+  /*Configure GPIO pins : angle_0_Pin Status_LED2_Pin */
+  GPIO_InitStruct.Pin = angle_0_Pin|Status_LED2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(angle_0_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Auto_Hand_Betrieb_Pin Flash_stop_Pin */
-  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin|Flash_stop_Pin;
+  /*Configure GPIO pin : Auto_Hand_Betrieb_Pin */
+  GPIO_InitStruct.Pin = Auto_Hand_Betrieb_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(Auto_Hand_Betrieb_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : angle_sync_Pin */
   GPIO_InitStruct.Pin = angle_sync_Pin;
@@ -1294,15 +1309,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Status_buzzer_Pin */
-  GPIO_InitStruct.Pin = Status_buzzer_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Status_buzzer_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : Status_LED_1_Pin Status_LED_2_Pin Status_LED_3_Pin Status_LED_4_Pin */
-  GPIO_InitStruct.Pin = Status_LED_1_Pin|Status_LED_2_Pin|Status_LED_3_Pin|Status_LED_4_Pin;
+  /*Configure GPIO pins : Status_LED_3_Pin Status_LED_4_Pin */
+  GPIO_InitStruct.Pin = Status_LED_3_Pin|Status_LED_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

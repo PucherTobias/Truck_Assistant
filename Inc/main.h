@@ -60,12 +60,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Flash_start_Pin GPIO_PIN_2
-#define Flash_start_GPIO_Port GPIOE
+#define Status_LED1_Pin GPIO_PIN_2
+#define Status_LED1_GPIO_Port GPIOE
 #define NotAus_Pin GPIO_PIN_3
 #define NotAus_GPIO_Port GPIOE
-#define free_button1_Pin GPIO_PIN_4
-#define free_button1_GPIO_Port GPIOE
+#define Status_buzzer_Pin GPIO_PIN_4
+#define Status_buzzer_GPIO_Port GPIOE
 #define free_button2_Pin GPIO_PIN_5
 #define free_button2_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
@@ -77,8 +77,8 @@ void Error_Handler(void);
 #define angle_0_GPIO_Port GPIOF
 #define Auto_Hand_Betrieb_Pin GPIO_PIN_3
 #define Auto_Hand_Betrieb_GPIO_Port GPIOF
-#define Flash_stop_Pin GPIO_PIN_8
-#define Flash_stop_GPIO_Port GPIOF
+#define Status_LED2_Pin GPIO_PIN_8
+#define Status_LED2_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1
@@ -103,12 +103,6 @@ void Error_Handler(void);
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
-#define Status_buzzer_Pin GPIO_PIN_15
-#define Status_buzzer_GPIO_Port GPIOD
-#define Status_LED_1_Pin GPIO_PIN_2
-#define Status_LED_1_GPIO_Port GPIOG
-#define Status_LED_2_Pin GPIO_PIN_3
-#define Status_LED_2_GPIO_Port GPIOG
 #define Status_LED_3_Pin GPIO_PIN_4
 #define Status_LED_3_GPIO_Port GPIOG
 #define Status_LED_4_Pin GPIO_PIN_5
