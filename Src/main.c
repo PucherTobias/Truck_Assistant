@@ -86,6 +86,7 @@ uint8_t bluetransbuffer[14];
 int statuscount = 0;
 int buzzer_count = 0;
 int statustest = 0;
+int freigabe = 0 ;
 
 
 
@@ -101,6 +102,8 @@ int length = 0 ;
 int count_10ms=0 ;
 int count_100ms=0 ;							// Verzögerungen
 int count_1s=0 ;
+int count_100ms_freigabe = 0;
+int count_1s_freigabe = 0;
 float countspin=0 ;							// Messung von Sensorausgang
 float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
 uint8_t spinstrans = 0 ;				// Umdrehungen in 8bit (UART-8bit)					
@@ -180,11 +183,18 @@ int main(void)
 	static int32_t uwtick_Hold10ms;
   static int32_t uwtick_Hold100ms; 
   static int32_t uwtick_Hold1s;
+	static int32_t uwtick_Hold100ms_freigabe; 
+	static int32_t uwtick_Hold1s_freigabe;
+	int uw_count = 0;
+	int uw_result = 0;
 	
 	
 	uwtick_Hold10ms=0;
   uwtick_Hold100ms=0;
   uwtick_Hold1s=0;
+	uwtick_Hold100ms_freigabe = 0; 
+	uwtick_Hold1s_freigabe = 0;
+	
 	
 	bluetransbuffer[1] = 1;
 	bluetransbuffer[2] = 2;
@@ -277,6 +287,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+	
   while (1)
   {
     /* USER CODE END WHILE */
@@ -293,6 +305,22 @@ int main(void)
 //			memorystorebutton++;
 //			curve_was_taken = 2;
 //		}
+		
+	
+		
+		while(freigabe==0)	{
+			
+			HAL_GPIO_WritePin(Status_LED1_GPIO_Port,Status_LED1_Pin,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(Status_LED2_GPIO_Port,Status_LED2_Pin,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_SET);
+			HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_SET);
+			
+			uw_count=uwTick ;
+	}
+	
+	while(freigabe==1)	{
+		
+		uw_result = uwTick - uw_count ;
 		
 		if((bluebuffer[3]==16) || (bluebuffer[3]==24) ){						//Abfrage ob Handbetrieb 
 				autobetrieb= 1;																					// oder Autobetrieb
@@ -321,7 +349,7 @@ int main(void)
 			angle_sync=0 ;
 		}
 	
-		if( uwTick - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
+		if( uw_result - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
 			count_10ms++;
 			
@@ -405,13 +433,12 @@ int main(void)
 		
 	
 		
-		if( uwTick - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
+		if( uw_result - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
 			
-			if(statustest==1){
 				if((count_100ms%7)==0){
-					if(statuscount<=9)	{
+					if(statuscount<=8)	{
 						HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
 						HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
 						HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
@@ -425,14 +452,14 @@ int main(void)
 						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
 					}
 				}
-			}
+			
 		}	// 100ms Ende
 			
 		
-		if( uwTick - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
+		if( uw_result - uwtick_Hold1s >= 1000 ) {																				// 1s Zykluszeit
 			uwtick_Hold1s += 1000;
 			count_1s++;
-			if(statustest==1)	{
+			
 				if(buzzer_count<=3)	{
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_SET);
 					buzzer_count++;
@@ -440,10 +467,7 @@ int main(void)
 				else	{
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
 				}
-			}
-				
-				
-				
+						
 		}		// 1s Ende		
 		
 		if(HAL_GPIO_ReadPin(NotAus_GPIO_Port, NotAus_Pin)) {								// NOT-Aus
@@ -584,10 +608,11 @@ int main(void)
 		}
   }		
 
-  }		// while Ende
+  }		
 
-	
+	}	// while end
   /* USER CODE END 3 */
+
 }
 
 /**
