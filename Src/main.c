@@ -28,6 +28,7 @@
 #include "FuzzyV1_F4.h" 
 #include "MY_FLASH.h"
 #include "pid_controller.h"
+#include "pid_regler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +75,7 @@ uint32_t gas = 0;						// gas & lenk wert
 int i = 0;
 
 float sensork;						// Sensorwert in cm
-float steering_conv;			// Winkelsensorwert in °
+float steering_conv;			// Winkelsensorwert in ï¿½
 int8_t steering_trailer; 
 
 // Georg
@@ -96,7 +97,7 @@ int b_sync = 0;
 int bluebufferval = 0;
 int length = 0 ;
 int count_10ms=0 ;
-int count_100ms=0 ;							// Verzögerungen
+int count_100ms=0 ;							// Verzï¿½gerungen
 int count_1s=0 ;
 float countspin=0 ;							// Messung von Sensorausgang
 float spins = 0 ;								// Umdrehungen Inkrementaldrehgeber
@@ -236,14 +237,14 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Start the servo PWM
 	HAL_TIM_Base_Start_IT(&htim2) ;
 	
-	HAL_TIM_Base_Start(&htim1) ;					// Timer für ADC Abfrage 
+	HAL_TIM_Base_Start(&htim1) ;					// Timer fï¿½r ADC Abfrage 
 	HAL_ADC_Start_DMA(&hadc3,adcval,2) ;	// DMA Abfrage von ADC value, Speicherung in adcval0 und adcval 1
 	
 	HAL_UART_Receive_DMA(&huart4,bluebuffer,sizeof(bluebuffer)) ;
 	
 	//MOTOR / SERVO DEFAULT BEGIN
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0); //default kein Gas
-	htim4.Instance->CCR1 = 750; //default 90°
+	htim4.Instance->CCR1 = 750; //default 90ï¿½
 	//MOTOR / SERVO DEFAULT END
 	
 	//FLASH READ BEGIN
@@ -285,7 +286,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		
 		
-		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// Übertragung Start
+		if(HAL_GPIO_ReadPin(Flash_start_GPIO_Port, Flash_start_Pin))			// ï¿½bertragung Start
 		{	memory_start = 1 ;
 			
 		}
@@ -306,7 +307,7 @@ int main(void)
 		if((bluebuffer[3]==8))	{
 				// angle_sync = 1;
 			sync_allowed=1;
-			if(HAL_GPIO_ReadPin(photodiode1_GPIO_Port, photodiode1_Pin))			// Übertragung Start
+			if(HAL_GPIO_ReadPin(photodiode1_GPIO_Port, photodiode1_Pin))			// ï¿½bertragung Start
 				{	photodiode = 1;	}
 			else{
 				photodiode = 0;
@@ -368,19 +369,19 @@ int main(void)
 		PIDCompute(&pid_1);
 		
 		HAL_ADC_Start(&hadc1);		
-		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
+		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion fï¿½r Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 			sensork=2*(2076.0/(adcvaluek-11));
 		}	
 		HAL_ADC_Start(&hadc2);		
-		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
+		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion fï¿½r Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
 				steering_conv = map(adc_steering,500,4000,0,360) ;
 					if(steering_conv<0){
 						steering_conv=0;
 					}
 				if(steering_conv >= angleconv_sync){
-					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewï¿½nschte werte
 				}
 				if(steering_conv < angleconv_sync){
 					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync+90, 0 , -90);
@@ -402,13 +403,13 @@ int main(void)
 			if(setval_memory_storage==1){
 				if(memory_start==1){
 					curve_was_taken = 1;
-					velocity[icom]=	spinstrans ;		// Übergabe der Sensorwerte
+					velocity[icom]=	spinstrans ;		// ï¿½bergabe der Sensorwerte
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
 					thrust[icom] = gas ;
 //					snprintf(velocityASCII,10000,"v %d\r",velocity[icom]) ;
 //					snprintf(steeringASCII,10000,"\ts %d\n\r",steering[icom]) ;	// Umwandlung in ASCII
-//					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// Übertragung über UART
+//					HAL_UART_Transmit(&huart3,velocityASCII,sizeof(velocityASCII),1);		// ï¿½bertragung ï¿½ber UART
 //					HAL_UART_Transmit(&huart3,steeringASCII,sizeof(steeringASCII),1);
 					icom++ ;
 				}
@@ -417,7 +418,7 @@ int main(void)
 					angle[icom]= steering_trailer ;
 					steering[icom] = lenken ;
 					thrust[icom] = 0 ;
-					flasharray_length[0] = icom+1;	//memory_start= 0 einfügen?
+					flasharray_length[0] = icom+1;	//memory_start= 0 einfï¿½gen?
 					flash_index = icom;
 				}
 			}
@@ -471,7 +472,7 @@ int main(void)
 		//Pucher autobetrieb BEGINN///////////////////////////////
 		setval_memory_storage = 0 ;
 
-		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehörigen PWM-GPIOs
+		//Berechnung der Lenk-,Gas-Werte und Schalten der zugehï¿½rigen PWM-GPIOs
 		//Lenkung - Steering
 			
 		if(bluebuffer[2] >= 90){
