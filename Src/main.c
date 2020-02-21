@@ -25,8 +25,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "FuzzyV1_F4.h" 
 #include "MY_FLASH.h"
+#include "pid_controller.h"
+#include "pid_regler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
