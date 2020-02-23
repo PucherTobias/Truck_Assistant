@@ -287,11 +287,11 @@ int main(void)
 //REGLER INITIALISIEREN
 
 pid1.kp = 3;
-pid1.ki = 1;
+pid1.ki = 5;
 pid1.kd = 0;
-pid1.T = 0.1;
-pid1.u_min = -50;
-pid1.u_max = 50;
+pid1.T = 0.01;
+pid1.u_min = -30;
+pid1.u_max = 30;
 
 pid_init(&pid1);
 	
@@ -384,7 +384,6 @@ pid_init(&pid1);
 			uwtick_Hold10ms += 10;
 			count_10ms++;
 			
-		
 		HAL_ADC_Start(&hadc1);		
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
@@ -415,7 +414,12 @@ pid_init(&pid1);
 				/////Pucher End/////////
 		}
 		
-		//Pucher 10ms
+		// REGLER 10ms
+		pid1.freigabe = ON;
+		pid1.w = auto_angle_w;
+		pid1.x = auto_angle_y;
+		pid_calc(&pid1);
+		
 		if(count_10ms%2==0)	{ //Pucher 20ms begin
 			if(setval_memory_storage==1){
 				if(memory_start==1){
@@ -484,11 +488,6 @@ pid_init(&pid1);
 					}
 				}
 				
-				// REGLER
-			pid1.freigabe = ON;
-			pid1.w = auto_angle_w;
-			pid1.x = auto_angle_y;
-			pid_calc(&pid1);
 			
 		}	// 100ms Ende
 			
