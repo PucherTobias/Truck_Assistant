@@ -11,7 +11,8 @@ void pid_init(pid_regler_struct *pid) {
 
 
 void pid_calc(pid_regler_struct *pid) {
-    pid->e = (pid->u) - (pid->x); //soll-istwert Vergleich, Reglerabweichung e berechnen
+  if(pid->freigabe == ON){
+		pid->e = (pid->w) - (pid->x); //soll-istwert Vergleich, Reglerabweichung e berechnen
 
     pid->I += (pid->Ki) * pid->e; //Integral term im Voraus berechnen
 
@@ -22,7 +23,13 @@ void pid_calc(pid_regler_struct *pid) {
     pid->D = (pid->Kd) * (pid->dx);
     //Stellgröße u berechnen
     pid->u = (pid->Kp)*(pid->e) + (pid->I) - (pid->D); // u = Kp*e + Ki*e - Kd*dx
-
+		pid->u = limit(pid->u, pid->u_min, pid->u_max);
+	
+		pid->x_last = pid->x; //Letzten istwert abspeichern
+	}else if(pid->freigabe == OFF) {
+		//nothing
+		pid->u = 0;
+	}
 }
 
 

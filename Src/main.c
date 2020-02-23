@@ -136,10 +136,8 @@ int auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 
-float u = 0;
-float Kp = 0;
-float e = 0;
-float lenken_regler = 90;
+
+pid_regler_struct pid1;
 
 int photodiode1 = 0;
 int photodiode2 = 0;
@@ -286,6 +284,16 @@ int main(void)
 //	MY_FLASH_ReadN(0, w_steering, flasharray_length[0], DATA_TYPE_16);
 	//FLASH READ END
 	
+//REGLER INITIALISIEREN
+
+pid1.kp = 3;
+pid1.ki = 1;
+pid1.kd = 0;
+pid1.T = 0.1;
+pid1.u_min = -50;
+pid1.u_max = 50;
+
+pid_init(&pid1);
 	
   /* USER CODE END 2 */
 
@@ -475,6 +483,12 @@ int main(void)
 						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
 					}
 				}
+				
+				// REGLER
+			pid1.freigabe = ON;
+			pid1.w = auto_angle_w;
+			pid1.x = auto_angle_y;
+			pid_calc(&pid1);
 			
 		}	// 100ms Ende
 			
@@ -517,16 +531,10 @@ int main(void)
 		if(bluebuffer[2] < 90){
 			auto_angle_w = map(bluebuffer[2], 60, 90, -25 , 0);
 		}	
-			
-		e = auto_angle_w - auto_angle_y;
+		//auto_angle_w = Sollwert
 		
-		Kp = 3;	
-		u=Kp*e;
-		
-		lenken_regler = 90-u;	
-		
-		auto_steering = lenken_regler;		
-			
+		//werte von regler übernehmen, limitieren, und auf den servo schreiben.
+		auto_steering = 90-(pid1.u);	
 		
 		if(auto_steering > 135)
 			auto_steering = 135;

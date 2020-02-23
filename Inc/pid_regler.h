@@ -27,12 +27,15 @@ typedef struct
     float I; //Integral Rechenwert für I-Anteil
     float D; //Differenzierer Rechenwert für D-Anteil
     float u_max, u_min; //maximaler / minimaler Reglerausgang
+		
+		pid_freigabe freigabe;
 
 } 
 pid_regler_struct;
 
 
-extern void pid_init(pid_regler_struct *pid);
+void pid_init(pid_regler_struct *pid);
 
+void pid_calc(pid_regler_struct *pid);
 
 float limit(float wert, float min, float max);
