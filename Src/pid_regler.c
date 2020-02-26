@@ -6,6 +6,14 @@ void pid_init(pid_regler_struct *pid) {
     pid->Kp = pid->kp;
     pid->Ki = pid->ki * pid->T; //angepasste Konstanten
     pid->Kd = pid->kd / pid->T; //angepasste Konstanten
+		
+		pid->D=0;
+		pid->dx=0;
+		pid->e=0;
+		pid->I=0;
+		pid->w=0;
+		pid->x=0;
+		pid->x_last=0;
 
 }
 

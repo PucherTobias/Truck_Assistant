@@ -131,8 +131,8 @@ int auto_steering = 90; //sollwert
 int auto_thrust = 0; //sollwert
 int auto_steering_pwm = 0;
 int auto_thrust_pwm = 0;
-int auto_angle_w = 0; //sollwert
-int auto_angle_y = 0; //istwert
+float auto_angle_w = 0; //sollwert
+float auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 
@@ -286,8 +286,8 @@ int main(void)
 	
 //REGLER INITIALISIEREN
 
-pid1.kp = 3;
-pid1.ki = 5;
+pid1.kp = 1.5;
+pid1.ki = 1;
 pid1.kd = 0;
 pid1.T = 0.01;
 pid1.u_min = -30;
@@ -409,9 +409,7 @@ pid_init(&pid1);
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
 				}					
 
-				//ISTWERT 				
-				auto_angle_y = steering_trailer;	
-				/////Pucher End/////////
+
 		}
 		
 		// REGLER 10ms
@@ -419,6 +417,7 @@ pid_init(&pid1);
 		pid1.w = auto_angle_w;
 		pid1.x = auto_angle_y;
 		pid_calc(&pid1);
+		
 		
 		if(count_10ms%2==0)	{ //Pucher 20ms begin
 			if(setval_memory_storage==1){
@@ -471,6 +470,10 @@ pid_init(&pid1);
 		if( uw_result - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
 			count_100ms++;
+			
+			//ISTWERT 				
+				auto_angle_y = steering_trailer;	
+			
 			
 				if((count_100ms%7)==0){
 					if(statuscount<=8)	{
