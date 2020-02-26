@@ -138,6 +138,7 @@ int auto_velocity_y = 0; //istwert
 
 
 pid_regler_struct pid1;
+float Ti = 5;
 
 int photodiode1 = 0;
 int photodiode2 = 0;
@@ -287,7 +288,7 @@ int main(void)
 //REGLER INITIALISIEREN
 
 pid1.kp = 1.5;
-pid1.ki = 1;
+pid1.ki = 1/Ti;
 pid1.kd = 0;
 pid1.T = 0.01;
 pid1.u_min = -30;
