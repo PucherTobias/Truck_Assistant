@@ -75,19 +75,25 @@ int i = 0;
 
 float sensork;						// Sensorwert in cm
 float steering_conv;			// Winkelsensorwert in °
-int8_t steering_trailer; 
+float steering_trailer;
+float steering_average[10] = {0};
+float steering_conv_avg = 0;
+int av =0 ;
 
 // Georg
 uint16_t velocity[10000] = {0} ;
-int16_t 	angle[10000] = {0} ;					//Speicherfelder
+int16_t angle[10000] = {0} ;					//Speicherfelder
 uint16_t thrust[10000]	= {0};
-uint16_t	steering[10000] = {0};
+uint16_t steering[10000] = {0};
 uint8_t bluebuffer[4] = {0} ;
 uint8_t bluetransbuffer[14];
 int statuscount = 0;
 int buzzer_count = 0;
 int statustest = 0;
 int freigabe = 0 ;
+int angle_error = 0;
+int distance_error = 0;
+
 
 
 
@@ -116,6 +122,7 @@ int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 int angle_sync=0;
 int angleconv_sync= 237;
+int deleted=0;
 
 //Pucher
 uint16_t w_velocity[10000] = {0};
@@ -370,16 +377,36 @@ pid_init(&pid1);
 		} else { 
 			photodiode2 = 0;
 		}
-			
+		if(sensork==0){
+			distance_error=1 ;
+		}
+		
+		
+		
+		if(distance_error==1){
+			HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+			HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
+			HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+			HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+		}
+		
+		if(angle_error==1){
+			HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+			HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
+			HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+			HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+		}
+		
 		if(icom>=9999)
 			icom=9999 ;
 		if(icom<0)
 			icom=0;
 		
 		if(angle_sync==1)	{
-			angleconv_sync = steering_conv;
+			angleconv_sync = steering_conv_avg;
 			angle_sync=0 ;
 		}
+		
 	
 		if( uw_result - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -397,16 +424,31 @@ pid_init(&pid1);
 					if(steering_conv<0){
 						steering_conv=0;
 					}
-				if(steering_conv >= angleconv_sync){
-					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
-				}
-				if(steering_conv < angleconv_sync){
-					steering_trailer = map(steering_conv, angleconv_sync, angleconv_sync+90, 0 , -90);
-				}
-				if(steering_trailer==0){
-				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
-				}
-				if(steering_trailer!=0){
+//		if(av<=10){
+//			steering_average = steering_average+steering_conv;
+//			av++;
+//		}
+//		
+//		if(av==11){
+//			steering_conv_avg = steering_average/10;
+//			av=0;
+//			steering_average=0;
+//		}
+		
+		
+		if(steering_conv_avg >= angleconv_sync){
+			steering_trailer = map(steering_conv_avg, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+		}
+		
+		if(steering_conv_avg < angleconv_sync){
+			steering_trailer = map(steering_conv_avg, angleconv_sync, angleconv_sync+90, 0 , -90);
+		}
+		
+		if(steering_trailer==0){
+			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+		}
+		
+		if(steering_trailer!=0){
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
 				}					
 
@@ -466,7 +508,21 @@ pid_init(&pid1);
 			}//Pucher 20ms end
 		}	// 10ms Ende
 		
+		deleted=steering_average[9];
+		steering_average[9]=steering_average[8];
+		steering_average[8]=steering_average[7];
+		steering_average[7]=steering_average[6];
+		steering_average[6]=steering_average[5];
+		steering_average[5]=steering_average[4];
+		steering_average[4]=steering_average[3];
+		steering_average[3]=steering_average[2];
+		steering_average[2]=steering_average[1];
+		steering_average[1]=steering_average[0];
+		steering_average[0]=steering_conv;
+		
+		steering_conv_avg = (steering_average[9] + steering_average[8] + steering_average[7] + steering_average[6] + steering_average[5] + steering_average[4] + steering_average[3] + steering_average[2] + steering_average[1] + steering_average[0])/10 ;
 	
+		
 		
 		if( uw_result - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
 			uwtick_Hold100ms += 100;
