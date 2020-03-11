@@ -76,7 +76,7 @@ int i = 0;
 float sensork;						// Sensorwert in cm
 float steering_conv;			// Winkelsensorwert in °
 float steering_trailer;
-float steering_average[10] = {0};
+float steering_average[30] = {0};
 float steering_conv_avg = 0;
 int av =0 ;
 
@@ -121,7 +121,7 @@ int memorystorebutton = 0 ;
 int autobetrieb=0;							// Fuzzy
 int handbetrieb=0;
 int angle_sync=0;
-int angleconv_sync= 237;
+float angleconv_sync= 237;
 int deleted=0;
 
 //Pucher
@@ -170,6 +170,10 @@ static void MX_TIM10_Init(void);
 static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+float map_float(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
@@ -437,20 +441,26 @@ pid_init(&pid1);
 		
 		
 		if(steering_conv_avg >= angleconv_sync){
-			steering_trailer = map(steering_conv_avg, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
+			steering_trailer = map_float(steering_conv_avg, angleconv_sync, angleconv_sync-90, 0, 90);					// Adcvals werden mit gas und lenken gemapt, sprich, umgewandelt in gewünschte werte
 		}
 		
 		if(steering_conv_avg < angleconv_sync){
-			steering_trailer = map(steering_conv_avg, angleconv_sync, angleconv_sync+90, 0 , -90);
+			steering_trailer = map_float(steering_conv_avg, angleconv_sync, angleconv_sync+90, 0 , -90);
 		}
 		
-		if(steering_trailer==0){
-			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
-		}
-		
-		if(steering_trailer!=0){
-				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
-				}					
+//		if(steering_trailer==0){
+//			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+//		}
+//		
+//		if(steering_trailer!=0){
+//				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
+//				}		
+
+		if((!photodiode1) && (!photodiode2)){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
+		}else{
+				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
+		}			
 
 
 		}
@@ -507,8 +517,25 @@ pid_init(&pid1);
 				//SOLLWERTKURVE END
 			}//Pucher 20ms end
 		}	// 10ms Ende
-		
-		deleted=steering_average[9];
+		deleted =steering_average[29];
+		steering_average[29]=steering_average[28];
+		steering_average[28]=steering_average[27];
+		steering_average[27]=steering_average[26];
+		steering_average[26]=steering_average[25];
+		steering_average[25]=steering_average[24];
+		steering_average[24]=steering_average[23];
+		steering_average[23]=steering_average[22];
+		steering_average[22]=steering_average[21];
+		steering_average[21]=steering_average[20];
+		steering_average[20]=steering_average[19];
+		steering_average[18]=steering_average[17];
+		steering_average[17]=steering_average[16];
+		steering_average[16]=steering_average[15];
+		steering_average[14]=steering_average[13];
+		steering_average[12]=steering_average[11];
+		steering_average[11]=steering_average[10];
+		steering_average[10]=steering_average[9];
+		steering_average[10]=steering_average[9];
 		steering_average[9]=steering_average[8];
 		steering_average[8]=steering_average[7];
 		steering_average[7]=steering_average[6];
@@ -520,8 +547,36 @@ pid_init(&pid1);
 		steering_average[1]=steering_average[0];
 		steering_average[0]=steering_conv;
 		
-		steering_conv_avg = (steering_average[9] + steering_average[8] + steering_average[7] + steering_average[6] + steering_average[5] + steering_average[4] + steering_average[3] + steering_average[2] + steering_average[1] + steering_average[0])/10 ;
-	
+		steering_conv_avg = (steering_average[29]
+		+ steering_average[28]
+		+ steering_average[27]
+		+ steering_average[26]
+		+ steering_average[25]
+		+ steering_average[24]
+		+ steering_average[23]
+		+ steering_average[22]
+		+ steering_average[21]
+		+ steering_average[20]
+		+ steering_average[19]
+		+ steering_average[18]
+		+ steering_average[17]
+		+ steering_average[16]
+		+ steering_average[15]
+		+ steering_average[14]
+		+ steering_average[13]
+		+ steering_average[12]		
+		+ steering_average[11]
+		+ steering_average[10] 
+		+ steering_average[9] 
+		+ steering_average[8] 
+		+ steering_average[7] 
+		+ steering_average[6] 
+		+ steering_average[5] 
+		+ steering_average[4] 
+		+ steering_average[3] 
+		+ steering_average[2] 
+		+ steering_average[1] 
+		+ steering_average[0])/30 ; //Mittelwert aus den 30 neusten Werten.
 		
 		
 		if( uw_result - uwtick_Hold100ms >= 100 ) {																			// 100ms Zykluszeit
