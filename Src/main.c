@@ -567,14 +567,14 @@ pid_init(&pid1);
 //				}
 //			}
 			
-//			if(angle_error==1){
-//				if((count_100ms%14)==0){
-//					HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
-//					HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
-//					HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
-//					HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
-//				}
-//			}
+			if(adc_steering<=50){
+				if((count_100ms%14)==0){
+					HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+					HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
+					HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+					HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+				}
+			}
 			
 		}	// 100ms Ende
 			
