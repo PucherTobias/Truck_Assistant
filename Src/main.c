@@ -94,6 +94,7 @@ int freigabe = 0 ;
 int bluestate = 0;
 int bluewasset=0;
 int bluebuzzer=0 ;
+int bluebuzzerdone=0;
 
 
 
@@ -383,6 +384,7 @@ pid_init(&pid1);
 		
 		if(HAL_GPIO_ReadPin(Bluetooth_state_GPIO_Port, Bluetooth_state_Pin))	{
 			bluestate=1;
+			bluebuzzerdone=0;
 		}
 		else	{
 			bluestate=0;
@@ -574,6 +576,7 @@ pid_init(&pid1);
 						HAL_GPIO_WritePin(Status_LED2_GPIO_Port,Status_LED2_Pin,GPIO_PIN_RESET);
 						HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_RESET);
 						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
+						bluewasset=0;
 			}
 				
 				
@@ -604,15 +607,16 @@ pid_init(&pid1);
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
 				}
 				
-				if((bluestate==0)&&(bluewasset==1)){
-					if(bluebuzzer<=4){
+				if((bluestate==0)&&(bluewasset==1)&&(bluebuzzerdone==0)){
+					if(bluebuzzer<=1){
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_SET);
 					bluebuzzer++;
 				}
 			}
-				if(bluebuzzer>4)	{
+				if(bluebuzzer>1)	{
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
 					bluebuzzer=0;
+					bluebuzzerdone=1;
 				}
 						
 		}		// 1s Ende		
