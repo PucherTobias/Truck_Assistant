@@ -91,8 +91,9 @@ int statuscount = 0;
 int buzzer_count = 0;
 int statustest = 0;
 int freigabe = 0 ;
-int angle_error = 0;
-int distance_error = 0;
+int bluestate = 0;
+int bluewasset=0;
+int bluebuzzer=0 ;
 
 
 
@@ -380,12 +381,16 @@ pid_init(&pid1);
 			photodiode2 = 0;
 		}
 		
-		if(sensork==0){
-			distance_error=1 ;
+		if(HAL_GPIO_ReadPin(Bluetooth_state_GPIO_Port, Bluetooth_state_Pin))	{
+			bluestate=1;
 		}
-		if(adc_steering==0){
-			angle_error==1;
-			}
+		else	{
+			bluestate=0;
+			bluewasset=1;
+		}
+		
+			
+		
 		
 			
 		if(icom>=9999)
@@ -558,14 +563,22 @@ pid_init(&pid1);
 					}
 				}
 				
-//			if(adcvalue_avg<=30){
-//				if((count_100ms%7)==0){
-//						HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
-//						HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
-//						HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
-//						HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
-//				}
-//			}
+			if((bluestate==0)&&(bluewasset==1)){
+						HAL_GPIO_WritePin(Status_LED1_GPIO_Port,Status_LED1_Pin,GPIO_PIN_SET);
+						HAL_GPIO_WritePin(Status_LED2_GPIO_Port,Status_LED2_Pin,GPIO_PIN_SET);
+						HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_SET);
+						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_SET);	
+			}
+			if((bluestate==1)&&(bluewasset==1))	{
+						HAL_GPIO_WritePin(Status_LED1_GPIO_Port,Status_LED1_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED2_GPIO_Port,Status_LED2_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin,GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin,GPIO_PIN_RESET);
+			}
+				
+				
+				
+
 			
 			if(adc_steering<=50){
 				if((count_100ms%14)==0){
@@ -589,6 +602,17 @@ pid_init(&pid1);
 				}
 				else	{
 					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
+				}
+				
+				if((bluestate==0)&&(bluewasset==1)){
+					if(bluebuzzer<=4){
+					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_SET);
+					bluebuzzer++;
+				}
+			}
+				if(bluebuzzer>4)	{
+					HAL_GPIO_WritePin(Status_buzzer_GPIO_Port,Status_buzzer_Pin,GPIO_PIN_RESET);
+					bluebuzzer=0;
 				}
 						
 		}		// 1s Ende		
@@ -1437,17 +1461,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(Freigabe_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : Bluetooth_state_Pin photodiode1_Pin photodiode2_Pin */
+  GPIO_InitStruct.Pin = Bluetooth_state_Pin|photodiode1_Pin|photodiode2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
   /*Configure GPIO pin : angle_sync_Pin */
   GPIO_InitStruct.Pin = angle_sync_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(angle_sync_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : photodiode1_Pin photodiode2_Pin */
-  GPIO_InitStruct.Pin = photodiode1_Pin|photodiode2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;

@@ -77,6 +77,8 @@ void Error_Handler(void);
 #define angle_0_GPIO_Port GPIOF
 #define Freigabe_Pin GPIO_PIN_3
 #define Freigabe_GPIO_Port GPIOF
+#define Bluetooth_state_Pin GPIO_PIN_4
+#define Bluetooth_state_GPIO_Port GPIOF
 #define Status_LED2_Pin GPIO_PIN_8
 #define Status_LED2_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0

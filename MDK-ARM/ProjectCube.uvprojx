@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F767xx,USE_HAL_DRIVER,STM32F767xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                ../Drivers/STM32F7xx_HAL_Driver/Inc;                                                                ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;                                                                ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;                                                                ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;                                                                ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;                                                                ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                                                 ../Drivers/STM32F7xx_HAL_Driver/Inc;                                                                 ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy;                                                                 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;                                                                 ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;                                                                 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include;                                                                 ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -443,6 +443,26 @@
               <FilePath>..\Src\MY_FLASH.c</FilePath>
             </File>
             <File>
+              <FileName>pid_regler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pid_regler.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid_regler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\pid_regler.h</FilePath>
+            </File>
+            <File>
+              <FileName>pid_controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\pid_controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid_controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\pid_controller.h</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/main.c</FilePath>
@@ -476,26 +496,6 @@
               <FileName>stm32f7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/stm32f7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid_regler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\pid_regler.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid_regler.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\pid_regler.h</FilePath>
-            </File>
-            <File>
-              <FileName>pid_controller.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\pid_controller.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid_controller.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\pid_controller.h</FilePath>
             </File>
           </Files>
         </Group>
