@@ -123,7 +123,9 @@ int handbetrieb=0;
 int angle_sync=0;
 int angleconv_sync= 237;
 int deleted=0;
-
+int adcvaluekavg[10];
+int adcvalue_del =0;
+int adcvalue_avg =0;
 //Pucher
 uint16_t w_velocity[10000] = {0};
 int16_t w_angle[10000] = {0};
@@ -377,26 +379,15 @@ pid_init(&pid1);
 		} else { 
 			photodiode2 = 0;
 		}
+		
 		if(sensork==0){
 			distance_error=1 ;
 		}
+		if(adc_steering==0){
+			angle_error==1;
+			}
 		
-		
-		
-		if(distance_error==1){
-			HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
-			HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
-			HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
-			HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
-		}
-		
-		if(angle_error==1){
-			HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
-			HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
-			HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
-			HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
-		}
-		
+			
 		if(icom>=9999)
 			icom=9999 ;
 		if(icom<0)
@@ -416,7 +407,26 @@ pid_init(&pid1);
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 			sensork=2*(2076.0/(adcvaluek-11));
+			if(adcvaluek<=1){
+				adcvaluek=35;
+			}
+			adcvalue_del=adcvaluekavg[9];
+			adcvaluekavg[9]=adcvaluekavg[8];
+			adcvaluekavg[8]=adcvaluekavg[7];
+			adcvaluekavg[7]=adcvaluekavg[6];
+			adcvaluekavg[6]=adcvaluekavg[5];
+			adcvaluekavg[5]=adcvaluekavg[4];
+			adcvaluekavg[4]=adcvaluekavg[3];
+			adcvaluekavg[3]=adcvaluekavg[2];
+			adcvaluekavg[2]=adcvaluekavg[1];
+			adcvaluekavg[1]=adcvaluekavg[0];
+			adcvaluekavg[0]=adcvaluek;
+			
+			adcvalue_avg = (adcvaluekavg[9]+adcvaluekavg[8]+adcvaluekavg[7]+adcvaluekavg[6]+adcvaluekavg[5]+adcvaluekavg[4]+adcvaluekavg[3]+adcvaluekavg[2]+adcvaluekavg[1]+adcvaluekavg[0])/10 ;
+
+			
 		}	
+		
 		HAL_ADC_Start(&hadc2);		
 		if(HAL_ADC_PollForConversion(&hadc2,10) == HAL_OK)	{			// Single conversion für Winkel
 				adc_steering = HAL_ADC_GetValue(&hadc2);
@@ -548,6 +558,23 @@ pid_init(&pid1);
 					}
 				}
 				
+//			if(adcvalue_avg<=30){
+//				if((count_100ms%7)==0){
+//						HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+//						HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
+//						HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+//						HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+//				}
+//			}
+			
+//			if(angle_error==1){
+//				if((count_100ms%14)==0){
+//					HAL_GPIO_TogglePin(Status_LED1_GPIO_Port,Status_LED1_Pin);
+//					HAL_GPIO_TogglePin(Status_LED2_GPIO_Port,Status_LED2_Pin);
+//					HAL_GPIO_TogglePin(Status_LED_3_GPIO_Port,Status_LED_3_Pin);
+//					HAL_GPIO_TogglePin(Status_LED_4_GPIO_Port,Status_LED_4_Pin);
+//				}
+//			}
 			
 		}	// 100ms Ende
 			
@@ -677,7 +704,7 @@ pid_init(&pid1);
 			if(bluebuffer[1] >= 255)
 				bluebuffer[1] = 255;
 		
-			gas = map(bluebuffer[1], 128, 255 , 0, 31);  //269 - 754
+			gas = map(bluebuffer[1], 128, 255 , 0, 31);  
 		
 			if(gas < 7)
 				gas = 0;
