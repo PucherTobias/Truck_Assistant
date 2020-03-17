@@ -414,22 +414,22 @@ pid_init(&pid1);
 		if(HAL_ADC_PollForConversion(&hadc1,10) == HAL_OK)	{			// Single conversion für Distanz
 			adcvaluek = HAL_ADC_GetValue(&hadc1);
 			sensork=2*(2076.0/(adcvaluek-11));
-			if(adcvaluek<=1){
-				adcvaluek=35;
-			}
-			adcvalue_del=adcvaluekavg[9];
-			adcvaluekavg[9]=adcvaluekavg[8];
-			adcvaluekavg[8]=adcvaluekavg[7];
-			adcvaluekavg[7]=adcvaluekavg[6];
-			adcvaluekavg[6]=adcvaluekavg[5];
-			adcvaluekavg[5]=adcvaluekavg[4];
-			adcvaluekavg[4]=adcvaluekavg[3];
-			adcvaluekavg[3]=adcvaluekavg[2];
-			adcvaluekavg[2]=adcvaluekavg[1];
-			adcvaluekavg[1]=adcvaluekavg[0];
-			adcvaluekavg[0]=adcvaluek;
-			
-			adcvalue_avg = (adcvaluekavg[9]+adcvaluekavg[8]+adcvaluekavg[7]+adcvaluekavg[6]+adcvaluekavg[5]+adcvaluekavg[4]+adcvaluekavg[3]+adcvaluekavg[2]+adcvaluekavg[1]+adcvaluekavg[0])/10 ;
+//			if(adcvaluek<=1){
+//				adcvaluek=35;
+//			}
+//			adcvalue_del=adcvaluekavg[9];
+//			adcvaluekavg[9]=adcvaluekavg[8];
+//			adcvaluekavg[8]=adcvaluekavg[7];
+//			adcvaluekavg[7]=adcvaluekavg[6];
+//			adcvaluekavg[6]=adcvaluekavg[5];
+//			adcvaluekavg[5]=adcvaluekavg[4];
+//			adcvaluekavg[4]=adcvaluekavg[3];
+//			adcvaluekavg[3]=adcvaluekavg[2];
+//			adcvaluekavg[2]=adcvaluekavg[1];
+//			adcvaluekavg[1]=adcvaluekavg[0];
+//			adcvaluekavg[0]=adcvaluek;
+//			
+//			adcvalue_avg = (adcvaluekavg[9]+adcvaluekavg[8]+adcvaluekavg[7]+adcvaluekavg[6]+adcvaluekavg[5]+adcvaluekavg[4]+adcvaluekavg[3]+adcvaluekavg[2]+adcvaluekavg[1]+adcvaluekavg[0])/10 ;
 
 			
 		}	
@@ -751,7 +751,10 @@ pid_init(&pid1);
 			
 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
 		}
-  }		
+  }
+	if((sensork>0.1)&&(sensork<=6)){
+		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1,0);
+	}
 
   }		
 
