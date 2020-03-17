@@ -320,6 +320,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>photodiode1</ItemText>
         </Ww>
+        <Ww>
+          <count>34</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>pid1.u</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

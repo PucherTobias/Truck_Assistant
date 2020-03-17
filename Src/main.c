@@ -145,7 +145,7 @@ int auto_velocity_y = 0; //istwert
 
 
 pid_regler_struct pid1;
-float Ti = 5;
+float Ti = 10;
 
 int photodiode1 = 0;
 int photodiode2 = 0;
@@ -298,7 +298,7 @@ int main(void)
 	
 //REGLER INITIALISIEREN
 
-pid1.kp = 1.5;
+pid1.kp = 3;
 pid1.ki = 1/Ti;
 pid1.kd = 0;
 pid1.T = 0.01;
@@ -406,9 +406,19 @@ pid_init(&pid1);
 		if(icom<0)
 			icom=0;
 		
-		if(angle_sync==1)	{
-			angleconv_sync = steering_conv_avg;
-			angle_sync=0 ;
+//		if(angle_sync==1)	{
+//			if((!photodiode1) && (!photodiode2)){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+//				angleconv_sync = steering_conv_avg;
+//				
+//				pid_init(&pid1); //regler zurücksetzten
+//				
+//				angle_sync=0;
+//			}
+		
+		if((!photodiode1) && (!photodiode2)){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+				angleconv_sync = steering_conv_avg;
+				
+				 //regler zurücksetzten
 		}
 		
 	
@@ -456,11 +466,13 @@ pid_init(&pid1);
 //				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
 //				}		
 
-		if((!photodiode1) && (!photodiode2)){ //inverse logik! aufpassen! 0° heißt beide sind LOW
-			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
-		}else{
-				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
-		}			
+		//(!photodiode1) && (!photodiode2)
+		if(auto_angle_y==0){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET);
+		}
+		if(auto_angle_y!=0){
+				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET);
+		}			 
 
 
 		}
@@ -628,7 +640,7 @@ pid_init(&pid1);
 			__HAL_TIM_DISABLE(&htim10) ;
 			while(1){}
 		}
-		
+		pid_init(&pid1);
 		/* Fuzzy 
 		*/
 		if((autobetrieb==1)&&(handbetrieb == 0)){
