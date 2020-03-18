@@ -201,7 +201,7 @@ int main(void){
 				iw++ ;
 			}
 		if(count_10ms<10000)	{
-		velocity[count_10ms]=spinstrans ;
+		velocity[count_10ms]=12 ;
 		steering[count_10ms]= 26 ;
 		snprintf(velocityASCII,10000,"velocity:%d\n\r",velocity[count_10ms]) ;
 		snprintf(steeringASCII,10000,"steering:%d\n\r",steering[count_10ms]) ;
