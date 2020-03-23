@@ -147,7 +147,6 @@ float auto_angle_y = 0; //istwert
 int auto_velocity_w = 0; //sollwert
 int auto_velocity_y = 0; //istwert
 
-
 pid_regler_struct pid1;
 float Ti = 5;
 
@@ -405,6 +404,10 @@ pid_init(&pid1);
 			angle_sync=0 ;
 		}
 		
+		if((!photodiode1) && (!photodiode2)){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+			angleconv_sync = steering_conv_avg;
+		}
+		
 	
 		if( uw_result - uwtick_Hold10ms >= 10 ) {			// 10ms Zykluszeit 
 			uwtick_Hold10ms += 10;
@@ -592,6 +595,13 @@ pid_init(&pid1);
 				}
 			}
 			
+			if(auto_angle_y==0){ //inverse logik! aufpassen! 0° heißt beide sind LOW
+				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET);
+			}
+			if(auto_angle_y!=0){
+					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET);
+			}			 
+			
 		}	// 100ms Ende
 			
 		
@@ -722,39 +732,43 @@ pid_init(&pid1);
 			}
 
 			
-		lenken = bluebuffer[2] ;
-		
-		i = map(lenken, 0, 180, 250, 1250);
-		
-		htim4.Instance->CCR1 = i;
-		
-		if(bluebuffer[1]>=128)	{
-			if(bluebuffer[1] >= 255)
-				bluebuffer[1] = 255;
-		
-			gas = map(bluebuffer[1], 128, 255 , 0, 31);  
-		
-			if(gas < 7)
-				gas = 0;
-		
+			lenken = bluebuffer[2] ;
 			
-			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
-		}
-		if(bluebuffer[1]<=128)	{
-			if(bluebuffer[1]<=0){
-				bluebuffer[1] = 0;
+			i = map(lenken, 0, 180, 250, 1250);
+			
+			htim4.Instance->CCR1 = i;
+			
+			if(bluebuffer[1]>=128)	{
+				if(bluebuffer[1] >= 255)
+					bluebuffer[1] = 255;
+			
+				gas = map(bluebuffer[1], 128, 255 , 0, 31);  
+			
+				if(gas < 7)
+					gas = 0;
+			
+				
+				__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1, gas);
 			}
-			gas = map(bluebuffer[1],128,0,0,31);
+			if(bluebuffer[1]<=128)	{
+				if(bluebuffer[1]<=0){
+					bluebuffer[1] = 0;
+				}
+				gas = map(bluebuffer[1],128,0,0,31);
+				
+				if(gas < 7)
+					gas = 0;
+				
+				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
+			}
 			
-			if(gas < 7)
-				gas = 0;
+			pid_init(&pid1);
 			
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, gas);
 		}
-  }
-	if((sensork>0.1)&&(sensork<=6)){
-		__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1,0);
-	}
+		
+		if((sensork>0.1)&&(sensork<=6)){
+			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1,0);
+		}
 
   }		
 
