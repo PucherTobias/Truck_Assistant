@@ -1,8 +1,5 @@
 --cpu Cortex-M7.fp.dp
 "projectcube\startup_stm32f767xx.o"
-"projectcube\fuzzy_f4.o"
-"projectcube\numtype_f4.o"
-"projectcube\fuzzyv1_f4.o"
 "projectcube\my_flash.o"
 "projectcube\pid_regler.o"
 "projectcube\pid_controller.o"
