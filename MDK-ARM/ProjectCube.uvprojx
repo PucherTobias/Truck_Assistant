@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32F767ZITx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F7xx_DFP.2.12.0</PackID>
-          <PackURL>https://www.keil.com/pack/</PackURL>
+          <PackID>STMicroelectronics.STM32F7xx_DFP.1.0.3</PackID>
+          <PackURL>http://www.ST.com/</PackURL>
           <Cpu>IRAM(0x20000000-0x2007FFFF) IROM(0x8000000-0x81FFFFF) CLOCK(12000000) FPU3(DFPU) CPUTYPE("Cortex-M7") ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -393,9 +393,44 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
+              <FileName>fuzzy_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fuzzy_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>NumType_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\NumType_F4.c</FilePath>
+            </File>
+            <File>
+              <FileName>fuzzy_enums.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\fuzzy_enums.h</FilePath>
+            </File>
+            <File>
+              <FileName>fuzzy_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\fuzzy_F4.h</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>NumType_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\NumType_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV1_F4.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\FuzzyV1_F4.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuzzyV1_F4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\FuzzyV1_F4.c</FilePath>
             </File>
             <File>
               <FileName>MY_FLASH.h</FileName>

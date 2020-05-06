@@ -464,11 +464,11 @@ pid_init(&pid1);
 			steering_trailer = map(steering_conv_avg, angleconv_sync, angleconv_sync+90, 0 , -90);
 		}
 		
-		if(steering_trailer==0){
+		if(!photodiode1 && !photodiode2){
 			HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET) ;
 		}
 		
-		if(steering_trailer!=0){
+		if(photodiode1 && photodiode2){
 				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET) ;
 				}					
 
@@ -595,12 +595,7 @@ pid_init(&pid1);
 				}
 			}
 			
-			if(auto_angle_y==0){ //inverse logik! aufpassen! 0° heißt beide sind LOW
-				HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_SET);
-			}
-			if(auto_angle_y!=0){
-					HAL_GPIO_WritePin(angle_0_GPIO_Port,angle_0_Pin,GPIO_PIN_RESET);
-			}			 
+
 			
 		}	// 100ms Ende
 			
@@ -767,7 +762,7 @@ pid_init(&pid1);
 		}
 		
 		if((sensork>0.1)&&(sensork<=6)){
-			__HAL_TIM_SET_COMPARE(&htim10, TIM_CHANNEL_1,0);
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1,0);
 		}
 
   }		
